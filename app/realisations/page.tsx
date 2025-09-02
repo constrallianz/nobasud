@@ -110,14 +110,14 @@ export default function RealisationsPage() {
       </section>
 
       {/* Projects section */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="container">
           {/* Filter buttons */}
           <div className="flex flex-wrap justify-center gap-4 mb-16">
             {categories.map((category) => (
               <button
                 key={category}
-                className="px-6 py-3 rounded-full bg-white text-gray-700 hover:bg-brand-blue hover:text-white transition-all duration-300 border border-gray-200 font-medium"
+                className="px-6 py-3 rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-brand-blue hover:text-white transition-all duration-300 border border-gray-200 font-medium"
               >
                 {category}
               </button>
@@ -127,7 +127,7 @@ export default function RealisationsPage() {
           {/* Projects grid */}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {projects.map((project, i) => (
-              <div key={i} className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+              <div key={i} className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
                     src={project.image}
@@ -146,7 +146,7 @@ export default function RealisationsPage() {
                   </div>
 
                   {/* Category badge */}
-                  <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold bg-white/90 text-gray-800">
+                  <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-gray-800/90 text-gray-800">
                     {project.type}
                   </div>
 
@@ -156,7 +156,7 @@ export default function RealisationsPage() {
 
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-brand-blue transition-colors">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-brand-blue transition-colors">
                       {project.name}
                     </h3>
                     <span className="text-sm font-medium text-brand-orange">{project.year}</span>
@@ -173,15 +173,15 @@ export default function RealisationsPage() {
                     </div>
                   </div>
 
-                  <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
+                  <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3 leading-relaxed">
                     {project.description}
                   </p>
 
                   <div className="mb-4">
-                    <div className="text-sm font-medium text-gray-900 mb-2">Caractéristiques principales :</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Caractéristiques principales :</div>
                     <div className="flex flex-wrap gap-1">
                       {project.features.slice(0, 3).map((feature, idx) => (
-                        <span key={idx} className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded">
+                        <span key={idx} className="px-2 py-1 bg-gray-100 text-xs text-gray-600 dark:text-gray-400 rounded">
                           {feature}
                         </span>
                       ))}
@@ -195,7 +195,7 @@ export default function RealisationsPage() {
 
                   <div className="border-t border-gray-100 pt-4">
                     <div className="text-xs text-gray-500">Client :</div>
-                    <div className="text-sm font-medium text-gray-900">{project.client}</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{project.client}</div>
                   </div>
                 </div>
               </div>
@@ -205,13 +205,13 @@ export default function RealisationsPage() {
       </section>
 
       {/* Stats section */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-gray-800">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               Nos <span className="text-brand-orange">performances</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Des chiffres qui témoignent de notre expertise et de notre engagement 
               pour la qualité dans chaque projet.
             </p>
@@ -222,32 +222,32 @@ export default function RealisationsPage() {
               <div className="w-20 h-20 bg-gradient-to-br from-brand-blue to-brand-orange rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                 <span className="text-2xl font-bold text-white">75+</span>
               </div>
-              <div className="text-2xl font-bold text-gray-900 mb-2">Projets</div>
-              <div className="text-gray-600">réalisés</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Projets</div>
+              <div className="text-gray-600 dark:text-gray-400">réalisés</div>
             </div>
 
             <div className="text-center group">
               <div className="w-20 h-20 bg-gradient-to-br from-brand-blue to-brand-orange rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                 <span className="text-2xl font-bold text-white">500M</span>
               </div>
-              <div className="text-2xl font-bold text-gray-900 mb-2">MAD</div>
-              <div className="text-gray-600">investis</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">MAD</div>
+              <div className="text-gray-600 dark:text-gray-400">investis</div>
             </div>
 
             <div className="text-center group">
               <div className="w-20 h-20 bg-gradient-to-br from-brand-blue to-brand-orange rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                 <span className="text-2xl font-bold text-white">98%</span>
               </div>
-              <div className="text-2xl font-bold text-gray-900 mb-2">Satisfaction</div>
-              <div className="text-gray-600">client</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Satisfaction</div>
+              <div className="text-gray-600 dark:text-gray-400">client</div>
             </div>
 
             <div className="text-center group">
               <div className="w-20 h-20 bg-gradient-to-br from-brand-blue to-brand-orange rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                 <span className="text-2xl font-bold text-white">15+</span>
               </div>
-              <div className="text-2xl font-bold text-gray-900 mb-2">Années</div>
-              <div className="text-gray-600">d\'expérience</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Années</div>
+              <div className="text-gray-600 dark:text-gray-400">d\'expérience</div>
             </div>
           </div>
         </div>

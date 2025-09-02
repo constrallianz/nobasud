@@ -149,13 +149,13 @@ export default function FeedbackPage() {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <a href="#avis" className="inline-block">
-                <Button size="lg" className="bg-white text-brand-blue hover:bg-white/90 px-8 py-4 text-lg">
+                <Button size="lg" className="bg-white dark:bg-gray-800 text-brand-blue hover:bg-white dark:bg-gray-800/90 px-8 py-4 text-lg">
                   Lire les avis
                   <ChatBubbleLeftRightIcon className="w-5 h-5 ml-2" />
                 </Button>
               </a>
               <a href="#donner-avis" className="inline-block">
-                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-brand-blue px-8 py-4 text-lg">
+                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white dark:bg-gray-800 hover:text-brand-blue px-8 py-4 text-lg">
                   Donner mon avis
                   <HeartIcon className="w-5 h-5 ml-2" />
                 </Button>
@@ -166,10 +166,10 @@ export default function FeedbackPage() {
       </section>
 
       {/* Stats section */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               La satisfaction <span className="text-brand-orange">client</span> en chiffres
             </h2>
             <div className="flex items-center justify-center mb-6">
@@ -183,7 +183,7 @@ export default function FeedbackPage() {
                   />
                 ))}
               </div>
-              <span className="text-2xl font-bold text-gray-900">
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {averageRating.toFixed(1)}/5
               </span>
             </div>
@@ -195,7 +195,7 @@ export default function FeedbackPage() {
                 <div className="text-4xl md:text-5xl font-bold text-brand-blue mb-2">
                   {stat.value}
                 </div>
-                <p className="text-gray-600 text-lg">{stat.label}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-lg">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -203,13 +203,13 @@ export default function FeedbackPage() {
       </section>
 
       {/* Testimonials section */}
-      <section id="avis" className="py-24 bg-white">
+      <section id="avis" className="py-24 bg-white dark:bg-gray-800">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               Témoignages <span className="text-brand-orange">clients</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Découvrez les retours d&apos;expérience de nos clients sur leurs projets 
               réalisés avec NOBASUD.
             </p>
@@ -217,7 +217,7 @@ export default function FeedbackPage() {
 
           <div className="grid lg:grid-cols-2 gap-8">
             {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
+              <div key={testimonial.id} className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center space-x-4">
                     <div className="relative w-16 h-16 rounded-full overflow-hidden">
@@ -230,12 +230,12 @@ export default function FeedbackPage() {
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
-                        <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
+                        <h4 className="font-bold text-gray-900 dark:text-gray-100">{testimonial.name}</h4>
                         {testimonial.verified && (
                           <CheckCircleIcon className="w-5 h-5 text-brand-blue" />
                         )}
                       </div>
-                      <p className="text-sm text-gray-600">{testimonial.role}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.role}</p>
                       <p className="text-sm text-brand-orange font-medium">{testimonial.company}</p>
                     </div>
                   </div>
@@ -252,7 +252,7 @@ export default function FeedbackPage() {
                   </div>
                 </div>
 
-                <p className="text-gray-700 leading-relaxed mb-4">
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
                   &quot;{testimonial.comment}&quot;
                 </p>
 
@@ -282,30 +282,30 @@ export default function FeedbackPage() {
       </section>
 
       {/* Feedback form section */}
-      <section id="donner-avis" className="py-24 bg-gray-50">
+      <section id="donner-avis" className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="container">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
                 Partagez votre <span className="text-brand-orange">expérience</span>
               </h2>
-              <p className="text-xl text-gray-600">
+              <p className="text-xl text-gray-600 dark:text-gray-400">
                 Votre avis nous aide à améliorer nos services et guide les futurs clients 
                 dans leur choix. Merci de prendre quelques minutes pour le partager.
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg">
               <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Nom complet *
                     </label>
                     <Input name="name" required placeholder="Votre nom et prénom" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Email *
                     </label>
                     <Input name="email" type="email" required placeholder="votre@email.com" />
@@ -314,13 +314,13 @@ export default function FeedbackPage() {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Entreprise/Organisation
                     </label>
                     <Input name="company" placeholder="Nom de votre entreprise" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Projet réalisé *
                     </label>
                     <Input name="project" required placeholder="Décrivez brièvement le projet" />
@@ -328,7 +328,7 @@ export default function FeedbackPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-4">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
                     Votre note globale *
                   </label>
                   <div className="flex space-x-2">
@@ -354,7 +354,7 @@ export default function FeedbackPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Votre témoignage *
                   </label>
                   <Textarea 
@@ -366,7 +366,7 @@ export default function FeedbackPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Photos du projet (optionnel)
                   </label>
                   <Input 
@@ -389,7 +389,7 @@ export default function FeedbackPage() {
                     required
                     className="w-4 h-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue"
                   />
-                  <label htmlFor="consent" className="text-sm text-gray-600">
+                  <label htmlFor="consent" className="text-sm text-gray-600 dark:text-gray-400">
                     J&apos;autorise NOBASUD à publier mon témoignage sur son site web et ses supports de communication *
                   </label>
                 </div>

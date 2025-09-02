@@ -178,13 +178,13 @@ export default function CarrierePage() {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <a href="#offres" className="inline-block">
-                <Button size="lg" className="bg-white text-brand-blue hover:bg-white/90 px-8 py-4 text-lg">
+                <Button size="lg" className="bg-white dark:bg-gray-800 text-brand-blue hover:bg-white dark:bg-gray-800/90 px-8 py-4 text-lg">
                   Voir les offres
                   <ArrowRightIcon className="w-5 h-5 ml-2" />
                 </Button>
               </a>
               <a href="#candidature" className="inline-block">
-                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-brand-blue px-8 py-4 text-lg">
+                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white dark:bg-gray-800 hover:text-brand-blue px-8 py-4 text-lg">
                   Candidature spontanée
                 </Button>
               </a>
@@ -194,13 +194,13 @@ export default function CarrierePage() {
       </section>
 
       {/* Benefits section */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               Pourquoi nous <span className="text-brand-orange">rejoindre</span> ?
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Chez NOBASUD, nous investissons dans notre capital humain et offrons 
               un environnement de travail stimulant et épanouissant.
             </p>
@@ -214,8 +214,8 @@ export default function CarrierePage() {
                   <div className="w-16 h-16 bg-gradient-to-br from-brand-blue to-brand-orange rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                     <IconComponent className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">{benefit.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">{benefit.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{benefit.description}</p>
                 </div>
               )
             })}
@@ -224,13 +224,13 @@ export default function CarrierePage() {
       </section>
 
       {/* Jobs section */}
-      <section id="offres" className="py-24 bg-white">
+      <section id="offres" className="py-24 bg-white dark:bg-gray-800">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               Offres d&apos;<span className="text-brand-orange">emploi</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Découvrez nos opportunités actuelles et trouvez le poste qui correspond 
               à vos compétences et aspirations professionnelles.
             </p>
@@ -238,11 +238,11 @@ export default function CarrierePage() {
 
           <div className="space-y-6 max-w-4xl mx-auto">
             {jobs.map((job, i) => (
-              <div key={i} className="group bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:border-brand-orange/20">
+              <div key={i} className="group bg-white dark:bg-gray-800 border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:border-brand-orange/20">
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3">
-                      <h3 className="text-2xl font-bold text-gray-900 group-hover:text-brand-blue transition-colors">
+                      <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-brand-blue transition-colors">
                         {job.title}
                       </h3>
                       <span className="px-3 py-1 bg-brand-orange/10 text-brand-orange text-sm font-medium rounded-full">
@@ -250,7 +250,7 @@ export default function CarrierePage() {
                       </span>
                     </div>
                     
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
                       <div className="flex items-center">
                         <BriefcaseIcon className="w-4 h-4 mr-1" />
                         {job.department}
@@ -276,16 +276,16 @@ export default function CarrierePage() {
                   </Button>
                 </div>
 
-                <p className="text-gray-600 mb-6 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
                   {job.description}
                 </p>
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Profil recherché :</h4>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Profil recherché :</h4>
                     <ul className="space-y-2">
                       {job.requirements.map((req, idx) => (
-                        <li key={idx} className="text-sm text-gray-600 flex items-start">
+                        <li key={idx} className="text-sm text-gray-600 dark:text-gray-400 flex items-start">
                           <span className="w-1.5 h-1.5 bg-brand-orange rounded-full mt-2 mr-3 flex-shrink-0"></span>
                           {req}
                         </li>
@@ -294,10 +294,10 @@ export default function CarrierePage() {
                   </div>
                   
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Nous offrons :</h4>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Nous offrons :</h4>
                     <ul className="space-y-2">
                       {job.benefits.map((benefit, idx) => (
-                        <li key={idx} className="text-sm text-gray-600 flex items-start">
+                        <li key={idx} className="text-sm text-gray-600 dark:text-gray-400 flex items-start">
                           <span className="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 mr-3 flex-shrink-0"></span>
                           {benefit}
                         </li>
@@ -312,30 +312,30 @@ export default function CarrierePage() {
       </section>
 
       {/* Spontaneous application section */}
-      <section id="candidature" className="py-24 bg-gray-50">
+      <section id="candidature" className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="container">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
                 Candidature <span className="text-brand-orange">spontanée</span>
               </h2>
-              <p className="text-xl text-gray-600">
+              <p className="text-xl text-gray-600 dark:text-gray-400">
                 Vous ne trouvez pas d&apos;offre correspondant à votre profil ? 
                 Envoyez-nous votre candidature, nous étudierons votre dossier avec attention.
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg">
               <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Nom complet *
                     </label>
                     <Input name="name" required placeholder="Votre nom et prénom" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Email *
                     </label>
                     <Input name="email" type="email" required placeholder="votre@email.com" />
@@ -344,14 +344,14 @@ export default function CarrierePage() {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       CV (PDF) *
                     </label>
                     <Input name="cv" type="file" accept="application/pdf" required />
                     <p className="text-xs text-gray-500 mt-1">Format PDF uniquement, max 5MB</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Lettre de motivation (PDF)
                     </label>
                     <Input name="coverLetter" type="file" accept="application/pdf" />
@@ -360,7 +360,7 @@ export default function CarrierePage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Message personnel
                   </label>
                   <Textarea 

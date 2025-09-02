@@ -162,7 +162,7 @@ export default function MediaPage() {
                   placeholder="Rechercher un article..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-12 py-4 text-gray-900 text-lg"
+                  className="pl-12 py-4 text-gray-900 dark:text-gray-100 text-lg"
                 />
                 <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               </div>
@@ -172,7 +172,7 @@ export default function MediaPage() {
       </section>
 
       {/* Categories */}
-      <section className="py-12 bg-gray-50 border-b">
+      <section className="py-12 bg-gray-50 dark:bg-gray-900 border-b">
         <div className="container">
           <div className="flex flex-wrap justify-center gap-4">
             {categories.map((category) => (
@@ -182,7 +182,7 @@ export default function MediaPage() {
                 className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                   selectedCategory === category.id
                     ? 'bg-brand-blue text-white shadow-lg'
-                    : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 border border-gray-200'
                 }`}
               >
                 {category.name}
@@ -194,10 +194,10 @@ export default function MediaPage() {
       </section>
 
       {/* Featured article */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-gray-800">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               Article <span className="text-brand-orange">à la une</span>
             </h2>
           </div>
@@ -234,11 +234,11 @@ export default function MediaPage() {
                   </div>
                 </div>
 
-                <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6 leading-tight">
+                <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-6 leading-tight">
                   {featuredArticle.title}
                 </h3>
 
-                <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
                   {featuredArticle.excerpt}
                 </p>
 
@@ -248,7 +248,7 @@ export default function MediaPage() {
                       <UserIcon className="w-5 h-5 text-brand-blue" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{featuredArticle.author}</p>
+                      <p className="font-medium text-gray-900 dark:text-gray-100">{featuredArticle.author}</p>
                       <p className="text-sm text-gray-500">Journaliste NOBASUD</p>
                     </div>
                   </div>
@@ -280,13 +280,13 @@ export default function MediaPage() {
       </section>
 
       {/* Articles grid */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               Derniers <span className="text-brand-orange">articles</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Découvrez nos dernières publications sur l&apos;actualité du BTP, 
               nos projets et nos innovations.
             </p>
@@ -294,7 +294,7 @@ export default function MediaPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredArticles.map((article) => (
-              <article key={article.id} className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+              <article key={article.id} className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
                 <div className="relative h-48 overflow-hidden">
                   <Image
                     src={article.image}
@@ -325,11 +325,11 @@ export default function MediaPage() {
                     </div>
                   </div>
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-brand-blue transition-colors">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 group-hover:text-brand-blue transition-colors">
                     {article.title}
                   </h3>
 
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">
                     {article.excerpt}
                   </p>
 
@@ -338,7 +338,7 @@ export default function MediaPage() {
                       <div className="w-6 h-6 bg-brand-blue/10 rounded-full flex items-center justify-center">
                         <UserIcon className="w-3 h-3 text-brand-blue" />
                       </div>
-                      <span className="text-xs text-gray-600">{article.author}</span>
+                      <span className="text-xs text-gray-600 dark:text-gray-400">{article.author}</span>
                     </div>
                     
                     <Link href={`/blog/${article.id}`}>
@@ -358,8 +358,8 @@ export default function MediaPage() {
               <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                 <MagnifyingGlassIcon className="w-8 h-8 text-gray-400" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Aucun article trouvé</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Aucun article trouvé</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 Essayez de modifier vos critères de recherche ou de sélectionner une autre catégorie.
               </p>
             </div>
@@ -391,9 +391,9 @@ export default function MediaPage() {
                 <Input
                   type="email"
                   placeholder="Votre adresse email"
-                  className="flex-1 text-gray-900"
+                  className="flex-1 text-gray-900 dark:text-gray-100"
                 />
-                <Button className="bg-white text-brand-blue hover:bg-white/90 px-6">
+                <Button className="bg-white dark:bg-gray-800 text-brand-blue hover:bg-white dark:bg-gray-800/90 px-6">
                   S&apos;abonner
                 </Button>
               </div>

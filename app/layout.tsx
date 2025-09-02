@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Header } from '../components/Header'
 import { Footer } from '../components/Footer'
 import AdminIndicator from '../components/AdminIndicator'
+import { ThemeProvider } from '../contexts/ThemeContext'
 import { Montserrat } from 'next/font/google'
 
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['400','600','700','800'] })
@@ -15,11 +16,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
-      <body className={`${montserrat.className} min-h-screen flex flex-col`}>
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <AdminIndicator />
+      <body className={`${montserrat.className} min-h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300`}>
+        <ThemeProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <AdminIndicator />
+        </ThemeProvider>
       </body>
     </html>
   )

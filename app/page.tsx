@@ -112,13 +112,13 @@ export default function HomePage() {
       </section>
 
       {/* Services section */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               Nos <span className="text-brand-orange">services</span>
             </h2>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
               Une expertise complète pour tous vos projets de construction et d&apos;aménagement
             </p>
           </div>
@@ -127,14 +127,14 @@ export default function HomePage() {
             {services.map((service, i) => {
               const IconComponent = service.icon
               return (
-                <div key={i} className="group bg-white rounded-3xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4">
+                <div key={i} className="group bg-white dark:bg-gray-700 rounded-3xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4">
                   <div className="w-20 h-20 bg-gradient-to-br from-brand-blue to-brand-orange rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
                     <IconComponent className="w-10 h-10 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-brand-blue transition-colors">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 group-hover:text-brand-blue transition-colors">
                     {service.title}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed text-lg">{service.description}</p>
+                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">{service.description}</p>
                 </div>
               )
             })}
@@ -143,20 +143,20 @@ export default function HomePage() {
       </section>
 
       {/* Projects showcase */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               Nos dernières <span className="text-brand-orange">réalisations</span>
             </h2>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
               Découvrez quelques-uns de nos projets les plus emblématiques
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, i) => (
-              <div key={i} className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+              <div key={i} className="group bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
                 <div className="relative h-64 overflow-hidden">
                   <Image
                     src={project.image}
@@ -167,8 +167,8 @@ export default function HomePage() {
                   <div className="absolute top-4 left-4">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                       project.status === 'Terminé' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-blue-100 text-blue-800'
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                        : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                     }`}>
                       {project.status}
                     </span>
@@ -181,13 +181,13 @@ export default function HomePage() {
                 </div>
                 <div className="p-8">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-brand-blue transition-colors">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-brand-blue transition-colors">
                       {project.name}
                     </h3>
                     <span className="text-sm text-brand-orange font-medium">{project.type}</span>
                   </div>
-                  <p className="text-gray-600 mb-4">{project.location}</p>
-                  <p className="text-gray-700 leading-relaxed">{project.description}</p>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">{project.location}</p>
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{project.description}</p>
                 </div>
               </div>
             ))}

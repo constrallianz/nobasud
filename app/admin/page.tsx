@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import AuthGuard from '@/components/AuthGuard'
+import ThemeToggle from '@/components/ThemeToggle'
 import { 
   DocumentTextIcon,
   BriefcaseIcon,
@@ -113,16 +114,17 @@ export default function AdminDashboard() {
 
   return (
     <AuthGuard>
-      <div className="bg-gray-50">
+      <div className="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         {/* Header */}
-        <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
           <div className="px-6 py-8">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Administration NOBASUD</h1>
-                <p className="text-gray-600 mt-1">Panneau de gestion du contenu</p>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Administration NOBASUD</h1>
+                <p className="text-gray-600 dark:text-gray-400 mt-1">Panneau de gestion du contenu</p>
               </div>
               <div className="flex items-center space-x-4">
+                <ThemeToggle />
                 <Link href="/">
                   <Button variant="outline" className="flex items-center space-x-2">
                     <EyeIcon className="w-4 h-4" />
@@ -150,63 +152,63 @@ export default function AdminDashboard() {
       <div className="px-6 pt-2 pb-8">
         {/* Vue d'ensemble */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Vue d'ensemble</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Vue d'ensemble</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Projets</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-1">{stats.projects}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Projets</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.projects}</p>
                 </div>
                 <BuildingOffice2Icon className="w-8 h-8 text-blue-500" />
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Articles</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-1">{stats.articles}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Articles</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.articles}</p>
                 </div>
                 <DocumentTextIcon className="w-8 h-8 text-green-500" />
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Emplois</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-1">{stats.jobs}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Emplois</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.jobs}</p>
                 </div>
                 <BriefcaseIcon className="w-8 h-8 text-purple-500" />
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">CV reçus</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-1">{stats.cvs}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">CV reçus</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.cvs}</p>
                 </div>
                 <DocumentIcon className="w-8 h-8 text-orange-500" />
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Avis</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-1">{stats.avis}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avis</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.avis}</p>
                 </div>
                 <StarIcon className="w-8 h-8 text-yellow-500" />
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Messages</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-1">{stats.messages}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Messages</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.messages}</p>
                 </div>
                 <EnvelopeIcon className="w-8 h-8 text-red-500" />
               </div>
@@ -216,7 +218,7 @@ export default function AdminDashboard() {
 
         {/* Actions rapides */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Actions rapides</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Actions rapides</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {quickActions.map((action, index) => (
               <Link key={index} href={action.href}>
@@ -233,21 +235,21 @@ export default function AdminDashboard() {
 
         {/* Modules de gestion */}
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Modules de gestion</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Modules de gestion</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {modules.map((module, index) => (
               <Link key={index} href={module.href}>
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow cursor-pointer">
                   <div className="flex items-start justify-between mb-4">
                     <div className={`p-3 rounded-lg ${module.color} text-white`}>
                       <module.icon className="w-6 h-6" />
                     </div>
                     <div className="text-right">
-                      <div className="text-3xl font-bold text-gray-900">{module.count}</div>
+                      <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">{module.count}</div>
                     </div>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{module.title}</h3>
-                  <p className="text-gray-600 text-sm mb-4">{module.description}</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{module.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{module.description}</p>
                   <Button variant="outline" size="sm" className="w-full">
                     Gérer
                   </Button>

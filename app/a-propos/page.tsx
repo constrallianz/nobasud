@@ -103,14 +103,14 @@ export default function AProposPage() {
       </section>
 
       {/* Story section */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-gray-800">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-8">
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-8">
                 Notre <span className="text-brand-orange">histoire</span>
               </h2>
-              <div className="prose prose-lg text-gray-600">
+              <div className="prose prose-lg text-gray-600 dark:text-gray-400">
                 <p className="mb-6">
                   NOBASUD naît en 2009 d&apos;une vision ambitieuse : transformer le paysage 
                   urbain du Sud du Maroc en alliant tradition architecturale et innovation 
@@ -147,13 +147,13 @@ export default function AProposPage() {
       </section>
 
       {/* Values section */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               Nos <span className="text-brand-orange">valeurs</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Ces principes fondamentaux guident chacune de nos actions et 
               définissent notre approche unique du secteur du BTP.
             </p>
@@ -167,8 +167,8 @@ export default function AProposPage() {
                   <div className="w-20 h-20 bg-gradient-to-br from-brand-blue to-brand-orange rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                     <IconComponent className="w-10 h-10 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">{value.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{value.description}</p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">{value.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{value.description}</p>
                 </div>
               )
             })}
@@ -177,13 +177,13 @@ export default function AProposPage() {
       </section>
 
       {/* Timeline section */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-gray-800">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               Notre <span className="text-brand-orange">parcours</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Retour sur les moments clés qui ont façonné l&apos;histoire de NOBASUD 
               et construit notre réputation d&apos;excellence.
             </p>
@@ -196,9 +196,9 @@ export default function AProposPage() {
                   <div className="text-2xl font-bold text-brand-blue">{event.year}</div>
                 </div>
                 <div className="flex-shrink-0 w-4 h-4 bg-brand-orange rounded-full border-4 border-white shadow-lg relative z-10"></div>
-                <div className="flex-1 ml-8 bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{event.title}</h3>
-                  <p className="text-gray-600">{event.description}</p>
+                <div className="flex-1 ml-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">{event.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400">{event.description}</p>
                 </div>
                 {i < timeline.length - 1 && (
                   <div className="absolute left-[140px] top-6 w-0.5 h-16 bg-gray-200"></div>
@@ -210,13 +210,13 @@ export default function AProposPage() {
       </section>
 
       {/* Team section */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               Notre <span className="text-brand-orange">équipe</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Rencontrez les leaders qui portent la vision de NOBASUD et 
               orchestrent notre succès au quotidien.
             </p>
@@ -233,9 +233,9 @@ export default function AProposPage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/20 to-transparent rounded-2xl"></div>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">{member.name}</h3>
                 <div className="text-brand-orange font-semibold mb-3">{member.role}</div>
-                <p className="text-gray-600 text-sm">{member.description}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">{member.description}</p>
               </div>
             ))}
           </div>
