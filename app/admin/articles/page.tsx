@@ -341,26 +341,3 @@ export default function ArticlesAdmin() {
     </div>
   )
 }
-              <div>
-                <h2 className="font-medium">{article.title}</h2>
-                <div className="flex gap-2 mt-1">
-                  <p className="text-sm text-gray-500">
-                    Publié le {formatDate(article.publishedAt)}
-                  </p>
-                  <span className={`text-sm px-2 py-0.5 rounded-full ${article.published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                    {article.published ? 'Publié' : 'Brouillon'}
-                  </span>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Link href={`/admin/articles/${article.id}`}>
-                  <Button variant="outline" size="sm">Modifier</Button>
-                </Link>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
