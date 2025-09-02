@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Header } from '../components/Header'
 import { Footer } from '../components/Footer'
+import AdminIndicator from '../components/AdminIndicator'
 import { Montserrat } from 'next/font/google'
 
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['400','600','700','800'] })
@@ -14,10 +15,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
-  <body className={`${montserrat.className} min-h-screen flex flex-col`}>
+      <body className={`${montserrat.className} min-h-screen flex flex-col`}>
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <AdminIndicator />
       </body>
     </html>
   )

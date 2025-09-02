@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import AuthGuard from '@/components/AuthGuard'
 import { 
   DocumentTextIcon,
   BriefcaseIcon,
@@ -10,7 +11,8 @@ import {
   EyeIcon,
   PlusIcon,
   StarIcon,
-  DocumentIcon
+  DocumentIcon,
+  ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline'
 
 export default function AdminDashboard() {
@@ -103,33 +105,49 @@ export default function AdminDashboard() {
     }
   ]
 
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuth')
+    localStorage.removeItem('adminUser')
+    window.location.href = '/admin/login'
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="px-6 py-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Administration NOBASUD</h1>
-              <p className="text-gray-600 mt-1">Panneau de gestion du contenu</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/">
+    <AuthGuard>
+      <div className="bg-gray-50">
+        {/* Header */}
+        <div className="bg-white shadow-sm border-b border-gray-200">
+          <div className="px-6 py-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Administration NOBASUD</h1>
+                <p className="text-gray-600 mt-1">Panneau de gestion du contenu</p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <Link href="/">
+                  <Button variant="outline" className="flex items-center space-x-2">
+                    <EyeIcon className="w-4 h-4" />
+                    <span>Voir le site</span>
+                  </Button>
+                </Link>
                 <Button variant="outline" className="flex items-center space-x-2">
-                  <EyeIcon className="w-4 h-4" />
-                  <span>Voir le site</span>
+                  <Cog6ToothIcon className="w-4 h-4" />
+                  <span>Paramètres</span>
                 </Button>
-              </Link>
-              <Button variant="outline" className="flex items-center space-x-2">
-                <Cog6ToothIcon className="w-4 h-4" />
-                <span>Paramètres</span>
-              </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2 text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
+                >
+                  <ArrowRightOnRectangleIcon className="w-4 h-4" />
+                  <span>Déconnexion</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="px-6 py-8">
+      <div className="px-6 pt-2 pb-8">
         {/* Vue d'ensemble */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Vue d'ensemble</h2>
@@ -239,6 +257,6 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
-    </div>
+    </AuthGuard>
   )
 }
