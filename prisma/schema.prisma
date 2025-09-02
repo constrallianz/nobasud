@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Content models
+model Project {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  slug        String   @unique
+  type        String
+  location    String?
+  description String?
+  images      String?  // JSON array of image URLs
+
+  @@index([slug])
+}
+
+model Article {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  title        String
+  slug         String   @unique
+  excerpt      String?
+  content      String?
+  coverImageUrl String?
+  tags         String?  // JSON array of tags
+  publishedAt  DateTime @default(now())
+  published    Boolean  @default(true)
+
+  @@index([slug])
+  @@index([publishedAt])
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  title       String
+  slug        String   @unique
+  department  String?
+  location    String?
+  description String?
+  published   Boolean  @default(true)
+
+  @@index([slug])
+}
+
+// Form submissions
+model Application {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  name           String
+  email          String
+  cvUrl          String
+  coverLetterUrl String?
+  message        String?
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  anonymous Boolean  @default(false)
+  name      String?
+  email     String?
+  subject   String
+  zone      String?
+  message   String
+  photoUrl  String?
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  name      String
+  email     String
+  message   String
+}
