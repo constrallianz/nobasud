@@ -26,11 +26,14 @@ export async function createArticle(data: Omit<Article, 'id' | 'createdAt' | 'up
     tags: data.tags || []
   })
   
+  // Séparons les tags du reste des données
+  const { tags, ...restData } = validatedData
+  
   return await prisma.article.create({
     data: {
-      ...validatedData,
-      tags: JSON.stringify(validatedData.tags),
-      publishedAt: validatedData.publishedAt || new Date()
+      ...restData,
+      tags: JSON.stringify(tags),
+      publishedAt: restData.publishedAt || new Date()
     }
   })
 }
@@ -46,12 +49,15 @@ export async function updateArticle(id: string, data: Partial<Article>) {
   
   const validatedData = articleSchema.partial().parse(data)
   
+  // Séparons les tags du reste des données pour éviter les conflits de types
+  const { tags, ...restData } = validatedData
+  
   return await prisma.article.update({
     where: { id },
     data: {
-      ...validatedData,
-      ...(validatedData.tags && { 
-        tags: JSON.stringify(validatedData.tags)
+      ...restData,
+      ...(tags && { 
+        tags: JSON.stringify(tags)
       })
     }
   })

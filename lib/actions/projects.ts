@@ -19,10 +19,13 @@ export async function createProject(data: Omit<Project, 'id' | 'createdAt' | 'up
     images: data.images || []
   })
   
+  // Séparons les images du reste des données
+  const { images, ...restData } = validatedData
+  
   return await prisma.project.create({
     data: {
-      ...validatedData,
-      images: JSON.stringify(validatedData.images)
+      ...restData,
+      images: JSON.stringify(images)
     }
   })
 }
@@ -38,12 +41,15 @@ export async function updateProject(id: string, data: Partial<Project>) {
   
   const validatedData = projectSchema.partial().parse(data)
   
+  // Séparons les images du reste des données
+  const { images, ...restData } = validatedData
+  
   return await prisma.project.update({
     where: { id },
     data: {
-      ...validatedData,
-      ...(validatedData.images && { 
-        images: JSON.stringify(validatedData.images)
+      ...restData,
+      ...(images && { 
+        images: JSON.stringify(images)
       })
     }
   })
