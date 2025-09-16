@@ -17,104 +17,44 @@ import {
 } from '@heroicons/react/24/outline'
 
 interface Job {
-  id: number
+  id: string
+  createdAt: Date
+  updatedAt: Date
   title: string
-  department: string
-  location: string
-  type: 'CDI' | 'CDD' | 'Stage' | 'Freelance'
-  level: 'Junior' | 'Senior' | 'Expert'
-  description: string
-  requirements: string[]
-  status: 'active' | 'closed' | 'draft'
-  createdAt: string
-  updatedAt: string
-  applications: number
+  slug: string
+  department: string | null
+  location: string | null
+  description: string | null
+  published: boolean
 }
 
 export default function JobsAdminPage() {
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Données mockées pour la démonstration
   useEffect(() => {
-    setTimeout(() => {
-      setJobs([
-        {
-          id: 1,
-          title: "Ingénieur BTP Senior",
-          department: "Ingénierie",
-          location: "Casablanca",
-          type: "CDI",
-          level: "Senior",
-          description: "Nous recherchons un ingénieur BTP expérimenté...",
-          requirements: ["Diplôme d'ingénieur", "5+ ans d'expérience", "Maîtrise AutoCAD"],
-          status: "active",
-          createdAt: "2024-01-15",
-          updatedAt: "2024-01-15",
-          applications: 12
-        },
-        {
-          id: 2,
-          title: "Chef de projet infrastructure",
-          department: "Management",
-          location: "Marrakech",
-          type: "CDI",
-          level: "Expert",
-          description: "Poste de chef de projet pour nos grands chantiers...",
-          requirements: ["Master en génie civil", "10+ ans d'expérience", "Leadership"],
-          status: "active",
-          createdAt: "2024-01-10",
-          updatedAt: "2024-01-12",
-          applications: 8
-        },
-        {
-          id: 3,
-          title: "Stagiaire en architecture",
-          department: "Architecture",
-          location: "Agadir",
-          type: "Stage",
-          level: "Junior",
-          description: "Stage de 6 mois en architecture...",
-          requirements: ["Étudiant en architecture", "Créativité", "Logiciels 3D"],
-          status: "draft",
-          createdAt: "2024-01-05",
-          updatedAt: "2024-01-08",
-          applications: 0
-        }
-      ])
-      setLoading(false)
-    }, 1000)
+    fetchJobs()
   }, [])
 
-  const handleDelete = (id: number) => {
+  const fetchJobs = async () => {
+    try {
+      const response = await fetch('/api/admin/jobs')
+      if (response.ok) {
+        const data = await response.json()
+        setJobs(data)
+      } else {
+        console.error('Failed to fetch jobs')
+      }
+    } catch (error) {
+      console.error('Error fetching jobs:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDelete = (id: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette offre d\'emploi ?')) {
       setJobs(jobs.filter(job => job.id !== id))
-    }
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400'
-      case 'closed':
-        return 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400'
-      case 'draft':
-        return 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400'
-      default:
-        return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-400'
-    }
-  }
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'Actif'
-      case 'closed':
-        return 'Fermé'
-      case 'draft':
-        return 'Brouillon'
-      default:
-        return status
     }
   }
 
@@ -179,9 +119,9 @@ export default function JobsAdminPage() {
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Actifs</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Publiés</p>
                   <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
-                    {jobs.filter(j => j.status === 'active').length}
+                    {jobs.filter(j => j.published).length}
                   </p>
                 </div>
                 <EyeIcon className="w-8 h-8 text-green-500" />
@@ -193,7 +133,7 @@ export default function JobsAdminPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Brouillons</p>
                   <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
-                    {jobs.filter(j => j.status === 'draft').length}
+                    {jobs.filter(j => !j.published).length}
                   </p>
                 </div>
                 <PencilIcon className="w-8 h-8 text-orange-500" />
@@ -203,9 +143,9 @@ export default function JobsAdminPage() {
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Candidatures</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avec localisation</p>
                   <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
-                    {jobs.reduce((sum, job) => sum + job.applications, 0)}
+                    {jobs.filter(j => j.location).length}
                   </p>
                 </div>
                 <BriefcaseIcon className="w-8 h-8 text-purple-500" />
@@ -226,25 +166,35 @@ export default function JobsAdminPage() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{job.title}</h3>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(job.status)}`}>
-                          {getStatusText(job.status)}
-                        </span>
-                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400">
-                          {job.type}
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          job.published 
+                            ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400' 
+                            : 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400'
+                        }`}>
+                          {job.published ? 'Publié' : 'Brouillon'}
                         </span>
                       </div>
                       
                       <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400 mb-2">
+                        {job.location && (
+                          <>
+                            <div className="flex items-center space-x-1">
+                              <MapPinIcon className="w-4 h-4" />
+                              <span>{job.location}</span>
+                            </div>
+                            <span>•</span>
+                          </>
+                        )}
+                        {job.department && (
+                          <>
+                            <span>{job.department}</span>
+                            <span>•</span>
+                          </>
+                        )}
                         <div className="flex items-center space-x-1">
-                          <MapPinIcon className="w-4 h-4" />
-                          <span>{job.location}</span>
+                          <CalendarIcon className="w-4 h-4" />
+                          <span>Créé le {new Date(job.createdAt).toLocaleDateString('fr-FR')}</span>
                         </div>
-                        <span>•</span>
-                        <span>{job.department}</span>
-                        <span>•</span>
-                        <span>{job.level}</span>
-                        <span>•</span>
-                        <span>{job.applications} candidature{job.applications !== 1 ? 's' : ''}</span>
                       </div>
                       
                       <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-500">

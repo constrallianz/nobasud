@@ -1,160 +1,182 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { 
-  StarIcon as StarIconOutline,
-  EyeIcon, 
+  FunnelIcon, 
+  MagnifyingGlassIcon, 
+  UserIcon, 
+  CalendarIcon, 
   TrashIcon,
-  FunnelIcon,
-  MagnifyingGlassIcon,
   ArrowLeftIcon,
-  CalendarIcon,
-  UserIcon,
-  CheckIcon,
-  XMarkIcon
+  ChatBubbleBottomCenterTextIcon,
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
-import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid'
 import { Button } from '@/components/ui/button'
 
-interface Avis {
+// Feedback interface matching the database model
+interface Feedback {
   id: string
+  createdAt: string
+  anonymous: boolean
   name: string
-  company?: string
-  project: string
-  rating: number
-  comment: string
-  submittedAt: string
-  status: 'en_attente' | 'approuve' | 'rejete'
   email: string
+  subject: string
+  zone: string
+  message: string
+  photoUrl?: string
 }
 
-export default function AvisPage() {
-  const [selectedStatus, setSelectedStatus] = useState<string>('all')
+export default function AdminAvisPage() {
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedZone, setSelectedZone] = useState('all')
+  const [deleting, setDeleting] = useState<string | null>(null)
 
-  // Données fictives des avis
-  const avis: Avis[] = [
-    {
-      id: '1',
-      name: 'Mohammed Alami',
-      company: 'Société ALAMI',
-      project: 'Construction Villa Moderne - Agadir',
-      rating: 5,
-      comment: 'Travail exceptionnel ! L\'équipe de NOBASUD a livré notre villa dans les temps avec une qualité irréprochable. Nous recommandons vivement leurs services.',
-      submittedAt: '2024-01-15',
-      status: 'en_attente',
-      email: 'mohammed.alami@email.com'
-    },
-    {
-      id: '2',
-      name: 'Fatima Benjelloun',
-      company: '',
-      project: 'Rénovation Appartement - Marrakech',
-      rating: 4,
-      comment: 'Très satisfaite du travail réalisé. L\'équipe était professionnelle et à l\'écoute de nos besoins. Quelques petits retards mais le résultat final est excellent.',
-      submittedAt: '2024-01-14',
-      status: 'approuve',
-      email: 'fatima.benjelloun@email.com'
-    },
-    {
-      id: '3',
-      name: 'Ahmed Tazi',
-      company: 'Groupe TAZI',
-      project: 'Centre Commercial Atlas - Casablanca',
-      rating: 5,
-      comment: 'NOBASUD a géré notre projet de centre commercial avec un professionnalisme remarquable. Respect des délais, qualité exceptionnelle et suivi constant.',
-      submittedAt: '2024-01-13',
-      status: 'approuve',
-      email: 'ahmed.tazi@email.com'
-    },
-    {
-      id: '4',
-      name: 'Zineb Chraibi',
-      company: '',
-      project: 'Construction Maison Traditionnelle - Fès',
-      rating: 5,
-      comment: 'Une expérience formidable avec NOBASUD. Ils ont su allier modernité et tradition dans notre projet. L\'équipe est compétente et très réactive.',
-      submittedAt: '2024-01-12',
-      status: 'approuve',
-      email: 'zineb.chraibi@email.com'
-    },
-    {
-      id: '5',
-      name: 'Youssef El Mansouri',
-      company: 'Société ELM',
-      project: 'Complexe Industriel - Tanger',
-      rating: 3,
-      comment: 'Le travail était correct mais il y a eu quelques problèmes de communication pendant le projet. Le résultat final est satisfaisant mais pourrait être amélioré.',
-      submittedAt: '2024-01-11',
-      status: 'rejete',
-      email: 'youssef.elmansouri@email.com'
-    },
-    {
-      id: '6',
-      name: 'Aicha Benali',
-      company: '',
-      project: 'Extension Villa - Rabat',
-      rating: 5,
-      comment: 'Équipe fantastique ! Ils ont transformé notre vision en réalité. Travail de haute qualité, respect du budget et des délais. Je les recommande sans hésitation.',
-      submittedAt: '2024-01-10',
-      status: 'approuve',
-      email: 'aicha.benali@email.com'
+  // Fetch feedbacks on component mount
+  useEffect(() => {
+    const fetchFeedbacks = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const response = await fetch('/api/admin/feedback')
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch feedbacks (${response.status})`)
+        }
+        
+        const data = await response.json()
+        
+        if (Array.isArray(data)) {
+          setFeedbacks(data)
+        } else {
+          console.error('Unexpected API response format:', data)
+          setError('Invalid data format received')
+        }
+      } catch (err) {
+        console.error('Error fetching feedbacks:', err)
+        setError(err instanceof Error ? err.message : 'Failed to load feedbacks')
+      } finally {
+        setLoading(false)
+      }
     }
+
+    fetchFeedbacks()
+  }, [])
+
+  // Calculate zone counts
+  const zoneCounts = feedbacks.reduce((acc, feedback) => {
+    const zone = feedback.zone || 'Aucune zone'
+    acc[zone] = (acc[zone] || 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+
+  const zoneOptions = [
+    { value: 'all', label: 'Toutes les zones', count: feedbacks.length },
+    ...Object.entries(zoneCounts).map(([zone, count]) => ({
+      value: zone,
+      label: zone === 'Aucune zone' ? 'Sans zone' : zone,
+      count
+    }))
   ]
 
-  const statusOptions = [
-    { value: 'all', label: 'Tous les avis', count: avis.length },
-    { value: 'en_attente', label: 'En attente', count: avis.filter(a => a.status === 'en_attente').length },
-    { value: 'approuve', label: 'Approuvés', count: avis.filter(a => a.status === 'approuve').length },
-    { value: 'rejete', label: 'Rejetés', count: avis.filter(a => a.status === 'rejete').length }
-  ]
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'en_attente': return 'bg-yellow-100 text-yellow-800'
-      case 'approuve': return 'bg-green-100 text-green-800'
-      case 'rejete': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
-    }
-  }
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'en_attente': return 'En attente'
-      case 'approuve': return 'Approuvé'
-      case 'rejete': return 'Rejeté'
-      default: return status
-    }
-  }
+  // Filter and search functionality
+  const filteredFeedbacks = useMemo(() => {
+    return feedbacks.filter(feedback => {
+      const feedbackZone = feedback.zone || 'Aucune zone'
+      const matchesZone = selectedZone === 'all' || feedbackZone === selectedZone
+      const matchesSearch = !searchTerm || 
+        feedback.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        feedback.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        feedback.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        feedback.email.toLowerCase().includes(searchTerm.toLowerCase())
+      
+      return matchesZone && matchesSearch
+    })
+  }, [feedbacks, selectedZone, searchTerm])
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {
-      day: 'numeric',
+      year: 'numeric',
       month: 'long',
-      year: 'numeric'
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     })
   }
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      i < rating ? (
-        <StarIconSolid key={i} className="w-5 h-5 text-yellow-400" />
-      ) : (
-        <StarIconOutline key={i} className="w-5 h-5 text-gray-300" />
-      )
-    ))
+  const handleDelete = async (id: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce feedback ?')) {
+      return
+    }
+
+    try {
+      setDeleting(id)
+      const response = await fetch(`/api/admin/feedback?id=${id}`, {
+        method: 'DELETE'
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete feedback')
+      }
+
+      // Remove from local state
+      setFeedbacks(prev => prev.filter(f => f.id !== id))
+    } catch (err) {
+      console.error('Error deleting feedback:', err)
+      alert('Erreur lors de la suppression du feedback')
+    } finally {
+      setDeleting(null)
+    }
   }
 
-  const filteredAvis = avis.filter(avisItem => {
-    const matchesStatus = selectedStatus === 'all' || avisItem.status === selectedStatus
-    const matchesSearch = avisItem.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         avisItem.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         avisItem.comment.toLowerCase().includes(searchTerm.toLowerCase())
-    return matchesStatus && matchesSearch
-  })
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Link href="/admin">
+              <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                <ArrowLeftIcon className="w-4 h-4" />
+                <span>Retour</span>
+              </Button>
+            </Link>
+            <h1 className="text-3xl font-bold text-gray-900">Gestion des Avis</h1>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement des avis...</p>
+        </div>
+      </div>
+    )
+  }
 
-  const averageRating = avis.reduce((sum, avisItem) => sum + avisItem.rating, 0) / avis.length
+  if (error) {
+    return (
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Link href="/admin">
+              <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                <ArrowLeftIcon className="w-4 h-4" />
+                <span>Retour</span>
+              </Button>
+            </Link>
+            <h1 className="text-3xl font-bold text-gray-900">Gestion des Avis</h1>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+          <ExclamationTriangleIcon className="w-16 h-16 text-red-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Erreur de chargement</h3>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>Réessayer</Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">
@@ -167,45 +189,66 @@ export default function AvisPage() {
               <span>Retour</span>
             </Button>
           </Link>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Témoignages & Avis</h1>
-            <p className="text-gray-600">Modérer les avis clients et témoignages</p>
-          </div>
+          <h1 className="text-3xl font-bold text-gray-900">Gestion des Avis</h1>
+        </div>
+        <div className="text-sm text-gray-600">
+          {filteredFeedbacks.length} avis 
+          {searchTerm && ` (filtrés sur "${searchTerm}")`}
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Note moyenne</p>
-              <div className="flex items-center space-x-2 mt-2">
-                <p className="text-3xl font-bold text-gray-900">{averageRating.toFixed(1)}</p>
-                <div className="flex">
-                  {renderStars(Math.round(averageRating))}
-                </div>
-              </div>
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <ChatBubbleBottomCenterTextIcon className="w-8 h-8 text-blue-600" />
             </div>
-            <div className="p-3 rounded-lg bg-yellow-100 text-yellow-800">
-              <StarIconSolid className="w-6 h-6" />
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-500">Total des avis</p>
+              <p className="text-2xl font-bold text-gray-900">{feedbacks.length}</p>
             </div>
           </div>
         </div>
-        
-        {statusOptions.slice(1).map((status) => (
-          <div key={status.value} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{status.label}</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{status.count}</p>
-              </div>
-              <div className={`p-3 rounded-lg ${getStatusColor(status.value)}`}>
-                <UserIcon className="w-6 h-6" />
-              </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <UserIcon className="w-8 h-8 text-green-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-500">Avis identifiés</p>
+              <p className="text-2xl font-bold text-gray-900">{feedbacks.filter(f => !f.anonymous).length}</p>
             </div>
           </div>
-        ))}
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <UserIcon className="w-8 h-8 text-yellow-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-500">Avis anonymes</p>
+              <p className="text-2xl font-bold text-gray-900">{feedbacks.filter(f => f.anonymous).length}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <CalendarIcon className="w-8 h-8 text-purple-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-500">Ce mois-ci</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {feedbacks.filter(f => {
+                  const feedbackDate = new Date(f.createdAt)
+                  const now = new Date()
+                  return feedbackDate.getMonth() === now.getMonth() && feedbackDate.getFullYear() === now.getFullYear()
+                }).length}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Filters and Search */}
@@ -214,11 +257,11 @@ export default function AvisPage() {
           <div className="flex items-center space-x-4">
             <FunnelIcon className="w-5 h-5 text-gray-400" />
             <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+              value={selectedZone}
+              onChange={(e) => setSelectedZone(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              {statusOptions.map((option) => (
+              {zoneOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label} ({option.count})
                 </option>
@@ -229,69 +272,88 @@ export default function AvisPage() {
             <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Rechercher par nom, projet ou commentaire..."
+              placeholder="Rechercher par nom, sujet ou message..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent w-80"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-80"
             />
           </div>
         </div>
       </div>
 
-      {/* Avis List */}
+      {/* Feedbacks List */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        {filteredAvis.length > 0 ? (
+        {filteredFeedbacks.length > 0 ? (
           <ul className="divide-y divide-gray-200">
-            {filteredAvis.map((avisItem) => (
-              <li key={avisItem.id} className="p-6 hover:bg-gray-50 transition-colors">
+            {filteredFeedbacks.map((feedback) => (
+              <li key={feedback.id} className="p-6 hover:bg-gray-50 transition-colors">
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-brand-blue rounded-full flex items-center justify-center">
+                      <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
                         <UserIcon className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center space-x-3">
-                          <h3 className="text-lg font-semibold text-gray-900">{avisItem.name}</h3>
-                          {avisItem.company && (
-                            <span className="text-sm text-gray-500">({avisItem.company})</span>
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {feedback.anonymous ? 'Utilisateur anonyme' : feedback.name}
+                          </h3>
+                          {feedback.anonymous && (
+                            <span className="text-xs px-2 py-1 rounded-full font-medium bg-gray-100 text-gray-600">
+                              Anonyme
+                            </span>
                           )}
-                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${getStatusColor(avisItem.status)}`}>
-                            {getStatusLabel(avisItem.status)}
-                          </span>
                         </div>
                         <div className="flex items-center space-x-4 mt-1">
-                          <div className="flex items-center space-x-1">
-                            {renderStars(avisItem.rating)}
-                          </div>
                           <div className="flex items-center space-x-1 text-gray-600">
                             <CalendarIcon className="w-4 h-4" />
-                            <span className="text-sm">{formatDate(avisItem.submittedAt)}</span>
+                            <span className="text-sm">{formatDate(feedback.createdAt)}</span>
                           </div>
+                          {feedback.zone && (
+                            <span className="text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                              {feedback.zone}
+                            </span>
+                          )}
                         </div>
-                        <p className="text-sm text-gray-600 mt-1">Projet: {avisItem.project}</p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          <strong>Sujet:</strong> {feedback.subject}
+                        </p>
+                        {!feedback.anonymous && feedback.email && (
+                          <p className="text-sm text-gray-600">
+                            <strong>Email:</strong> {feedback.email}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      {avisItem.status === 'en_attente' && (
-                        <>
-                          <Button size="sm" className="flex items-center space-x-1 bg-green-600 hover:bg-green-700">
-                            <CheckIcon className="w-4 h-4" />
-                            <span>Approuver</span>
-                          </Button>
-                          <Button variant="outline" size="sm" className="flex items-center space-x-1 text-red-600 hover:text-red-700">
-                            <XMarkIcon className="w-4 h-4" />
-                            <span>Rejeter</span>
-                          </Button>
-                        </>
-                      )}
-                      <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-                        <TrashIcon className="w-4 h-4" />
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-red-600 hover:text-red-700"
+                        onClick={() => handleDelete(feedback.id)}
+                        disabled={deleting === feedback.id}
+                      >
+                        {deleting === feedback.id ? (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                        ) : (
+                          <TrashIcon className="w-4 h-4" />
+                        )}
                       </Button>
                     </div>
                   </div>
                   <div className="ml-16">
-                    <p className="text-gray-700 leading-relaxed">{avisItem.comment}</p>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{feedback.message}</p>
+                    </div>
+                    {feedback.photoUrl && (
+                      <div className="mt-3">
+                        <img 
+                          src={feedback.photoUrl} 
+                          alt="Pièce jointe" 
+                          className="max-w-sm rounded-lg border border-gray-200"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </li>
@@ -299,12 +361,12 @@ export default function AvisPage() {
           </ul>
         ) : (
           <div className="text-center py-12">
-            <StarIconOutline className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <ChatBubbleBottomCenterTextIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun avis trouvé</h3>
             <p className="text-gray-600">
-              {selectedStatus === 'all' 
+              {selectedZone === 'all' 
                 ? "Aucun avis n'a été soumis pour le moment."
-                : `Aucun avis avec le statut "${statusOptions.find(s => s.value === selectedStatus)?.label}" trouvé.`
+                : `Aucun avis trouvé pour la zone "${zoneOptions.find(z => z.value === selectedZone)?.label}".`
               }
             </p>
           </div>

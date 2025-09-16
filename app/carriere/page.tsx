@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -13,111 +13,40 @@ import {
   ArrowRightIcon
 } from '@heroicons/react/24/outline'
 
+interface Job {
+  id: string
+  title: string
+  slug: string
+  department: string | null
+  location: string | null
+  description: string | null
+  published: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
 export default function CarrierePage() {
   const [submitting, setSubmitting] = useState(false)
+  const [jobs, setJobs] = useState<Job[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const jobs = [
-    {
-      id: 1,
-      title: 'Ingénieur Travaux Senior',
-      department: 'Technique',
-      location: 'Casablanca',
-      type: 'CDI',
-      experience: '5+ ans',
-      salary: '25,000 - 35,000 MAD',
-      description: 'Nous recherchons un ingénieur expérimenté pour superviser nos chantiers de construction et coordonner les équipes techniques.',
-      requirements: [
-        'Diplôme d\'ingénieur en génie civil ou BTP',
-        'Minimum 5 ans d\'expérience en conduite de travaux',
-        'Maîtrise des logiciels AutoCAD et MS Project',
-        'Excellentes capacités de leadership et communication',
-        'Permis de conduire obligatoire'
-      ],
-      benefits: [
-        'Salaire attractif avec primes de performance',
-        'Assurance santé familiale',
-        'Formation continue',
-        'Véhicule de fonction',
-        'Évolution de carrière rapide'
-      ],
-      posted: '2024-01-15'
-    },
-    {
-      id: 2,
-      title: 'Chef de Projet Infrastructure',
-      department: 'Technique',
-      location: 'Marrakech',
-      type: 'CDI',
-      experience: '7+ ans',
-      salary: '30,000 - 45,000 MAD',
-      description: 'Poste stratégique pour diriger nos projets d\'infrastructure routière et urbaine dans la région de Marrakech.',
-      requirements: [
-        'Diplôme d\'ingénieur en génie civil',
-        'Expérience confirmée en projets d\'infrastructure',
-        'Certification PMP appréciée',
-        'Maîtrise de l\'anglais et du français',
-        'Capacité à gérer des équipes multidisciplinaires'
-      ],
-      benefits: [
-        'Package salarial compétitif',
-        'Bonus annuel selon performance',
-        'Assurance vie et santé',
-        'Formations internationales',
-        'Opportunités d\'évolution'
-      ],
-      posted: '2024-01-10'
-    },
-    {
-      id: 3,
-      title: 'Architecte Paysagiste',
-      department: 'Design',
-      location: 'Agadir',
-      type: 'CDI',
-      experience: '3+ ans',
-      salary: '18,000 - 25,000 MAD',
-      description: 'Rejoignez notre équipe créative pour concevoir des espaces verts innovants et durables.',
-      requirements: [
-        'Diplôme en architecture paysagère ou équivalent',
-        'Portfolio démontrant votre créativité',
-        'Maîtrise des logiciels de conception (Rhino, SketchUp)',
-        'Connaissance des essences végétales locales',
-        'Sensibilité environnementale'
-      ],
-      benefits: [
-        'Environnement de travail créatif',
-        'Projets variés et stimulants',
-        'Formation aux nouvelles technologies',
-        'Flexibilité horaires',
-        'Prime de performance'
-      ],
-      posted: '2024-01-08'
-    },
-    {
-      id: 4,
-      title: 'Responsable QSE',
-      department: 'Qualité',
-      location: 'Casablanca',
-      type: 'CDI',
-      experience: '4+ ans',
-      salary: '22,000 - 28,000 MAD',
-      description: 'Garantir la qualité, la sécurité et l\'environnement sur tous nos projets en cours.',
-      requirements: [
-        'Formation en HSE ou ingénierie',
-        'Certification ISO 9001, 14001, 45001',
-        'Expérience en milieu BTP',
-        'Rigueur et sens de l\'organisation',
-        'Capacités de formation et sensibilisation'
-      ],
-      benefits: [
-        'Rôle transversal et valorisant',
-        'Formation continue certifiante',
-        'Véhicule de fonction',
-        'Assurance santé complète',
-        'Évolution vers des postes de direction'
-      ],
-      posted: '2024-01-05'
+  useEffect(() => {
+    fetchJobs()
+  }, [])
+
+  const fetchJobs = async () => {
+    try {
+      const response = await fetch('/api/jobs')
+      if (response.ok) {
+        const data = await response.json()
+        setJobs(data)
+      }
+    } catch (error) {
+      console.error('Error fetching jobs:', error)
+    } finally {
+      setLoading(false)
     }
-  ]
+  }
 
   const benefits = [
     {
@@ -236,78 +165,66 @@ export default function CarrierePage() {
             </p>
           </div>
 
-          <div className="space-y-6 max-w-4xl mx-auto">
-            {jobs.map((job, i) => (
-              <div key={i} className="group bg-white dark:bg-gray-800 border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:border-brand-orange/20">
-                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-brand-blue transition-colors">
-                        {job.title}
-                      </h3>
-                      <span className="px-3 py-1 bg-brand-orange/10 text-brand-orange text-sm font-medium rounded-full">
-                        {job.type}
-                      </span>
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-brand-blue mx-auto"></div>
+              <p className="mt-4 text-gray-600 dark:text-gray-400">Chargement des offres d'emploi...</p>
+            </div>
+          ) : jobs.length === 0 ? (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Aucune offre disponible pour le moment
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Consultez cette page régulièrement ou envoyez-nous une candidature spontanée.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-6 max-w-4xl mx-auto">
+              {jobs.map((job) => (
+                <div key={job.id} className="group bg-white dark:bg-gray-800 border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:border-brand-orange/20">
+                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-3">
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-brand-blue transition-colors">
+                          {job.title}
+                        </h3>
+                        {job.department && (
+                          <span className="px-3 py-1 bg-brand-orange/10 text-brand-orange text-sm font-medium rounded-full">
+                            {job.department}
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        {job.location && (
+                          <div className="flex items-center">
+                            <MapPinIcon className="w-4 h-4 mr-1" />
+                            {job.location}
+                          </div>
+                        )}
+                        <div className="flex items-center">
+                          <ClockIcon className="w-4 h-4 mr-1" />
+                          Publié le {new Date(job.createdAt).toLocaleDateString('fr-FR')}
+                        </div>
+                      </div>
                     </div>
                     
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
-                      <div className="flex items-center">
-                        <BriefcaseIcon className="w-4 h-4 mr-1" />
-                        {job.department}
-                      </div>
-                      <div className="flex items-center">
-                        <MapPinIcon className="w-4 h-4 mr-1" />
-                        {job.location}
-                      </div>
-                      <div className="flex items-center">
-                        <ClockIcon className="w-4 h-4 mr-1" />
-                        {job.experience}
-                      </div>
-                      <div className="flex items-center">
-                        <CurrencyDollarIcon className="w-4 h-4 mr-1" />
-                        {job.salary}
-                      </div>
-                    </div>
+                    <Button className="mt-4 lg:mt-0 group">
+                      Postuler
+                      <ArrowRightIcon className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </Button>
                   </div>
-                  
-                  <Button className="mt-4 lg:mt-0 group">
-                    Postuler
-                    <ArrowRightIcon className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </div>
 
-                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                  {job.description}
-                </p>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Profil recherché :</h4>
-                    <ul className="space-y-2">
-                      {job.requirements.map((req, idx) => (
-                        <li key={idx} className="text-sm text-gray-600 dark:text-gray-400 flex items-start">
-                          <span className="w-1.5 h-1.5 bg-brand-orange rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                          {req}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Nous offrons :</h4>
-                    <ul className="space-y-2">
-                      {job.benefits.map((benefit, idx) => (
-                        <li key={idx} className="text-sm text-gray-600 dark:text-gray-400 flex items-start">
-                          <span className="w-1.5 h-1.5 bg-brand-blue rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                          {benefit}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  {job.description && (
+                    <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                      {job.description}
+                    </p>
+                  )}
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

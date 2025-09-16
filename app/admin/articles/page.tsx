@@ -15,53 +15,44 @@ import {
 } from '@heroicons/react/24/outline'
 
 interface Article {
-  id: number
+  id: string
+  createdAt: Date
+  updatedAt: Date
   title: string
-  content: string
-  excerpt: string
-  category: string
-  status: 'published' | 'draft'
-  createdAt: string
-  updatedAt: string
-  author: string
+  slug: string
+  excerpt: string | null
+  content: string | null
+  coverImageUrl: string | null
+  tags: string | null
+  publishedAt: Date | null
+  published: boolean
 }
 
 export default function ArticlesAdminPage() {
   const [articles, setArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Données mockées pour la démonstration
   useEffect(() => {
-    setTimeout(() => {
-      setArticles([
-        {
-          id: 1,
-          title: "Nouveau projet d'infrastructure à Casablanca",
-          content: "NOBASUD lance un ambitieux projet...",
-          excerpt: "Découvrez notre nouveau projet d'infrastructure majeur dans la capitale économique.",
-          category: "Infrastructure",
-          status: "published",
-          createdAt: "2024-01-15",
-          updatedAt: "2024-01-15",
-          author: "Admin"
-        },
-        {
-          id: 2,
-          title: "Innovation dans le secteur du BTP",
-          content: "Les nouvelles technologies transforment...",
-          excerpt: "Comment l'innovation révolutionne nos méthodes de construction.",
-          category: "Innovation",
-          status: "draft",
-          createdAt: "2024-01-10",
-          updatedAt: "2024-01-12",
-          author: "Admin"
-        }
-      ])
-      setLoading(false)
-    }, 1000)
+    fetchArticles()
   }, [])
 
-  const handleDelete = (id: number) => {
+  const fetchArticles = async () => {
+    try {
+      const response = await fetch('/api/admin/articles')
+      if (response.ok) {
+        const data = await response.json()
+        setArticles(data)
+      } else {
+        console.error('Failed to fetch articles')
+      }
+    } catch (error) {
+      console.error('Error fetching articles:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDelete = (id: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
       setArticles(articles.filter(article => article.id !== id))
     }
@@ -130,7 +121,7 @@ export default function ArticlesAdminPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Publiés</p>
                   <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
-                    {articles.filter(a => a.status === 'published').length}
+                    {articles.filter(a => a.published).length}
                   </p>
                 </div>
                 <EyeIcon className="w-8 h-8 text-green-500" />
@@ -142,7 +133,7 @@ export default function ArticlesAdminPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Brouillons</p>
                   <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
-                    {articles.filter(a => a.status === 'draft').length}
+                    {articles.filter(a => !a.published).length}
                   </p>
                 </div>
                 <PencilIcon className="w-8 h-8 text-orange-500" />
@@ -164,20 +155,26 @@ export default function ArticlesAdminPage() {
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{article.title}</h3>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          article.status === 'published' 
+                          article.published 
                             ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400' 
                             : 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400'
                         }`}>
-                          {article.status === 'published' ? 'Publié' : 'Brouillon'}
+                          {article.published ? 'Publié' : 'Brouillon'}
                         </span>
                       </div>
-                      <p className="text-gray-600 dark:text-gray-400 mb-2">{article.excerpt}</p>
+                      {article.excerpt && (
+                        <p className="text-gray-600 dark:text-gray-400 mb-2">{article.excerpt}</p>
+                      )}
                       <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-500">
-                        <span>Catégorie: {article.category}</span>
-                        <span>•</span>
+                        {article.tags && (
+                          <>
+                            <span>Tags: {article.tags}</span>
+                            <span>•</span>
+                          </>
+                        )}
                         <span>Créé le {new Date(article.createdAt).toLocaleDateString('fr-FR')}</span>
                         <span>•</span>
-                        <span>Par {article.author}</span>
+                        <span>Modifié le {new Date(article.updatedAt).toLocaleDateString('fr-FR')}</span>
                       </div>
                     </div>
                     

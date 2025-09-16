@@ -10,104 +10,63 @@ import {
   ArrowLeftIcon,
   BuildingOffice2Icon,
   CalendarIcon,
-  MapPinIcon,
-  CheckCircleIcon,
-  ClockIcon
+  MapPinIcon
 } from '@heroicons/react/24/outline'
 
 interface Project {
-  id: number
-  title: string
-  description: string
-  location: string
-  startDate: string
-  endDate?: string
-  status: 'en_cours' | 'termine' | 'planifie'
-  category: string
-  images: string[]
-  budget?: number
+  id: string
+  createdAt: Date
+  updatedAt: Date
+  name: string
+  slug: string
+  type: string | null
+  location: string | null
+  description: string | null
+  images: string | null
 }
 
 export default function ProjectsAdmin() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedStatus, setSelectedStatus] = useState<string>('tous')
 
-  // Données de démonstration
   useEffect(() => {
-    // Simuler un appel API
-    setTimeout(() => {
-      setProjects([
-        {
-          id: 1,
-          title: "Centre Commercial Atlas",
-          description: "Construction d'un centre commercial moderne de 15,000 m²",
-          location: "Agadir, Maroc",
-          startDate: "2024-01-15",
-          endDate: "2024-12-20",
-          status: "en_cours",
-          category: "Commercial",
-          images: ["https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800"],
-          budget: 25000000
-        },
-        {
-          id: 2,
-          title: "Résidence Al Manar",
-          description: "Complexe résidentiel de 120 appartements avec espaces verts",
-          location: "Agadir, Maroc",
-          startDate: "2023-06-01",
-          endDate: "2024-02-28",
-          status: "termine",
-          category: "Résidentiel",
-          images: ["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800"],
-          budget: 18000000
-        },
-        {
-          id: 3,
-          title: "Pont Hassan II",
-          description: "Rénovation complète du pont principal",
-          location: "Agadir, Maroc",
-          startDate: "2024-03-01",
-          status: "planifie",
-          category: "Infrastructure",
-          images: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800"]
-        }
-      ])
-      setLoading(false)
-    }, 1000)
+    fetchProjects()
   }, [])
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'en_cours':
-        return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            <ClockIcon className="w-3 h-3 mr-1" />
-            En cours
-          </span>
-        )
-      case 'termine':
-        return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            <CheckCircleIcon className="w-3 h-3 mr-1" />
-            Terminé
-          </span>
-        )
-      case 'planifie':
-        return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-            <CalendarIcon className="w-3 h-3 mr-1" />
-            Planifié
-          </span>
-        )
-      default:
-        return null
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch('/api/admin/projects')
+      if (response.ok) {
+        const data = await response.json()
+        // Ensure data is an array
+        if (Array.isArray(data)) {
+          setProjects(data)
+        } else {
+          console.error('API returned non-array data:', data)
+          setProjects([])
+        }
+      } else {
+        console.error('Failed to fetch projects, status:', response.status)
+        setProjects([])
+      }
+    } catch (error) {
+      console.error('Error fetching projects:', error)
+      setProjects([])
+    } finally {
+      setLoading(false)
     }
   }
 
-  const filteredProjects = selectedStatus === 'tous' 
-    ? projects 
-    : projects.filter(project => project.status === selectedStatus)
+  const getStatusBadge = (type: string | null) => {
+    if (!type) return null
+    
+    return (
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+        <BuildingOffice2Icon className="w-3 h-3 mr-1" />
+        {type}
+      </span>
+    )
+  }
 
   if (loading) {
     return (
@@ -152,50 +111,36 @@ export default function ProjectsAdmin() {
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Filtres */}
+        {/* Header info */}
         <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center space-x-4">
-              <span className="text-sm font-medium text-gray-700">Filtrer par statut :</span>
-              <div className="flex space-x-2">
-                {[
-                  { key: 'tous', label: 'Tous' },
-                  { key: 'en_cours', label: 'En cours' },
-                  { key: 'termine', label: 'Terminés' },
-                  { key: 'planifie', label: 'Planifiés' }
-                ].map((filter) => (
-                  <button
-                    key={filter.key}
-                    onClick={() => setSelectedStatus(filter.key)}
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                      selectedStatus === filter.key
-                        ? 'bg-brand-blue text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {filter.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="text-sm text-gray-600">
-              {filteredProjects.length} projet(s) affiché(s)
-            </div>
+          <div className="text-center">
+            <span className="text-2xl font-bold text-brand-blue">{Array.isArray(projects) ? projects.length : 0}</span>
+            <p className="text-gray-600">Projet(s) total</p>
           </div>
         </div>
 
         {/* Liste des projets */}
         <div className="space-y-6">
-          {filteredProjects.map((project) => (
+          {Array.isArray(projects) && projects.map((project) => (
             <div key={project.id} className="bg-white rounded-lg shadow-sm border overflow-hidden">
               <div className="flex">
                 {/* Image */}
-                <div className="w-48 h-32 flex-shrink-0">
-                  <img
-                    src={project.images[0]}
-                    alt={project.title}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="w-48 h-32 flex-shrink-0 bg-gray-200 flex items-center justify-center">
+                  {project.images ? (
+                    <img
+                      src={JSON.parse(project.images)[0] || ''}
+                      alt={project.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                        e.currentTarget.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-400"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" /></svg></div>'
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                      <BuildingOffice2Icon className="w-8 h-8" />
+                    </div>
+                  )}
                 </div>
                 
                 {/* Contenu */}
@@ -203,36 +148,30 @@ export default function ProjectsAdmin() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
-                        <h3 className="text-xl font-semibold text-gray-900">{project.title}</h3>
-                        {getStatusBadge(project.status)}
+                        <h3 className="text-xl font-semibold text-gray-900">{project.name}</h3>
+                        {getStatusBadge(project.type)}
                       </div>
                       
-                      <p className="text-gray-600 mb-3 line-clamp-2">{project.description}</p>
+                      {project.description && (
+                        <p className="text-gray-600 mb-3 line-clamp-2">{project.description}</p>
+                      )}
                       
                       <div className="flex items-center space-x-6 text-sm text-gray-500">
+                        {project.location && (
+                          <div className="flex items-center">
+                            <MapPinIcon className="w-4 h-4 mr-1" />
+                            {project.location}
+                          </div>
+                        )}
                         <div className="flex items-center">
-                          <MapPinIcon className="w-4 h-4 mr-1" />
-                          {project.location}
+                          <CalendarIcon className="w-4 h-4 mr-1" />
+                          Créé: {new Date(project.createdAt).toLocaleDateString('fr-FR')}
                         </div>
                         <div className="flex items-center">
                           <CalendarIcon className="w-4 h-4 mr-1" />
-                          Début: {new Date(project.startDate).toLocaleDateString('fr-FR')}
+                          Modifié: {new Date(project.updatedAt).toLocaleDateString('fr-FR')}
                         </div>
-                        {project.endDate && (
-                          <div className="flex items-center">
-                            <CalendarIcon className="w-4 h-4 mr-1" />
-                            Fin: {new Date(project.endDate).toLocaleDateString('fr-FR')}
-                          </div>
-                        )}
                       </div>
-                      
-                      {project.budget && (
-                        <div className="mt-2">
-                          <span className="text-sm font-medium text-gray-900">
-                            Budget: {project.budget.toLocaleString()} MAD
-                          </span>
-                        </div>
-                      )}
                     </div>
                     
                     {/* Actions */}
@@ -258,15 +197,12 @@ export default function ProjectsAdmin() {
         </div>
 
         {/* Message si aucun projet */}
-        {filteredProjects.length === 0 && (
+        {Array.isArray(projects) && projects.length === 0 && !loading && (
           <div className="text-center py-12">
             <BuildingOffice2Icon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun projet trouvé</h3>
             <p className="text-gray-600 mb-4">
-              {selectedStatus === 'tous' 
-                ? "Aucun projet n'a été créé pour le moment."
-                : `Aucun projet avec le statut "${selectedStatus}" trouvé.`
-              }
+              Aucun projet n'a été créé pour le moment.
             </p>
             <Link href="/admin/projects/new">
               <Button className="flex items-center space-x-2">

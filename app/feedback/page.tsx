@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,91 +17,53 @@ import {
 } from '@heroicons/react/24/outline'
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid'
 
+interface Feedback {
+  id: string
+  name: string
+  email: string
+  company: string | null
+  project: string | null
+  rating: number
+  message: string
+  published: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
 export default function FeedbackPage() {
   const [submitting, setSubmitting] = useState(false)
   const [rating, setRating] = useState(0)
   const [hoveredRating, setHoveredRating] = useState(0)
+  const [testimonials, setTestimonials] = useState<Feedback[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const testimonials = [
-    {
-      id: 1,
-      name: 'Mohamed Alami',
-      role: 'Directeur Général',
-      company: 'Atlas Industries',
-      project: 'Construction usine pharmaceutique',
-      rating: 5,
-      comment: 'NOBASUD a livré notre usine pharmaceutique avec une qualité exceptionnelle. Leur expertise technique et leur respect des délais ont été remarquables. Je recommande vivement leurs services.',
-      date: '2024-01-15',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80',
-      verified: true
-    },
-    {
-      id: 2,
-      name: 'Aicha Benali',
-      role: 'Architecte',
-      company: 'Studio Architecture Moderne',
-      project: 'Résidence haut standing Marrakech',
-      rating: 5,
-      comment: 'Collaboration exceptionnelle sur le projet de résidence à Marrakech. L\'équipe NOBASUD a su respecter notre vision architecturale tout en apportant leur expertise technique. Résultat final magnifique !',
-      date: '2024-01-10',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b5eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80',
-      verified: true
-    },
-    {
-      id: 3,
-      name: 'Hassan Mouradi',
-      role: 'Maire',
-      company: 'Commune de Agadir',
-      project: 'Aménagement place publique',
-      rating: 5,
-      comment: 'Le projet d\'aménagement de notre place publique a été un succès total. NOBASUD a transformé l\'espace en respectant l\'identité locale et les contraintes budgétaires. Excellent travail !',
-      date: '2024-01-08',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80',
-      verified: true
-    },
-    {
-      id: 4,
-      name: 'Laila Fassi',
-      role: 'Promoteur Immobilier',
-      company: 'Fassi Development',
-      project: 'Complexe résidentiel 200 logements',
-      rating: 5,
-      comment: 'NOBASUD a géré la construction de notre complexe de 200 logements avec un professionnalisme remarquable. Qualité irréprochable, délais respectés, et excellent suivi. Partenaire de confiance !',
-      date: '2024-01-05',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80',
-      verified: true
-    },
-    {
-      id: 5,
-      name: 'Omar Benjelloun',
-      role: 'Ingénieur',
-      company: 'Société Autoroutes du Maroc',
-      project: 'Extension autoroute A7',
-      rating: 5,
-      comment: 'Projet d\'infrastructure complexe mené avec brio par NOBASUD. Leur expertise en travaux routiers et leur capacité à gérer les contraintes techniques ont été déterminantes pour le succès du projet.',
-      date: '2023-12-28',
-      image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80',
-      verified: true
-    },
-    {
-      id: 6,
-      name: 'Khadija El Mansouri',
-      role: 'Propriétaire',
-      company: 'Villa personnelle',
-      project: 'Rénovation villa familiale',
-      rating: 4,
-      comment: 'Très satisfaite de la rénovation de notre villa familiale. L\'équipe NOBASUD a su moderniser notre maison tout en préservant son cachet authentique. Travail soigné et équipe sympathique.',
-      date: '2023-12-20',
-      image: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80',
-      verified: true
+  useEffect(() => {
+    fetchTestimonials()
+  }, [])
+
+  const fetchTestimonials = async () => {
+    try {
+      const response = await fetch('/api/feedback')
+      if (response.ok) {
+        const data = await response.json()
+        setTestimonials(data)
+      }
+    } catch (error) {
+      console.error('Error fetching testimonials:', error)
+    } finally {
+      setLoading(false)
     }
-  ]
+  }
+
+  const averageRating = testimonials.length > 0 
+    ? testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length 
+    : 0
 
   const stats = [
-    { value: '98%', label: 'Clients satisfaits' },
-    { value: '4.9/5', label: 'Note moyenne' },
-    { value: '500+', label: 'Avis clients' },
-    { value: '95%', label: 'Recommandations' }
+    { value: testimonials.length > 0 ? `${Math.round((testimonials.filter(t => t.rating >= 4).length / testimonials.length) * 100)}%` : '0%', label: 'Clients satisfaits' },
+    { value: testimonials.length > 0 ? `${averageRating.toFixed(1)}/5` : '0/5', label: 'Note moyenne' },
+    { value: `${testimonials.length}`, label: 'Avis clients' },
+    { value: testimonials.length > 0 ? `${Math.round((testimonials.filter(t => t.rating >= 4).length / testimonials.length) * 100)}%` : '0%', label: 'Recommandations' }
   ]
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -130,8 +92,6 @@ export default function FeedbackPage() {
     
     setSubmitting(false)
   }
-
-  const averageRating = testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length
 
   return (
     <div className="relative">
@@ -215,62 +175,77 @@ export default function FeedbackPage() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
-                <div className="flex items-start justify-between mb-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="relative w-16 h-16 rounded-full overflow-hidden">
-                      <Image
-                        src={testimonial.image}
-                        alt={testimonial.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <h4 className="font-bold text-gray-900 dark:text-gray-100">{testimonial.name}</h4>
-                        {testimonial.verified && (
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-brand-blue mx-auto"></div>
+              <p className="mt-4 text-gray-600 dark:text-gray-400">Chargement des avis clients...</p>
+            </div>
+          ) : testimonials.length === 0 ? (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Aucun avis pour le moment
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Soyez le premier à partager votre expérience avec NOBASUD.
+              </p>
+            </div>
+          ) : (
+            <div className="grid lg:grid-cols-2 gap-8">
+              {testimonials.map((testimonial) => (
+                <div key={testimonial.id} className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="flex items-center space-x-4">
+                      <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <UserIcon className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <h4 className="font-bold text-gray-900 dark:text-gray-100">{testimonial.name}</h4>
                           <CheckCircleIcon className="w-5 h-5 text-brand-blue" />
+                        </div>
+                        {testimonial.email && (
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.email}</p>
+                        )}
+                        {testimonial.company && (
+                          <p className="text-sm text-brand-orange font-medium">{testimonial.company}</p>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.role}</p>
-                      <p className="text-sm text-brand-orange font-medium">{testimonial.company}</p>
+                    </div>
+                    
+                    <div className="flex space-x-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <StarIconSolid
+                          key={star}
+                          className={`w-5 h-5 ${
+                            star <= testimonial.rating ? 'text-yellow-400' : 'text-gray-300'
+                          }`}
+                        />
+                      ))}
                     </div>
                   </div>
-                  
-                  <div className="flex space-x-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <StarIconSolid
-                        key={star}
-                        className={`w-5 h-5 ${
-                          star <= testimonial.rating ? 'text-yellow-400' : 'text-gray-300'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
 
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                  &quot;{testimonial.comment}&quot;
-                </p>
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                    &quot;{testimonial.message}&quot;
+                  </p>
 
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center justify-between text-sm text-gray-500">
+                    <div className="flex items-center space-x-4">
+                      {testimonial.project && (
+                        <div className="flex items-center">
+                          <BuildingOfficeIcon className="w-4 h-4 mr-1" />
+                          {testimonial.project}
+                        </div>
+                      )}
+                    </div>
                     <div className="flex items-center">
-                      <BuildingOfficeIcon className="w-4 h-4 mr-1" />
-                      {testimonial.project}
+                      <CalendarIcon className="w-4 h-4 mr-1" />
+                      {new Date(testimonial.createdAt).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
-                  <div className="flex items-center">
-                    <CalendarIcon className="w-4 h-4 mr-1" />
-                    {new Date(testimonial.date).toLocaleDateString('fr-FR')}
-                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           <div className="text-center mt-12">
             <Button size="lg" variant="outline">

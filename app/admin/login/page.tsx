@@ -20,16 +20,30 @@ export default function AdminLoginPage() {
     setIsLoading(true)
     setError('')
 
-    // Vérification des identifiants
-    if (formData.username === 'admin' && formData.password === '123456') {
-      // Stocker la session admin
-      localStorage.setItem('adminAuth', 'true')
-      localStorage.setItem('adminUser', 'admin')
-      
-      // Rediriger vers le dashboard admin
-      router.push('/admin')
-    } else {
-      setError('Nom d\'utilisateur ou mot de passe incorrect')
+    try {
+      const submitData = new FormData()
+      submitData.append('username', formData.username)
+      submitData.append('password', formData.password)
+
+      const response = await fetch('/api/admin/auth', {
+        method: 'POST',
+        body: submitData
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        // Stocker la session admin
+        localStorage.setItem('adminAuth', 'true')
+        localStorage.setItem('adminUser', JSON.stringify(data.user))
+        
+        // Rediriger vers le dashboard admin
+        router.push('/admin')
+      } else {
+        setError(data.error || 'Erreur de connexion')
+      }
+    } catch (error) {
+      setError('Erreur de connexion au serveur')
     }
     
     setIsLoading(false)

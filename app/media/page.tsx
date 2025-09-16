@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -16,130 +16,71 @@ import {
   BookmarkIcon
 } from '@heroicons/react/24/outline'
 
+interface Article {
+  id: string
+  title: string
+  slug: string
+  excerpt: string | null
+  content: string | null
+  coverImageUrl: string | null
+  tags: string | null
+  publishedAt: Date
+  published: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
 export default function MediaPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [articles, setArticles] = useState<Article[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const categories = [
-    { id: 'all', name: 'Tous les articles', count: 24 },
-    { id: 'actualites', name: 'Actualités', count: 8 },
-    { id: 'projets', name: 'Nos projets', count: 6 },
-    { id: 'innovation', name: 'Innovation', count: 4 },
-    { id: 'conseils', name: 'Conseils', count: 6 }
-  ]
+  useEffect(() => {
+    fetchArticles()
+  }, [])
 
-  const featuredArticle = {
-    id: 1,
-    title: 'NOBASUD inaugure le plus grand complexe commercial du Sud Maroc',
-    excerpt: 'Découvrez en exclusivité notre dernier projet : un complexe commercial de 75 000 m² qui redéfinit les standards du retail au Maroc.',
-    content: 'Le nouveau complexe commercial Atlas Mall Agadir, réalisé par NOBASUD, ouvre ses portes après 18 mois de travaux. Ce projet d\'envergure...',
-    author: 'Sarah Bennani',
-    date: '2024-01-20',
-    readTime: '5 min',
-    category: 'Projets',
-    image: 'https://images.unsplash.com/photo-1555636222-cae831e670b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-    views: 2847,
-    featured: true
+  const fetchArticles = async () => {
+    try {
+      const response = await fetch('/api/articles')
+      if (response.ok) {
+        const data = await response.json()
+        setArticles(data)
+      }
+    } catch (error) {
+      console.error('Error fetching articles:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const articles = [
-    {
-      id: 2,
-      title: 'Les nouvelles normes de construction durable au Maroc',
-      excerpt: 'Analyse des dernières réglementations environnementales et leur impact sur le secteur du BTP.',
-      author: 'Ahmed Fassi',
-      date: '2024-01-18',
-      readTime: '7 min',
-      category: 'Innovation',
-      image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      views: 1523
-    },
-    {
-      id: 3,
-      title: 'Projet autoroutier Marrakech-Ouarzazate : défis et solutions',
-      excerpt: 'Retour sur les défis techniques relevés lors de la construction de cette infrastructure majeure.',
-      author: 'Omar El Alaoui',
-      date: '2024-01-15',
-      readTime: '6 min',
-      category: 'Projets',
-      image: 'https://images.unsplash.com/photo-1586500036706-41963de24d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      views: 2156
-    },
-    {
-      id: 4,
-      title: 'Comment choisir les matériaux pour votre projet de construction',
-      excerpt: 'Guide complet pour sélectionner les matériaux adaptés à votre projet selon le climat et l\'usage.',
-      author: 'Fatima Zahra',
-      date: '2024-01-12',
-      readTime: '8 min',
-      category: 'Conseils',
-      image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      views: 3421
-    },
-    {
-      id: 5,
-      title: 'NOBASUD certifiée ISO 45001 pour la sécurité au travail',
-      excerpt: 'Notre engagement pour la sécurité de nos équipes reconnu par cette certification internationale.',
-      author: 'Hassan Benjelloun',
-      date: '2024-01-10',
-      readTime: '4 min',
-      category: 'Actualités',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      views: 1876
-    },
-    {
-      id: 6,
-      title: 'Innovation : NOBASUD teste le béton recyclé sur ses chantiers',
-      excerpt: 'Première au Maroc : utilisation de béton recyclé pour réduire l\'empreinte carbone de nos constructions.',
-      author: 'Laila Chraibi',
-      date: '2024-01-08',
-      readTime: '5 min',
-      category: 'Innovation',
-      image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      views: 2634
-    },
-    {
-      id: 7,
-      title: 'Les étapes clés d\'un projet de rénovation réussi',
-      excerpt: 'De la planification à la réception : notre méthodologie pour une rénovation sans stress.',
-      author: 'Youssef Amrani',
-      date: '2024-01-05',
-      readTime: '6 min',
-      category: 'Conseils',
-      image: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      views: 1945
-    },
-    {
-      id: 8,
-      title: 'Nouveau contrat : aménagement du technopole de Rabat',
-      excerpt: 'NOBASUD remporte l\'appel d\'offres pour l\'aménagement d\'un technopole de nouvelle génération.',
-      author: 'Khadija El Fassi',
-      date: '2024-01-03',
-      readTime: '3 min',
-      category: 'Actualités',
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      views: 3156
-    },
-    {
-      id: 9,
-      title: 'Tendances architecture 2024 : le minimalisme durable',
-      excerpt: 'Analyse des nouvelles tendances architecturales qui marqueront l\'année 2024 au Maroc.',
-      author: 'Rachid Benali',
-      date: '2024-01-01',
-      readTime: '7 min',
-      category: 'Innovation',
-      image: 'https://images.unsplash.com/photo-1545558014-8692077e9b5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      views: 2789
-    }
+  const categories = [
+    { id: 'all', name: 'Tous les articles', count: articles.length },
+    { id: 'actualites', name: 'Actualités', count: articles.filter(a => a.tags?.includes('Actualités')).length },
+    { id: 'projets', name: 'Nos projets', count: articles.filter(a => a.tags?.includes('Projets')).length },
+    { id: 'innovation', name: 'Innovation', count: articles.filter(a => a.tags?.includes('Innovation')).length },
+    { id: 'conseils', name: 'Conseils', count: articles.filter(a => a.tags?.includes('Conseils')).length }
   ]
+
+  const featuredArticle = articles.length > 0 ? articles[0] : null
 
   const filteredArticles = articles.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         article.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+                         (article.excerpt && article.excerpt.toLowerCase().includes(searchTerm.toLowerCase()))
     const matchesCategory = selectedCategory === 'all' || 
-                           article.category.toLowerCase() === selectedCategory
+                           (article.tags && article.tags.includes(selectedCategory))
     return matchesSearch && matchesCategory
-  })
+  }).slice(1) // Exclude featured article
+
+  const getReadTime = (content: string | null) => {
+    if (!content) return '3 min'
+    const words = content.split(' ').length
+    return `${Math.ceil(words / 200)} min`
+  }
+
+  const getImageUrl = (article: Article) => {
+    return article.coverImageUrl || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+  }
 
   return (
     <div className="relative">
@@ -202,80 +143,86 @@ export default function MediaPage() {
             </h2>
           </div>
 
-          <div className="max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="relative h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-xl">
-                <Image
-                  src={featuredArticle.image}
-                  alt={featuredArticle.title}
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 bg-brand-orange text-white text-sm font-medium rounded-full">
-                    À la une
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
-                  <div className="flex items-center">
-                    <TagIcon className="w-4 h-4 mr-1" />
-                    {featuredArticle.category}
-                  </div>
-                  <div className="flex items-center">
-                    <CalendarIcon className="w-4 h-4 mr-1" />
-                    {new Date(featuredArticle.date).toLocaleDateString('fr-FR')}
-                  </div>
-                  <div className="flex items-center">
-                    <ClockIcon className="w-4 h-4 mr-1" />
-                    {featuredArticle.readTime}
+          {loading ? (
+            <div className="text-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-blue mx-auto"></div>
+              <p className="mt-4 text-gray-600">Chargement des articles...</p>
+            </div>
+          ) : featuredArticle ? (
+            <div className="max-w-6xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div className="relative h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-xl">
+                  <Image
+                    src={getImageUrl(featuredArticle)}
+                    alt={featuredArticle.title}
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 bg-brand-orange text-white text-sm font-medium rounded-full">
+                      À la une
+                    </span>
                   </div>
                 </div>
 
-                <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-6 leading-tight">
-                  {featuredArticle.title}
-                </h3>
-
-                <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                  {featuredArticle.excerpt}
-                </p>
-
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-brand-blue/10 rounded-full flex items-center justify-center">
-                      <UserIcon className="w-5 h-5 text-brand-blue" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-gray-100">{featuredArticle.author}</p>
-                      <p className="text-sm text-gray-500">Journaliste NOBASUD</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-4 text-sm text-gray-500">
+                <div>
+                  <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                     <div className="flex items-center">
-                      <EyeIcon className="w-4 h-4 mr-1" />
-                      {featuredArticle.views.toLocaleString()}
+                      <TagIcon className="w-4 h-4 mr-1" />
+                      Article
+                    </div>
+                    <div className="flex items-center">
+                      <CalendarIcon className="w-4 h-4 mr-1" />
+                      {new Date(featuredArticle.publishedAt).toLocaleDateString('fr-FR')}
+                    </div>
+                    <div className="flex items-center">
+                      <ClockIcon className="w-4 h-4 mr-1" />
+                      {getReadTime(featuredArticle.content)}
                     </div>
                   </div>
-                </div>
 
-                <div className="flex space-x-4">
-                  <Button size="lg" className="flex-1">
-                    Lire l&apos;article
-                    <ArrowRightIcon className="w-5 h-5 ml-2" />
-                  </Button>
-                  <Button variant="outline" size="lg">
-                    <ShareIcon className="w-5 h-5" />
-                  </Button>
-                  <Button variant="outline" size="lg">
-                    <BookmarkIcon className="w-5 h-5" />
-                  </Button>
+                  <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-6 leading-tight">
+                    {featuredArticle.title}
+                  </h3>
+
+                  <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+                    {featuredArticle.excerpt || 'Découvrez cet article passionnant sur nos dernières actualités et innovations.'}
+                  </p>
+
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-brand-blue/10 rounded-full flex items-center justify-center">
+                        <UserIcon className="w-5 h-5 text-brand-blue" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-gray-100">Équipe NOBASUD</p>
+                        <p className="text-sm text-gray-500">Rédaction</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-4">
+                    <Link href={`/media/${featuredArticle.slug}`}>
+                      <Button size="lg" className="flex-1">
+                        Lire l&apos;article
+                        <ArrowRightIcon className="w-5 h-5 ml-2" />
+                      </Button>
+                    </Link>
+                    <Button variant="outline" size="lg">
+                      <ShareIcon className="w-5 h-5" />
+                    </Button>
+                    <Button variant="outline" size="lg">
+                      <BookmarkIcon className="w-5 h-5" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="text-center py-16">
+              <p className="text-gray-600 dark:text-gray-400">Aucun article à afficher pour le moment.</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -297,14 +244,14 @@ export default function MediaPage() {
               <article key={article.id} className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
                 <div className="relative h-48 overflow-hidden">
                   <Image
-                    src={article.image}
+                    src={getImageUrl(article)}
                     alt={article.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute top-4 left-4">
                     <span className="px-2 py-1 bg-brand-blue text-white text-xs font-medium rounded-full">
-                      {article.category}
+                      Article
                     </span>
                   </div>
                 </div>
@@ -313,15 +260,11 @@ export default function MediaPage() {
                   <div className="flex items-center space-x-4 text-xs text-gray-500 mb-3">
                     <div className="flex items-center">
                       <CalendarIcon className="w-3 h-3 mr-1" />
-                      {new Date(article.date).toLocaleDateString('fr-FR')}
+                      {new Date(article.publishedAt).toLocaleDateString('fr-FR')}
                     </div>
                     <div className="flex items-center">
                       <ClockIcon className="w-3 h-3 mr-1" />
-                      {article.readTime}
-                    </div>
-                    <div className="flex items-center">
-                      <EyeIcon className="w-3 h-3 mr-1" />
-                      {article.views}
+                      {getReadTime(article.content)}
                     </div>
                   </div>
 
@@ -330,7 +273,7 @@ export default function MediaPage() {
                   </h3>
 
                   <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">
-                    {article.excerpt}
+                    {article.excerpt || 'Découvrez cet article passionnant...'}
                   </p>
 
                   <div className="flex items-center justify-between">
@@ -338,10 +281,10 @@ export default function MediaPage() {
                       <div className="w-6 h-6 bg-brand-blue/10 rounded-full flex items-center justify-center">
                         <UserIcon className="w-3 h-3 text-brand-blue" />
                       </div>
-                      <span className="text-xs text-gray-600 dark:text-gray-400">{article.author}</span>
+                      <span className="text-xs text-gray-600 dark:text-gray-400">Équipe NOBASUD</span>
                     </div>
                     
-                    <Link href={`/blog/${article.id}`}>
+                    <Link href={`/media/${article.slug}`}>
                       <Button variant="ghost" size="sm" className="text-brand-blue hover:text-brand-blue/80">
                         Lire plus
                         <ArrowRightIcon className="w-4 h-4 ml-1" />

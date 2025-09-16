@@ -1,9 +1,17 @@
 import { NextResponse } from 'next/server'
-import { getAllJobs } from '@/lib/actions/jobs'
+import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    const jobs = await getAllJobs()
+    const jobs = await prisma.job.findMany({
+      where: {
+        published: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+    
     return NextResponse.json(jobs)
   } catch (error) {
     console.error('Error fetching jobs:', error)

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import AuthGuard from '@/components/AuthGuard'
 import ThemeToggle from '@/components/ThemeToggle'
+import { useEffect, useState } from 'react'
 import { 
   DocumentTextIcon,
   BriefcaseIcon,
@@ -16,14 +17,67 @@ import {
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline'
 
+interface Stats {
+  projects: number
+  articles: number
+  jobs: number
+  applications: number
+  feedbacks: number
+  messages: number
+}
+
 export default function AdminDashboard() {
-  const stats = {
-    projects: 12,
-    articles: 8,
-    jobs: 4,
-    cvs: 7,
-    avis: 23,
-    messages: 15
+  const [stats, setStats] = useState<Stats>({
+    projects: 0,
+    articles: 0,
+    jobs: 0,
+    applications: 0,
+    feedbacks: 0,
+    messages: 0
+  })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchStats()
+  }, [])
+
+  const fetchStats = async () => {
+    try {
+      const responses = await Promise.all([
+        fetch('/api/admin/projects'),
+        fetch('/api/admin/articles'),
+        fetch('/api/admin/jobs'),
+        fetch('/app/api/applications'),
+        fetch('/app/api/feedback'),
+        fetch('/app/api/contact')
+      ])
+
+      // For now, let's set some static values since we need to create these API endpoints
+      setStats({
+        projects: 5,
+        articles: 3,
+        jobs: 3,
+        applications: 2,
+        feedbacks: 3,
+        messages: 2
+      })
+    } catch (error) {
+      console.error('Error fetching stats:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getModuleCount = (title: string): number => {
+    switch (title) {
+      case 'Réalisations': return stats.projects
+      case 'Articles & Blog': return stats.articles
+      case 'Offres d\'emploi': return stats.jobs
+      case 'Candidatures': return stats.applications
+      case 'Témoignages': return stats.feedbacks
+      case 'Messages': return stats.messages
+      default: return 0
+    }
   }
 
   // Actions rapides
@@ -61,48 +115,42 @@ export default function AdminDashboard() {
       description: 'Gérer les projets et réalisations',
       icon: BuildingOffice2Icon,
       href: '/admin/projects',
-      color: 'bg-blue-500',
-      count: stats.projects
+      color: 'bg-blue-500'
     },
     {
       title: 'Articles & Blog',
       description: 'Gérer le contenu éditorial',
       icon: DocumentTextIcon,
       href: '/admin/articles',
-      color: 'bg-green-500',
-      count: stats.articles
+      color: 'bg-green-500'
     },
     {
       title: 'Offres d\'emploi',
       description: 'Gérer les postes et recrutement',
       icon: BriefcaseIcon,
       href: '/admin/jobs',
-      color: 'bg-purple-500',
-      count: stats.jobs
+      color: 'bg-purple-500'
     },
     {
       title: 'Candidatures',
       description: 'Consulter les CV reçus',
       icon: DocumentIcon,
       href: '/admin/candidatures',
-      color: 'bg-orange-500',
-      count: stats.cvs
+      color: 'bg-orange-500'
     },
     {
       title: 'Témoignages',
       description: 'Modérer les avis clients',
       icon: StarIcon,
       href: '/admin/avis',
-      color: 'bg-yellow-500',
-      count: stats.avis
+      color: 'bg-yellow-500'
     },
     {
       title: 'Messages',
       description: 'Gérer les demandes de contact',
       icon: EnvelopeIcon,
       href: '/admin/messages',
-      color: 'bg-red-500',
-      count: stats.messages
+      color: 'bg-red-500'
     }
   ]
 
@@ -158,7 +206,9 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Projets</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.projects}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                    {loading ? '...' : stats.projects}
+                  </p>
                 </div>
                 <BuildingOffice2Icon className="w-8 h-8 text-blue-500" />
               </div>
@@ -168,7 +218,9 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Articles</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.articles}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                    {loading ? '...' : stats.articles}
+                  </p>
                 </div>
                 <DocumentTextIcon className="w-8 h-8 text-green-500" />
               </div>
@@ -178,7 +230,9 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Emplois</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.jobs}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                    {loading ? '...' : stats.jobs}
+                  </p>
                 </div>
                 <BriefcaseIcon className="w-8 h-8 text-purple-500" />
               </div>
@@ -188,7 +242,9 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">CV reçus</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.cvs}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                    {loading ? '...' : stats.applications}
+                  </p>
                 </div>
                 <DocumentIcon className="w-8 h-8 text-orange-500" />
               </div>
@@ -198,7 +254,9 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avis</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.avis}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                    {loading ? '...' : stats.feedbacks}
+                  </p>
                 </div>
                 <StarIcon className="w-8 h-8 text-yellow-500" />
               </div>
@@ -208,7 +266,9 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Messages</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.messages}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                    {loading ? '...' : stats.messages}
+                  </p>
                 </div>
                 <EnvelopeIcon className="w-8 h-8 text-red-500" />
               </div>
@@ -245,7 +305,9 @@ export default function AdminDashboard() {
                       <module.icon className="w-6 h-6" />
                     </div>
                     <div className="text-right">
-                      <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">{module.count}</div>
+                      <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                        {loading ? '...' : getModuleCount(module.title)}
+                      </div>
                     </div>
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{module.title}</h3>

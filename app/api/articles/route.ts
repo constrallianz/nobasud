@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server'
-import { getAllArticles } from '@/lib/actions/articles'
+import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    const articles = await getAllArticles()
+    const articles = await prisma.article.findMany({
+      where: { published: true },
+      orderBy: { publishedAt: 'desc' }
+    })
+    
     return NextResponse.json(articles)
   } catch (error) {
     console.error('Error fetching articles:', error)

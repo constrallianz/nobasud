@@ -2,40 +2,21 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { ArrowRightIcon, CheckBadgeIcon, BuildingOffice2Icon, TruckIcon, UserGroupIcon } from '@heroicons/react/24/outline'
+import { prisma } from '@/lib/prisma'
 
-export default function HomePage() {
-  const projects = [
-    {
-      id: 1,
-      name: 'Résidence Al Manar',
-      type: 'Bâtiment',
-      location: 'Casablanca',
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      description: 'Complexe résidentiel moderne de 120 appartements avec espaces verts.',
-      status: 'Terminé',
-      year: '2024'
-    },
-    {
-      id: 2,
-      name: 'Boulevard Mohammed VI',
-      type: 'Infrastructure',
-      location: 'Marrakech',
-      image: 'https://images.unsplash.com/photo-1586500036706-41963de24d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      description: 'Réaménagement complet du boulevard principal sur 5 km.',
-      status: 'En cours',
-      year: '2024'
-    },
-    {
-      id: 3,
-      name: 'Centre Commercial Atlas',
-      type: 'Commercial',
-      location: 'Agadir',
-      image: 'https://images.unsplash.com/photo-1555636222-cae831e670b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      description: 'Centre commercial moderne de 25 000 m² avec parking souterrain.',
-      status: 'Terminé',
-      year: '2023'
-    }
-  ]
+export default async function HomePage() {
+  // Fetch projects from database
+  const projects = await prisma.project.findMany({
+    take: 3,
+    orderBy: { createdAt: 'desc' }
+  })
+
+  // Parse images JSON for projects
+  const projectsWithImages = projects.map(project => ({
+    ...project,
+    images: project.images ? JSON.parse(project.images) : [],
+    image: project.images ? JSON.parse(project.images)[0] : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+  }))
 
   const services = [
     {
@@ -155,8 +136,8 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, i) => (
-              <div key={i} className="group bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+            {projectsWithImages.map((project, i) => (
+              <div key={project.id} className="group bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
                 <div className="relative h-64 overflow-hidden">
                   <Image
                     src={project.image}
@@ -165,17 +146,13 @@ export default function HomePage() {
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute top-4 left-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      project.status === 'Terminé' 
-                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
-                        : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                    }`}>
-                      {project.status}
+                    <span className="bg-brand-orange text-white px-3 py-1 rounded-full text-sm font-medium">
+                      Réalisé
                     </span>
                   </div>
                   <div className="absolute top-4 right-4">
                     <span className="px-3 py-1 bg-brand-orange text-white rounded-full text-sm font-medium">
-                      {project.year}
+                      {new Date(project.createdAt).getFullYear()}
                     </span>
                   </div>
                 </div>
