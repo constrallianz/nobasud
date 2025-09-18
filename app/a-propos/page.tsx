@@ -1,5 +1,11 @@
 import { CheckBadgeIcon, UsersIcon, TrophyIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
 
+
+export const metadata = {
+  title: 'Qui sommes-nous | NOBASUD, expert marocain en construction & aménagement',
+  description: 'Fondée en 2017, NOBASUD est une entreprise de construction marocaine qui s\'appuie sur l\'expérience de deux générations actives dans le BTP depuis les années 1970, alliant savoir-faire familial, expertise technique et ancrage territorial.'
+}
+
 export default function AProposPage() {
   const values = [
     {
