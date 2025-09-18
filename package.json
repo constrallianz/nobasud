@@ -19,7 +19,6 @@
     "@prisma/client": "^6.15.0",
     "clsx": "^2.1.1",
     "formidable": "^3.5.4",
-    "mongoose": "^8.6.0",
     "next": "^14.2.5",
     "prisma": "^6.15.0",
     "react": "^18.3.1",

@@ -10,13 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Admin user for authentication
 model AdminUser {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   username  String   @unique
-  password  String   // In production, this should be hashed
+  password  String  
   email     String?
   name      String?
   lastLogin DateTime?
