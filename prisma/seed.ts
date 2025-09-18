@@ -168,7 +168,7 @@ Ce quartier nouvelle génération intégrera :
 
 Livraison prévue fin 2027 pour 2 000 nouveaux logements.
         `,
-        coverImageUrl: 'https://images.unsplash.com/photo-1570939274851-2be8a8b13c70?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        coverImageUrl: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         tags: JSON.stringify(['Éco-quartier', 'Marrakech', 'Développement durable', 'Urbanisme']),
         publishedAt: new Date('2024-01-10'),
         published: true
