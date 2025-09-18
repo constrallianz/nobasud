@@ -9,10 +9,7 @@
     "lint": "next lint",
     "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
-    "db:reset": "prisma db push --force-reset && npm run db:seed",
-    "create-admin": "tsx scripts/create-admin.ts",
-    "db:migrate": "prisma migrate dev",
-    "db:deploy": "prisma migrate deploy"
+    "db:reset": "prisma db push --force-reset && npm run db:seed"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -20,9 +17,9 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@prisma/client": "^6.15.0",
-    "bcryptjs": "^3.0.2",
     "clsx": "^2.1.1",
     "formidable": "^3.5.4",
+    "mongoose": "^8.6.0",
     "next": "^14.2.5",
     "prisma": "^6.15.0",
     "react": "^18.3.1",
@@ -34,7 +31,6 @@
     "zod-form-data": "^3.0.1"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.14.9",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

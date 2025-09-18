@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server'
-import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 
 export async function POST(req: Request) {
   try {
     const formData = await req.formData()
-    const username = String(formData.get('username') || '').trim()
-    const password = String(formData.get('password') || '').trim()
+    const username = String(formData.get('username') || '')
+    const password = String(formData.get('password') || '')
     
     if (!username || !password) {
       return NextResponse.json({ error: 'Username and password are required' }, { status: 400 })
@@ -20,14 +19,7 @@ export async function POST(req: Request) {
       }
     })
     
-    if (!adminUser) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
-    }
-    
-    // Compare password with hash
-    const isPasswordValid = await bcrypt.compare(password, adminUser.password)
-    
-    if (!isPasswordValid) {
+    if (!adminUser || adminUser.password !== password) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
     
@@ -47,7 +39,7 @@ export async function POST(req: Request) {
       }
     })
   } catch (e) {
-    console.error('Authentication error:', e)
+    console.error(e)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }
