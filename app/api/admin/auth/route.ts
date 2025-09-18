@@ -11,7 +11,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Username and password are required' }, { status: 400 })
     }
     
-    // Find admin user by username
     const adminUser = await prisma.adminUser.findUnique({
       where: { 
         username: username,
@@ -23,7 +22,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
     
-    // Update last login
     await prisma.adminUser.update({
       where: { id: adminUser.id },
       data: { lastLogin: new Date() }

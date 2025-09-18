@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client/edge'
 
 const prisma = new PrismaClient()
 
@@ -18,14 +18,13 @@ async function main() {
   await prisma.adminUser.create({
     data: {
       username: 'admin',
-      password: '123456', // In production, this should be hashed
+      password: '123456',
       email: 'admin@nobasud.ma',
       name: 'Administrateur NOBASUD',
       active: true
     }
   })
 
-  // Seed Projects
   const projects = await Promise.all([
     prisma.project.create({
       data: {
