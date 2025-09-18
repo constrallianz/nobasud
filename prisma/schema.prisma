@@ -84,12 +84,14 @@ model Application {
 model Feedback {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  anonymous Boolean  @default(false)
-  name      String?
-  email     String?
-  subject   String
-  zone      String?
+  updatedAt DateTime @updatedAt
+  name      String
+  email     String
+  company   String?
+  project   String?
+  rating    Int
   message   String
+  published Boolean  @default(false)
   photoUrl  String?
 }
 
