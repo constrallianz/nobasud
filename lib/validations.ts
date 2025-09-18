@@ -2,13 +2,13 @@ import { z } from 'zod'
 
 // Validation schemas
 export const feedbackSchema = z.object({
-  anonymous: z.boolean().optional().default(false),
-  name: z.string().optional(),
-  email: z.string().email().optional(),
-  subject: z.string().min(1, 'Le sujet est requis'),
-  zone: z.string().optional(),
+  name: z.string().min(1, 'Le nom est requis'),
+  email: z.string().email('Email invalide'),
+  company: z.string().optional(),
+  project: z.string().min(1, 'Le projet est requis'),
+  rating: z.number().min(1).max(5),
   message: z.string().min(1, 'Le message est requis'),
-  photoUrl: z.string().optional(),
+  published: z.boolean().optional().default(false),
 })
 
 export const applicationSchema = z.object({

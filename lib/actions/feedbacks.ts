@@ -1,8 +1,14 @@
 import { prisma } from '@/lib/prisma'
-import { type Feedback, feedbackSchema } from '@/lib/validations'
 
 export async function getFeedbacks() {
   return await prisma.feedback.findMany({
+    orderBy: { createdAt: 'desc' }
+  })
+}
+
+export async function getPublishedFeedbacks() {
+  return await prisma.feedback.findMany({
+    where: { published: true },
     orderBy: { createdAt: 'desc' }
   })
 }
@@ -13,11 +19,35 @@ export async function getFeedback(id: string) {
   })
 }
 
-export async function createFeedback(data: Omit<Feedback, 'id' | 'createdAt'>) {
-  const validatedData = feedbackSchema.parse(data)
-  
+export async function createFeedback(data: {
+  name: string
+  email: string
+  company?: string
+  project: string
+  rating: number
+  message: string
+  published?: boolean
+}) {
   return await prisma.feedback.create({
-    data: validatedData
+    data: {
+      ...data,
+      published: data.published ?? false
+    }
+  })
+}
+
+export async function updateFeedback(id: string, data: Partial<{
+  name: string
+  email: string
+  company: string
+  project: string
+  rating: number
+  message: string
+  published: boolean
+}>) {
+  return await prisma.feedback.update({
+    where: { id },
+    data
   })
 }
 

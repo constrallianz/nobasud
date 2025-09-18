@@ -271,34 +271,70 @@ Concevoir et réaliser l'aménagement intérieur de nos projets résidentiels et
     })
   ])
 
-  // Seed sample feedback
+  // Seed sample feedback testimonials
   const feedbacks = await Promise.all([
     prisma.feedback.create({
       data: {
-        anonymous: false,
         name: 'Amina Benjelloun',
         email: 'amina.b@email.com',
-        subject: 'Qualité exceptionnelle du projet Al Manar',
-        zone: 'Casablanca',
-        message: 'Je tiens à féliciter l\'équipe NOBASUD pour la qualité exceptionnelle de la résidence Al Manar. Les finitions sont parfaites et les espaces verts magnifiquement aménagés.',
+        company: 'Société Immobilière Atlas',
+        project: 'Résidence Al Manar',
+        rating: 5,
+        message: 'Je tiens à féliciter l\'équipe NOBASUD pour la qualité exceptionnelle de la résidence Al Manar. Les finitions sont parfaites et les espaces verts magnifiquement aménagés. Une équipe professionnelle et à l\'écoute.',
+        published: true
       }
     }),
     prisma.feedback.create({
       data: {
-        anonymous: true,
-        subject: 'Travaux sur Boulevard Mohammed VI',
-        zone: 'Marrakech',
-        message: 'Les travaux sur le Boulevard Mohammed VI se déroulent dans de bonnes conditions. L\'équipe respecte les horaires et minimise les nuisances pour les riverains.',
-      }
-    }),
-    prisma.feedback.create({
-      data: {
-        anonymous: false,
         name: 'Hassan Alami',
         email: 'h.alami@email.com',
-        subject: 'Centre Commercial Atlas - Très satisfait',
-        zone: 'Agadir',
-        message: 'Le nouveau centre commercial est une réussite ! Architecture moderne, espaces fonctionnels et parking pratique. Bravo à toute l\'équipe.',
+        company: 'Entreprise Alami & Fils',
+        project: 'Centre Commercial Atlas',
+        rating: 5,
+        message: 'Le nouveau centre commercial est une réussite ! Architecture moderne, espaces fonctionnels et parking pratique. Les délais ont été respectés et la qualité est au rendez-vous. Bravo à toute l\'équipe.',
+        published: true
+      }
+    }),
+    prisma.feedback.create({
+      data: {
+        name: 'Mohamed Fassi',
+        email: 'm.fassi@email.com',
+        company: 'Cabinet d\'Architecture Fassi',
+        project: 'Boulevard Mohammed VI',
+        rating: 4,
+        message: 'Excellent travail sur le réaménagement du Boulevard Mohammed VI. L\'équipe a su minimiser les nuisances pour les riverains tout en respectant les délais. Très professionnel.',
+        published: true
+      }
+    }),
+    prisma.feedback.create({
+      data: {
+        name: 'Fatima Zahra Bennani',
+        email: 'fz.bennani@email.com',
+        project: 'Quartier Résidentiel Anfa',
+        rating: 5,
+        message: 'Nous avons fait appel à NOBASUD pour notre projet résidentiel et nous ne regrettons pas ce choix. Équipe compétente, suivi rigoureux, et résultat final exceptionnel. Je recommande vivement.',
+        published: true
+      }
+    }),
+    prisma.feedback.create({
+      data: {
+        name: 'Rachid Tounsi',
+        email: 'r.tounsi@email.com',
+        company: 'Groupe Tounsi Development',
+        project: 'Pont Hassan II',
+        rating: 4,
+        message: 'Projet complexe mené avec succès. L\'expertise technique de NOBASUD est remarquable. Quelques ajustements en cours de route mais résultat final très satisfaisant.',
+        published: true
+      }
+    }),
+    prisma.feedback.create({
+      data: {
+        name: 'Aicha El Mansouri',
+        email: 'a.elmansouri@email.com',
+        project: 'Villa individuelle',
+        rating: 5,
+        message: 'Construction de notre villa de rêve ! NOBASUD a su comprendre nos attentes et les concrétiser. Suivi personnalisé, conseils avisés, et finitions impeccables.',
+        published: false // En attente de validation
       }
     })
   ])
