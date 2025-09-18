@@ -1,15 +1,66 @@
 import { useState, useEffect, useMemo } from 'react'
 import { type EnhancedArticle } from './EnhancedArticleCard'
 
+interface DatabaseArticle {
+  id: string
+  title: string
+  slug: string
+  excerpt?: string
+  content?: string
+  coverImageUrl?: string
+  tags?: string
+  publishedAt: string | Date
+  published: boolean
+  createdAt: string | Date
+  updatedAt: string | Date
+}
+
+// Convert database article to enhanced article format
+const convertToEnhancedArticle = (dbArticle: DatabaseArticle): EnhancedArticle => {
+  const tags = dbArticle.tags ? JSON.parse(dbArticle.tags) : []
+  
+  return {
+    id: parseInt(dbArticle.id, 10) || Math.floor(Math.random() * 10000),
+    title: dbArticle.title,
+    excerpt: dbArticle.excerpt || 'Aucun extrait disponible',
+    content: dbArticle.content || '',
+    author: 'NOBASUD Team', // Default author since it's not in the database
+    publishedAt: new Date(dbArticle.publishedAt).toISOString().split('T')[0],
+    status: dbArticle.published ? 'published' : 'draft',
+    category: tags[0] || 'Général', // Use first tag as category
+    featuredImage: dbArticle.coverImageUrl || 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800',
+    views: Math.floor(Math.random() * 2000), // Random views since not tracked
+    comments: Math.floor(Math.random() * 20) // Random comments since not tracked
+  }
+}
+
 export function useEnhancedArticles() {
   const [articles, setArticles] = useState<EnhancedArticle[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
 
-  // Mock data - in a real app, this would be an API call
+  // Fetch real articles from API
   useEffect(() => {
-    const loadArticles = () => {
-      setTimeout(() => {
+    const loadArticles = async () => {
+      try {
+        setLoading(true)
+        
+        const response = await fetch('/api/admin/articles')
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch articles')
+        }
+        
+        const dbArticles: DatabaseArticle[] = await response.json()
+        
+        // Convert database articles to enhanced article format
+        const enhancedArticles = dbArticles.map(convertToEnhancedArticle)
+        
+        setArticles(enhancedArticles)
+      } catch (error) {
+        console.error('Error loading articles:', error)
+        
+        // Fallback to mock data if API fails
         setArticles([
           {
             id: 1,
@@ -51,8 +102,9 @@ export function useEnhancedArticles() {
             comments: 0
           }
         ])
+      } finally {
         setLoading(false)
-      }, 800)
+      }
     }
 
     loadArticles()
@@ -76,9 +128,47 @@ export function useEnhancedArticles() {
     // Implementation for editing article
   }
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
-      setArticles(prev => prev.filter(article => article.id !== id))
+      try {
+        // Find the article to get its database ID
+        const article = articles.find(a => a.id === id)
+        if (!article) return
+        
+        // Convert number ID back to string for API call
+        const response = await fetch(`/api/admin/articles/${article.id}`, {
+          method: 'DELETE'
+        })
+        
+        if (!response.ok) {
+          throw new Error('Failed to delete article')
+        }
+        
+        // Remove from local state
+        setArticles(prev => prev.filter(article => article.id !== id))
+      } catch (error) {
+        console.error('Error deleting article:', error)
+        alert('Erreur lors de la suppression de l\'article')
+      }
+    }
+  }
+
+  const refreshArticles = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/admin/articles')
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch articles')
+      }
+      
+      const dbArticles: DatabaseArticle[] = await response.json()
+      const enhancedArticles = dbArticles.map(convertToEnhancedArticle)
+      setArticles(enhancedArticles)
+    } catch (error) {
+      console.error('Error refreshing articles:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -90,6 +180,7 @@ export function useEnhancedArticles() {
     setSelectedStatus,
     handleView,
     handleEdit,
-    handleDelete
+    handleDelete,
+    refreshArticles
   }
 }
