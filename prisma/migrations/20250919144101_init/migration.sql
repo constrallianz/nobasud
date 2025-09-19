@@ -77,12 +77,14 @@ CREATE TABLE "public"."Application" (
 CREATE TABLE "public"."Feedback" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "anonymous" BOOLEAN NOT NULL DEFAULT false,
-    "name" TEXT,
-    "email" TEXT,
-    "subject" TEXT NOT NULL,
-    "zone" TEXT,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "company" TEXT,
+    "project" TEXT,
+    "rating" INTEGER NOT NULL,
     "message" TEXT NOT NULL,
+    "published" BOOLEAN NOT NULL DEFAULT false,
     "photoUrl" TEXT,
 
     CONSTRAINT "Feedback_pkey" PRIMARY KEY ("id")
