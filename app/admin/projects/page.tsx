@@ -1,10 +1,10 @@
 'use client'
 
-import ProjectPageHeader from '@/components/admin/projects/ProjectPageHeader'
-import ProjectStats from '@/components/admin/projects/ProjectStats'
-import ProjectCard from '@/components/admin/projects/ProjectCard'
-import ProjectPageStates from '@/components/admin/projects/ProjectPageStates'
-import { useProjects } from '@/components/admin/projects/useProjects'
+import ProjectPageHeader from '@/components/admin/projects/listing/ProjectPageHeader'
+import ProjectStats from '@/components/admin/projects/listing/ProjectStats'
+import ProjectCard from '@/components/admin/projects/listing/ProjectCard'
+import ProjectPageStates from '@/components/admin/projects/listing/ProjectPageStates'
+import { useProjects } from '@/components/admin/projects/listing/useProjects'
 
 export default function ProjectsAdmin() {
   const {
