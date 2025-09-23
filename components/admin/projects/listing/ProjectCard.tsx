@@ -40,7 +40,7 @@ function ProjectImage({ project }: ProjectImageProps) {
   }
   
   return (
-    <div className="w-full h-full flex items-center justify-center text-gray-400">
+    <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
       <BuildingOffice2Icon className="w-8 h-8" />
     </div>
   )
@@ -52,7 +52,7 @@ interface ProjectMetadataProps {
 
 function ProjectMetadata({ project }: ProjectMetadataProps) {
   return (
-    <div className="flex items-center space-x-6 text-sm text-gray-500">
+    <div className="flex items-center space-x-6 text-sm text-gray-500 dark:text-gray-400">
       {project.location && (
         <div className="flex items-center">
           <MapPinIcon className="w-4 h-4 mr-1" />
@@ -129,7 +129,7 @@ export default function ProjectCard({
     if (!type) return null
     
     return (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
         <BuildingOffice2Icon className="w-3 h-3 mr-1" />
         {type}
       </span>
@@ -137,10 +137,10 @@ export default function ProjectCard({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div className="flex">
         {/* Image */}
-        <div className="w-48 h-32 flex-shrink-0 bg-gray-200 flex items-center justify-center">
+        <div className="w-48 h-32 flex-shrink-0 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
           <ProjectImage project={project} />
         </div>
         
@@ -149,12 +149,12 @@ export default function ProjectCard({
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-2">
-                <h3 className="text-xl font-semibold text-gray-900">{project.name}</h3>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{project.name}</h3>
                 {getStatusBadge(project.type)}
               </div>
               
               {project.description && (
-                <p className="text-gray-600 mb-3 line-clamp-2">{project.description}</p>
+                <p className="text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">{project.description}</p>
               )}
               
               <ProjectMetadata project={project} />
