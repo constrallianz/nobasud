@@ -24,12 +24,12 @@ function EmptyState() {
       <p className="text-gray-600 dark:text-gray-400 mb-4">
         Aucun projet n'a été créé pour le moment.
       </p>
-      <Link href="/admin/projects/new">
+      {/* <Link href="/admin/projects/new">
         <Button className="flex items-center space-x-2">
           <PlusIcon className="w-4 h-4" />
           <span>Créer le premier projet</span>
         </Button>
-      </Link>
+      </Link> */}
     </div>
   )
 }
