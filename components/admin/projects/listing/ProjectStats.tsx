@@ -8,7 +8,7 @@ import {
 interface Project {
   id: string
   name: string
-  type: string
+  type: string | null
   location?: string | null
   description?: string | null
   images?: string | null
