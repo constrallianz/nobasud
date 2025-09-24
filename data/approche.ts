@@ -1,12 +1,4 @@
-import { 
-  ClipboardDocumentListIcon,
-  CogIcon, 
-  WrenchScrewdriverIcon,
-  CheckCircleIcon,
-  ShieldCheckIcon,
-  LightBulbIcon,
-  UsersIcon
-} from '@heroicons/react/24/outline'
+
 import { MethodologyPhase, CompanyValue, CaseStudy } from '@/types/approche'
 
 export const methodology: MethodologyPhase[] = [

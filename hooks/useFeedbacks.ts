@@ -1,9 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
-import { type Feedback } from '@/components/admin/avis/FeedbackCard'
 
-// Hook for fetching feedbacks from the API
 export function useFeedbacks() {
-  const [feedbacks, setFeedbacks] = useState<Feedback[]>([])
+  const [feedbacks, setFeedbacks] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -60,7 +58,7 @@ export function useFeedbacks() {
 }
 
 // Hook for filtering feedbacks
-export function useFeedbackFilters(feedbacks: Feedback[]) {
+export function useFeedbackFilters(feedbacks: any[]) {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedZone, setSelectedZone] = useState('all')
 

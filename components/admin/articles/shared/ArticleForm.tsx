@@ -82,7 +82,7 @@ export default function ArticleForm({
   const removeTag = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      tags: prev.tags.filter((_, i:any) => i !== index)
+      tags: prev.tags.filter((_: string, i: number) => i !== index)
     }))
   }
 
@@ -288,7 +288,7 @@ export default function ArticleForm({
           {/* Tags list */}
           {formData.tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {formData.tags.map((tag, index) => (
+              {formData.tags.map((tag:string, index:number) => (
                 <span
                   key={`tag-${tag}-${index}`}
                   className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
