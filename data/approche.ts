@@ -11,7 +11,7 @@ import { MethodologyPhase, CompanyValue, CaseStudy } from '@/types/approche'
 
 export const methodology: MethodologyPhase[] = [
   {
-    icon: ClipboardDocumentListIcon,
+    icon: "ClipboardDocumentListIcon",
     title: 'Analyse & Conception',
     duration: '2-4 semaines',
     description: 'Étude approfondie de vos besoins, analyse du terrain et conception détaillée du projet.',
@@ -23,7 +23,7 @@ export const methodology: MethodologyPhase[] = [
     ]
   },
   {
-    icon: CogIcon,
+    icon: "CogIcon",
     title: 'Planification',
     duration: '1-2 semaines',
     description: 'Organisation méthodique des ressources, planning détaillé et préparation des équipes.',
@@ -35,7 +35,7 @@ export const methodology: MethodologyPhase[] = [
     ]
   },
   {
-    icon: WrenchScrewdriverIcon,
+    icon: "WrenchScrewdriverIcon",
     title: 'Exécution',
     duration: 'Variable',
     description: 'Réalisation du projet avec un suivi quotidien et un contrôle qualité permanent.',
@@ -47,7 +47,7 @@ export const methodology: MethodologyPhase[] = [
     ]
   },
   {
-    icon: CheckCircleIcon,
+    icon: "CheckCircleIcon",
     title: 'Livraison & SAV',
     duration: '1 semaine',
     description: 'Réception des travaux, formation et service après-vente pour votre satisfaction.',
@@ -62,7 +62,7 @@ export const methodology: MethodologyPhase[] = [
 
 export const values: CompanyValue[] = [
   {
-    icon: ShieldCheckIcon,
+    icon: "ShieldCheckIcon",
     title: 'Qualité & Sécurité',
     description: 'Nous appliquons les normes les plus strictes en matière de qualité et de sécurité sur tous nos chantiers.',
     benefits: [
@@ -73,7 +73,7 @@ export const values: CompanyValue[] = [
     ]
   },
   {
-    icon: LightBulbIcon,
+    icon: "LightBulbIcon",
     title: 'Innovation',
     description: 'Nous intégrons les dernières technologies et méthodes pour optimiser vos projets.',
     benefits: [
@@ -84,7 +84,7 @@ export const values: CompanyValue[] = [
     ]
   },
   {
-    icon: UsersIcon,
+    icon: "UsersIcon",
     title: 'Accompagnement',
     description: 'Un suivi personnalisé et une communication transparente tout au long du projet.',
     benefits: [

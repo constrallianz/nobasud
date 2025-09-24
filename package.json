@@ -17,6 +17,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@prisma/client": "^6.15.0",
+    "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
     "formidable": "^3.5.4",
     "next": "^14.2.5",

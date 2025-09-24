@@ -1,8 +1,18 @@
 import { ComponentType } from 'react'
 
+
+export type IconName =
+  | "ClipboardDocumentListIcon"
+  | "CogIcon"
+  | "WrenchScrewdriverIcon"
+  | "CheckCircleIcon"
+  | "ShieldCheckIcon"
+  | "LightBulbIcon"
+  | "UsersIcon";
+
 // Methodology Phase Interface
 export interface MethodologyPhase {
-  icon: ComponentType<{ className?: string }>
+  icon: IconName
   title: string
   duration: string
   description: string
@@ -11,7 +21,7 @@ export interface MethodologyPhase {
 
 // Company Value Interface
 export interface CompanyValue {
-  icon: ComponentType<{ className?: string }>
+  icon: IconName
   title: string
   description: string
   benefits: string[]

@@ -1,3 +1,5 @@
+'use client'
+
 import { methodology, values, caseStudies } from '@/data/approche'
 import ApprochHero from '@/components/approche/ApprochHero'
 import ApprochMethodology from '@/components/approche/ApprochMethodology'

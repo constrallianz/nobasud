@@ -72,13 +72,27 @@ export const articleSchema = z.object({
   }),
 })
 
+
 export const jobSchema = z.object({
   title: z.string().min(1, 'Le titre est requis'),
   slug: z.string().min(1),
-  department: z.string().optional(),
-  location: z.string().optional(),
-  description: z.string().optional(),
-  published: z.boolean().default(true),
+  department: z.string().nullable().optional(),
+  location: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
+  published: z.coerce.boolean().default(true),
+  type: z.string().nullable().optional(),
+  experience: z.string().nullable().optional(),
+  education: z.string().nullable().optional(),
+  requirements: z.string().nullable().optional(),
+  benefits: z.string().nullable().optional(),
+  salary: z.string().nullable().optional(),
+  deadline: z.union([z.string(), z.date()]).nullable().optional().transform((val) => {
+    if (!val) return null;
+    if (typeof val === 'string') return new Date(val);
+    return val;
+  }),
+  imageUrl: z.string().url().optional().nullable(),
+  imageFile: z.any().optional(),
 })
 
 export type Feedback = z.infer<typeof feedbackSchema>

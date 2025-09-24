@@ -60,6 +60,7 @@ model Job {
   id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
   title       String
   slug        String   @unique
   department  String?
@@ -67,8 +68,18 @@ model Job {
   description String?
   published   Boolean  @default(true)
 
+  type        String?    // e.g. CDI, CDD, Stage
+  experience  String?    // years of experience
+  education   String?    // required diploma/degree
+  requirements String?   // text
+  benefits    String?    // text
+  salary      String?    // can be string or Decimal if numeric
+  deadline    DateTime?  // store as DateTime, frontend can send ISO string
+  imageUrl    String?    // Cloudinary URL
+
   @@index([slug])
 }
+
 
 // Form submissions
 model Application {

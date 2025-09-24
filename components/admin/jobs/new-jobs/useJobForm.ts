@@ -1,33 +1,32 @@
 import { useState } from 'react'
+import { useJobs } from '../jobs-listing/useJobs'
+import { JobFormData } from '@/types/career';
 
-interface JobFormData {
-  title: string
-  department: string
-  location: string
-  type: string
-  experience: string
-  education: string
-  description: string
-  requirements: string
-  benefits: string
-  salary: string
-  deadline: string
-}
+const initialState : JobFormData = {
+      title: '',
+      department: '',
+      location: '',
+      type: 'CDI',
+      experience: '',
+      education: '',
+      description: '',
+      requirements: '',
+      benefits: '',
+      salary: '',
+      deadline: '',
+      imageFile: undefined,
+      
+    }
 
 export function useJobForm() {
-  const [formData, setFormData] = useState<JobFormData>({
-    title: '',
-    department: '',
-    location: '',
-    type: 'CDI',
-    experience: '',
-    education: '',
-    description: '',
-    requirements: '',
-    benefits: '',
-    salary: '',
-    deadline: ''
-  })
+  const handleFileChange = (file?: File) => {
+    setFormData(prev => ({
+      ...prev,
+      imageFile: file
+    }));
+  };
+  const { submitJob } = useJobs();
+  const [formData, setFormData] = useState<JobFormData>(initialState)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<Partial<JobFormData>>({})
@@ -39,7 +38,6 @@ export function useJobForm() {
       [name]: value
     }))
     
-    // Clear error when user starts typing
     if (errors[name as keyof JobFormData]) {
       setErrors(prev => ({
         ...prev,
@@ -79,63 +77,28 @@ export function useJobForm() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!validateForm()) {
-      return
-    }
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    setIsSubmitting(true)
-    
-    try {
-      // In a real app, this would call an API to create the job
-      console.log('Nouvelle offre d\'emploi:', formData)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Reset form on success
-      setFormData({
-        title: '',
-        department: '',
-        location: '',
-        type: 'CDI',
-        experience: '',
-        education: '',
-        description: '',
-        requirements: '',
-        benefits: '',
-        salary: '',
-        deadline: ''
-      })
-      
-      // Show success message or redirect
-      alert('Offre d\'emploi créée avec succès!')
-      
-    } catch (error) {
-      console.error('Erreur lors de la création:', error)
-      alert('Erreur lors de la création de l\'offre')
-    } finally {
-      setIsSubmitting(false)
-    }
+  setIsSubmitting(true);
+  try {
+    await submitJob(formData);
+
+    setFormData(initialState)
+    alert("Offre d'emploi créée avec succès!");
+  } catch (err) {
+    console.error('Erreur lors de la création:', err);
+    alert("Erreur lors de la création de l'offre");
+  } finally {
+    setIsSubmitting(false);
   }
+};
+
 
   const resetForm = () => {
-    setFormData({
-      title: '',
-      department: '',
-      location: '',
-      type: 'CDI',
-      experience: '',
-      education: '',
-      description: '',
-      requirements: '',
-      benefits: '',
-      salary: '',
-      deadline: ''
-    })
-    setErrors({})
+    setFormData(initialState);
+    setErrors({});
   }
 
   return {
@@ -143,6 +106,7 @@ export function useJobForm() {
     errors,
     isSubmitting,
     handleChange,
+    handleFileChange,
     handleSubmit,
     resetForm,
     validateForm

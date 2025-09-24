@@ -1,4 +1,5 @@
 export interface Job {
+  imageUrl?: string | null
   id: string
   title: string
   slug: string
@@ -10,8 +11,25 @@ export interface Job {
   updatedAt: Date
 }
 
+export interface JobFormData {
+  title: string
+  department: string
+  location: string
+  type: string
+  experience: string
+  education: string
+  description: string
+  requirements: string
+  benefits: string
+  salary: string
+  deadline: string
+  imageFile?: File | undefined
+  imageUrl?: string | null
+}
+
+
 export interface Benefit {
-  icon: any // React component type for Heroicons
+  icon: any 
   title: string
   description: string
 }

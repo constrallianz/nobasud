@@ -1,10 +1,27 @@
-'use client'
-import { useState } from 'react'
-import { CheckCircleIcon } from '@heroicons/react/24/outline'
-import { ApprochMethodologyProps } from '@/types/approche'
+"use client";
+
+import { useState } from "react";
+import { ApprochMethodologyProps, IconName } from "@/types/approche";
+import {
+  ClipboardDocumentListIcon, CogIcon, WrenchScrewdriverIcon,
+  CheckCircleIcon, ShieldCheckIcon, LightBulbIcon, UsersIcon
+} from "@heroicons/react/24/outline";
+
+const ICONS = {
+  ClipboardDocumentListIcon,
+  CogIcon,
+  WrenchScrewdriverIcon,
+  CheckCircleIcon,
+  ShieldCheckIcon,
+  LightBulbIcon,
+  UsersIcon,
+} as const;
 
 export default function ApprochMethodology({ methodology }: ApprochMethodologyProps) {
-  const [activePhase, setActivePhase] = useState(0)
+  const [activePhase, setActivePhase] = useState(0);
+
+  // helper to resolve the icon from its string key
+  const getIcon = (name: IconName) => ICONS[name as keyof typeof ICONS];
 
   return (
     <section id="methodologie" className="py-24 bg-white">
@@ -28,8 +45,8 @@ export default function ApprochMethodology({ methodology }: ApprochMethodologyPr
                 onClick={() => setActivePhase(i)}
                 className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                   activePhase === i
-                    ? 'bg-brand-blue text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? "bg-brand-blue text-white shadow-lg"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
                 Phase {i + 1}: {phase.title}
@@ -44,8 +61,8 @@ export default function ApprochMethodology({ methodology }: ApprochMethodologyPr
                 <div className="flex items-center mb-6">
                   <div className="w-16 h-16 bg-gradient-to-br from-brand-blue to-brand-orange rounded-2xl flex items-center justify-center mr-4">
                     {(() => {
-                      const IconComponent = methodology[activePhase].icon
-                      return <IconComponent className="w-8 h-8 text-white" />
+                      const Icon = getIcon(methodology[activePhase].icon);
+                      return Icon ? <Icon className="w-8 h-8 text-white" /> : null;
                     })()}
                   </div>
                   <div>
@@ -57,7 +74,7 @@ export default function ApprochMethodology({ methodology }: ApprochMethodologyPr
                     </p>
                   </div>
                 </div>
-                
+
                 <p className="text-lg text-gray-600 mb-8 leading-relaxed">
                   {methodology[activePhase].description}
                 </p>
@@ -75,8 +92,8 @@ export default function ApprochMethodology({ methodology }: ApprochMethodologyPr
               <div className="relative">
                 <div className="aspect-square bg-gradient-to-br from-brand-blue/10 to-brand-orange/10 rounded-2xl flex items-center justify-center">
                   {(() => {
-                    const IconComponent = methodology[activePhase].icon
-                    return <IconComponent className="w-32 h-32 text-brand-blue" />
+                    const Icon = getIcon(methodology[activePhase].icon);
+                    return Icon ? <Icon className="w-32 h-32 text-brand-blue" /> : null;
                   })()}
                 </div>
                 <div className="absolute -top-4 -right-4 w-8 h-8 bg-brand-orange rounded-full flex items-center justify-center text-white font-bold">
@@ -88,5 +105,5 @@ export default function ApprochMethodology({ methodology }: ApprochMethodologyPr
         </div>
       </div>
     </section>
-  )
+  );
 }

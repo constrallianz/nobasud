@@ -1,57 +1,105 @@
+import { Job, JobFormData } from '@/types/career';
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation';
 
-interface Job {
-  id: string
-  createdAt: Date
-  updatedAt: Date
-  title: string
-  slug: string
-  department: string | null
-  location: string | null
-  description: string | null
-  published: boolean
-}
+
 
 export function useJobs() {
-  const [jobs, setJobs] = useState<Job[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  useEffect(() => {
-    fetchJobs()
-  }, [])
 
   const fetchJobs = async () => {
     try {
-      setLoading(true)
-      setError(null)
-      
-      const response = await fetch('/api/admin/jobs')
-      if (response.ok) {
-        const data = await response.json()
-        setJobs(data)
-      } else {
-        setError('Erreur lors du chargement des offres d\'emploi')
-        console.error('Failed to fetch jobs')
+      setLoading(true);
+      setError(null);
+      const response = await fetch('/api/admin/jobs');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch jobs (${response.status})`);
       }
-    } catch (error) {
-      setError('Erreur de connexion au serveur')
-      console.error('Error fetching jobs:', error)
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setJobs(data);
+      } else {
+        console.error('Unexpected API response format:', data);
+        setError('Invalid data format received');
+      }
+    } catch (err) {
+      console.error('Error fetching jobs:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load jobs');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
+  };
+  const fetchJobById = async (id: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch(`/api/admin/jobs/${id}`, { method: 'GET' });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch job (${response.status})`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load jobs');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+ const submitJob = async (jobData: JobFormData): Promise<Job> => {
+    const fd = new FormData()
+    if (jobData.imageFile instanceof File) fd.append('image', jobData.imageFile)
+
+    Object.entries(jobData).forEach(([key, value]) => {
+      if (key === 'imageFile') return
+      if (value !== undefined && value !== null) fd.append(key, String(value))
+    })
+
+    const res = await fetch('/api/admin/jobs', { method: 'POST', body: fd })
+    if (!res.ok) throw new Error('Failed to create job')
+    const newJob = (await res.json()) as Job
+    return newJob
   }
 
   const handleView = (job: Job) => {
-    // In a real app, this would navigate to job detail view
-    console.log('Viewing job:', job.title)
-    // window.open(`/admin/jobs/${job.id}`, '_blank')
+    fetch(`/api/admin/jobs/${job.id}`)
+      .then(res => res.json())
+      .then(data => {
+       router.push(`/admin/jobs/${data.id}`);
+      })
+      .catch(err => {
+        console.error('Error viewing job:', err);
+      });
   }
 
-  const handleEdit = (job: Job) => {
-    // In a real app, this would navigate to job edit form
-    console.log('Editing job:', job.title)
-    // window.location.href = `/admin/jobs/${job.id}/edit`
+  const updateJob = async (jobId: string, jobData: JobFormData): Promise<Job> => {
+    const fd = new FormData()
+    if (jobData.imageFile instanceof File) fd.append('image', jobData.imageFile)
+    Object.entries(jobData).forEach(([key, value]) => {
+      if (key === 'imageFile') return
+      if (value !== undefined && value !== null) fd.append(key, String(value))
+    })
+    const res = await fetch(`/api/admin/jobs/${jobId}`, 
+      { method: 'PUT', body: fd })
+    if (!res.ok) throw new Error('Failed to update job')
+    const updatedJob = (await res.json()) as Job
+    return updatedJob
+  }
+
+  const handleEdit = async (jobId: string, jobData: JobFormData) => {
+    try {
+      await updateJob(jobId, jobData)
+    } catch (err) {
+      console.error('Error editing job:', err)
+    }
   }
 
   const handleDelete = (job: Job) => {
@@ -62,18 +110,13 @@ export function useJobs() {
 
   const deleteJob = async (jobId: string) => {
     try {
-      // In a real app, this would call an API to delete the job
-      setJobs(prevJobs => prevJobs.filter(job => job.id !== jobId))
-      console.log('Job deleted:', jobId)
-      
-      // Simulate API call
-      // const response = await fetch(`/api/admin/jobs/${jobId}`, { method: 'DELETE' })
-      // if (!response.ok) {
-      //   throw new Error('Failed to delete job')
-      // }
+      const response = await fetch(`/api/admin/jobs/${jobId}`, { method: 'DELETE' });
+      if (!response.ok) {
+        throw new Error('Failed to delete job');
+      }
+      setJobs(prevJobs => prevJobs.filter(job => job.id !== jobId));
     } catch (error) {
-      console.error('Error deleting job:', error)
-      alert('Erreur lors de la suppression de l\'offre')
+      alert('Erreur lors de la suppression de l\'offre');
     }
   }
 
@@ -85,9 +128,12 @@ export function useJobs() {
     jobs,
     loading,
     error,
+    submitJob,
+    updateJob,
     handleView,
     handleEdit,
     handleDelete,
-    refreshJobs
+    refreshJobs,
+    fetchJobById
   }
 }

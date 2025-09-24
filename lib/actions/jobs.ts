@@ -1,3 +1,8 @@
+export async function getJobById(id: string) {
+  return await prisma.job.findUnique({
+    where: { id }
+  });
+}
 import { prisma } from '@/lib/prisma'
 import { type Job, jobSchema } from '@/lib/validations'
 

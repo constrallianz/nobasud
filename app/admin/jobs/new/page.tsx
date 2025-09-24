@@ -12,7 +12,8 @@ export default function NewJobPage() {
     isSubmitting,
     handleChange,
     handleSubmit,
-    resetForm
+    resetForm,
+    handleFileChange
   } = useJobForm()
 
   return (
@@ -31,6 +32,7 @@ export default function NewJobPage() {
           <JobBasicInfo 
             formData={formData}
             onChange={handleChange}
+            onFileChange={handleFileChange}
           />
 
           {/* Description Fields */}

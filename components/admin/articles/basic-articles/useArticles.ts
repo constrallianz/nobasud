@@ -1,10 +1,21 @@
 import { useState, useEffect } from 'react'
 import { type Article } from './ArticleCard'
+import { Article as ArticleValidation } from '@/lib/validations';
 
 export function useArticles() {
   const [articles, setArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  const fetchArticleById = async (id: string): Promise<ArticleValidation | null> => {
+    try {
+      const response = await fetch(`/api/admin/articles/${id}`);
+      if (!response.ok) return null;
+      return await response.json();
+    } catch {
+      return null;
+    }
+  };
 
   const fetchArticles = async () => {
     try {
@@ -21,11 +32,9 @@ export function useArticles() {
       if (Array.isArray(data)) {
         setArticles(data)
       } else {
-        console.error('Unexpected API response format:', data)
         setError('Invalid data format received')
       }
     } catch (err) {
-      console.error('Error fetching articles:', err)
       setError(err instanceof Error ? err.message : 'Failed to load articles')
     } finally {
       setLoading(false)
@@ -41,13 +50,9 @@ export function useArticles() {
   }
 
   const handleView = (id: string) => {
-    // Navigate to article view - this could be implemented later
-    console.log('View article:', id)
   }
 
   const handleEdit = (id: string) => {
-    // Navigate to article edit - this could be implemented later
-    console.log('Edit article:', id)
   }
 
   return {
@@ -57,6 +62,7 @@ export function useArticles() {
     deleteArticle,
     handleView,
     handleEdit,
-    refetch: fetchArticles
+    refetch: fetchArticles,
+    fetchArticleById
   }
 }

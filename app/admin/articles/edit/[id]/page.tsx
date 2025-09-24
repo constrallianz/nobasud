@@ -8,8 +8,10 @@ import ErrorState from '@/components/admin/articles/states/ErrorState';
 import ArticleFormPageHeader from '@/components/admin/articles/shared/ArticleFormPageHeader';
 import AuthGuard from '@/components/AuthGuard';
 import type { Article } from '@/lib/validations';
+import { useArticles } from '@/components/admin/articles/basic-articles/useArticles';
 
 export default function EditArticlePage() {
+  const {fetchArticleById} = useArticles();
   const [article, setArticle] = useState<Article | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,11 +23,8 @@ export default function EditArticlePage() {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const response = await fetch(`/api/admin/articles/${articleId}`);
-        if (!response.ok) {
-          throw new Error('Article non trouvé');
-        }
-        const data = await response.json();
+        const data = await fetchArticleById(articleId);
+        if (!data) throw new Error('Article non trouvé');
         setArticle(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erreur lors du chargement');
@@ -33,7 +32,6 @@ export default function EditArticlePage() {
         setIsLoading(false);
       }
     };
-
     if (articleId) {
       fetchArticle();
     }

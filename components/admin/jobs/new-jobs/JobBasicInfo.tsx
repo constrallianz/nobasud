@@ -1,27 +1,18 @@
-interface JobFormData {
-  title: string
-  department: string
-  location: string
-  type: string
-  experience: string
-  education: string
-  description: string
-  requirements: string
-  benefits: string
-  salary: string
-  deadline: string
-}
+import { JobFormData } from "@/types/career"
+import { useEffect, useState } from "react"
 
 interface JobBasicInfoProps {
   formData: JobFormData
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+  onFileChange?: (file?: File) => void
 }
 
-export function JobBasicInfo({ formData, onChange }: JobBasicInfoProps) {
+export function JobBasicInfo({ formData, onChange, onFileChange }: JobBasicInfoProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <JobTitleField formData={formData} onChange={onChange} />
+      <JobTitleField  formData={formData} onChange={onChange} />
       <JobDepartmentField formData={formData} onChange={onChange} />
+      <JobImageField onChange={(e) => {}} formData={formData} onFileChange={onFileChange} />
       <JobLocationField formData={formData} onChange={onChange} />
       <JobTypeField formData={formData} onChange={onChange} />
       <JobExperienceField formData={formData} onChange={onChange} />
@@ -31,6 +22,67 @@ export function JobBasicInfo({ formData, onChange }: JobBasicInfoProps) {
     </div>
   )
 }
+
+function JobImageField({ formData, onFileChange }: JobBasicInfoProps) {
+  const [preview, setPreview] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (formData.imageFile) {
+      const url = URL.createObjectURL(formData.imageFile)
+      setPreview(url)
+      return () => URL.revokeObjectURL(url)
+    } else if (formData.imageUrl) {
+      setPreview(formData.imageUrl)
+    } else {
+      setPreview(null)
+    }
+  }, [formData.imageFile, formData.imageUrl])
+
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    onFileChange ? onFileChange(file) : null
+  }
+
+  return (
+    <div className="md:col-span-2">
+      <label htmlFor="job-image" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Image (optionnelle)
+      </label>
+      <div className="flex items-center gap-4">
+        <input
+          id="job-image"
+          type="file"
+          accept="image/*"
+          onChange={handleFile}
+          className="block w-1/2 text-sm text-gray-900 dark:text-gray-100
+                     file:mr-4 file:py-2 file:px-4
+                     file:rounded-lg file:border-0
+                     file:text-sm file:font-semibold
+                     file:bg-brand-blue/10 file:text-brand-blue
+                     hover:file:bg-brand-blue/20
+                     dark:file:bg-gray-700 dark:hover:file:bg-gray-600"
+        />
+        {preview && (
+          <img
+            src={preview}
+            alt="Prévisualisation"
+            className="h-16 w-16 rounded-md object-cover border border-gray-200 dark:border-gray-600"
+          />
+        )}
+      </div>
+      {(formData.imageFile || formData.imageUrl) && (
+        <button
+          type="button"
+          onClick={() => onFileChange && onFileChange(undefined)}
+          className="mt-2 text-xs text-red-600 hover:underline"
+        >
+          Supprimer l’image
+        </button>
+      )}
+    </div>
+  )
+}
+
 
 function JobTitleField({ formData, onChange }: JobBasicInfoProps) {
   return (

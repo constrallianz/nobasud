@@ -14,30 +14,39 @@ export default function NewArticlePage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleSubmit = async (data: Omit<Article, 'id' | 'createdAt' | 'updatedAt'>) => {
-    setIsSubmitting(true);
-    setError(null);
 
-    try {
-      const response = await fetch('/api/admin/articles', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
 
-      if (!response.ok) {
-        throw new Error('Erreur lors de la création de l\'article');
-      }
+const handleSubmit = async (data: Omit<Article, 'id'|'createdAt'|'updatedAt'>) => {
+  setIsSubmitting(true);
+  setError(null);
 
-      router.push('/admin/articles');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-    } finally {
-      setIsSubmitting(false);
+  try {
+    const form = new FormData();
+    form.append('title', data.title ?? '');
+    form.append('slug', data.slug ?? '');
+    form.append('excerpt', data.excerpt ?? '');
+    form.append('content', data.content ?? '');
+    form.append('published', String(!!data.published));
+    form.append('publishedAt', new Date(data.publishedAt as any).toISOString());
+    form.append('tags', JSON.stringify(Array.isArray((data as any).tags) ? (data as any).tags : []));
+
+    // prefer file over URL
+    if ((data as any).coverImage instanceof File) {
+      form.append('coverImage', (data as any).coverImage);
+    } else if ((data as any).coverImageUrl) {
+      form.append('coverImageUrl', String((data as any).coverImageUrl));
     }
-  };
+
+    const res = await fetch('/api/admin/articles', { method: 'POST', body: form });
+    if (!res.ok) throw new Error("Erreur lors de la création de l'article");
+
+    router.push('/admin/articles');
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   if (isSubmitting) {
     return (

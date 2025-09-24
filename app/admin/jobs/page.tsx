@@ -6,6 +6,7 @@ import { JobStats } from '@/components/admin/jobs/jobs-listing/JobStats'
 import { JobCard } from '@/components/admin/jobs/jobs-listing/JobCard'
 import { LoadingState, EmptyState, JobsList } from '@/components/admin/jobs/jobs-listing/JobPageStates'
 import { useJobs } from '@/components/admin/jobs/jobs-listing/useJobs'
+import { useRouter } from 'next/navigation'
 
 export default function JobsAdminPage() {
   const {
@@ -13,9 +14,13 @@ export default function JobsAdminPage() {
     loading,
     error,
     handleView,
-    handleEdit,
     handleDelete
   } = useJobs()
+  const router = useRouter()
+
+  const handleEdit = async (id:string) =>{
+    router.push('/admin/jobs/edit/'+id)
+  }
 
   if (loading) {
     return <LoadingState />
@@ -51,7 +56,7 @@ export default function JobsAdminPage() {
                   key={job.id}
                   job={job}
                   onView={handleView}
-                  onEdit={handleEdit}
+                  handleEdit={handleEdit}
                   onDelete={handleDelete}
                 />
               ))}

@@ -22,11 +22,11 @@ interface Job {
 interface JobCardProps {
   job: Job
   onView: (job: Job) => void
-  onEdit: (job: Job) => void
+  handleEdit: (id: string) => void
   onDelete: (job: Job) => void
 }
 
-export function JobCard({ job, onView, onEdit, onDelete }: JobCardProps) {
+export function JobCard({ job, onView, handleEdit, onDelete }: JobCardProps) {
   return (
     <div className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
       <div className="flex items-center justify-between">
@@ -38,7 +38,7 @@ export function JobCard({ job, onView, onEdit, onDelete }: JobCardProps) {
         <JobActions 
           job={job}
           onView={onView}
-          onEdit={onEdit}
+          handleEdit={handleEdit}
           onDelete={onDelete}
         />
       </div>
@@ -107,30 +107,22 @@ function JobTimestamp({ job }: { readonly job: Job }) {
 function JobActions({ 
   job, 
   onView, 
-  onEdit, 
+  handleEdit, 
   onDelete 
 }: { 
   readonly job: Job
   readonly onView: (job: Job) => void
-  readonly onEdit: (job: Job) => void
+  readonly handleEdit: (id: string) => void
   readonly onDelete: (job: Job) => void
 }) {
   return (
     <div className="flex items-center space-x-2">
+     
       <Button 
         variant="outline" 
         size="sm" 
         className="flex items-center space-x-1"
-        onClick={() => onView(job)}
-      >
-        <EyeIcon className="w-4 h-4" />
-        <span>Voir</span>
-      </Button>
-      <Button 
-        variant="outline" 
-        size="sm" 
-        className="flex items-center space-x-1"
-        onClick={() => onEdit(job)}
+        onClick={() => handleEdit(job.id)}
       >
         <PencilIcon className="w-4 h-4" />
         <span>Modifier</span>

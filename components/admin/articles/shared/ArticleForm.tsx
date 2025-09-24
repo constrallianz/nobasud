@@ -23,7 +23,6 @@ export default function ArticleForm({
       try {
         return JSON.parse(initialData.tags);
       } catch (error) {
-        console.error('Error parsing initial tags:', error);
         return [];
       }
     }
@@ -36,6 +35,7 @@ export default function ArticleForm({
     excerpt: initialData?.excerpt || '',
     content: initialData?.content || '',
     coverImageUrl: initialData?.coverImageUrl || '',
+    coverImageFile: undefined as File | undefined,
     tags: getInitialTags(),
     published: initialData?.published ?? true,
     publishedAt: initialData?.publishedAt ? new Date(initialData.publishedAt).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16)
@@ -82,7 +82,7 @@ export default function ArticleForm({
   const removeTag = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      tags: prev.tags.filter((_, i) => i !== index)
+      tags: prev.tags.filter((_, i:any) => i !== index)
     }))
   }
 
@@ -101,13 +101,11 @@ export default function ArticleForm({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      // Create a temporary URL for preview (in production, upload to server)
-      const fileUrl = URL.createObjectURL(file)
       setFormData(prev => ({
         ...prev,
-        coverImageUrl: fileUrl
+        coverImageFile: file,
+        coverImageUrl: URL.createObjectURL(file)
       }))
-      // Reset the file input
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
@@ -119,9 +117,10 @@ export default function ArticleForm({
     
     const submitData = {
       ...formData,
-      publishedAt: new Date(formData.publishedAt)
+      publishedAt: new Date(formData.publishedAt),
+      coverImage: formData.coverImageFile
     }
-    
+    delete submitData?.coverImageFile;
     await onSubmit(submitData)
   }
 
