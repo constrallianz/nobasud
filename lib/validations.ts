@@ -35,14 +35,41 @@ export const projectSchema = z.object({
 })
 
 export const articleSchema = z.object({
+  id: z.string().optional(),
   title: z.string().min(1, 'Le titre est requis'),
   slug: z.string().min(1),
   excerpt: z.string().optional(),
   content: z.string().optional(),
   coverImageUrl: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  publishedAt: z.date().optional(),
+  tags: z.union([z.array(z.string()), z.string()]).optional().transform((val) => {
+    if (typeof val === 'string') {
+      try {
+        return JSON.parse(val);
+      } catch {
+        return [];
+      }
+    }
+    return val;
+  }),
+  publishedAt: z.union([z.date(), z.string()]).optional().transform((val) => {
+    if (typeof val === 'string') {
+      return new Date(val);
+    }
+    return val;
+  }),
   published: z.boolean().default(true),
+  createdAt: z.union([z.date(), z.string()]).optional().transform((val) => {
+    if (typeof val === 'string') {
+      return new Date(val);
+    }
+    return val;
+  }),
+  updatedAt: z.union([z.date(), z.string()]).optional().transform((val) => {
+    if (typeof val === 'string') {
+      return new Date(val);
+    }
+    return val;
+  }),
 })
 
 export const jobSchema = z.object({

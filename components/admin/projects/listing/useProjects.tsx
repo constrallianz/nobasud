@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface Project {
   id: string
@@ -15,6 +16,7 @@ interface Project {
 export function useProjects() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     fetchProjects()
@@ -45,18 +47,36 @@ export function useProjects() {
   }
 
   const handleView = (projectId: string) => {
+    // Navigate to project view page (you can implement this later)
     console.log('Viewing project:', projectId)
-    // Ici vous ajouteriez la logique pour afficher les détails du projet
+    // router.push(`/admin/projects/view/${projectId}`)
   }
 
   const handleEdit = (projectId: string) => {
-    console.log('Editing project:', projectId)
-    // Ici vous ajouteriez la logique pour modifier le projet
+    router.push(`/admin/projects/edit/${projectId}`)
   }
 
-  const handleDelete = (projectId: string) => {
-    console.log('Deleting project:', projectId)
-    // Ici vous ajouteriez la logique pour supprimer le projet
+  const handleDelete = async (projectId: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        // Remove the project from the local state
+        setProjects(prev => prev.filter(project => project.id !== projectId))
+        alert('Projet supprimé avec succès')
+      } else {
+        throw new Error('Failed to delete project')
+      }
+    } catch (error) {
+      console.error('Error deleting project:', error)
+      alert('Erreur lors de la suppression du projet')
+    }
   }
 
   return {

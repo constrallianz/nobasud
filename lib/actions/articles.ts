@@ -47,18 +47,24 @@ export async function updateArticle(id: string, data: Partial<Article>) {
     throw new Error('Article not found')
   }
   
-  const validatedData = articleSchema.partial().parse(data)
+  // Merge with existing data to ensure full validation
+  const mergedData = {
+    ...existingArticle,
+    ...data,
+    updatedAt: new Date()
+  }
+  
+  const validatedData = articleSchema.parse(mergedData)
   
   // Séparons les tags du reste des données pour éviter les conflits de types
-  const { tags, ...restData } = validatedData
+  const { tags, id: _, createdAt, updatedAt, ...restData } = validatedData
   
   return await prisma.article.update({
     where: { id },
     data: {
       ...restData,
-      ...(tags && { 
-        tags: JSON.stringify(tags)
-      })
+      tags: JSON.stringify(tags || []),
+      updatedAt: updatedAt || new Date()
     }
   })
 }
