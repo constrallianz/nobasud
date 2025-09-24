@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 // Validation schemas
 export const feedbackSchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(1, 'Le nom est requis'),
   email: z.string().email('Email invalide'),
   company: z.string().optional(),
@@ -9,6 +10,19 @@ export const feedbackSchema = z.object({
   rating: z.number().min(1).max(5),
   message: z.string().min(1, 'Le message est requis'),
   published: z.boolean().optional().default(false),
+  photoUrl: z.string().optional(),
+  createdAt: z.union([z.date(), z.string()]).optional().transform((val) => {
+    if (typeof val === 'string') {
+      return new Date(val);
+    }
+    return val;
+  }),
+  updatedAt: z.union([z.date(), z.string()]).optional().transform((val) => {
+    if (typeof val === 'string') {
+      return new Date(val);
+    }
+    return val;
+  }),
 })
 
 export const applicationSchema = z.object({
