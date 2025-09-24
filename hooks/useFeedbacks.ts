@@ -11,7 +11,7 @@ export function useFeedbacks() {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch('/api/admin/feedback')
+      const response = await fetch('/api/admin/feedbacks')
       
       if (!response.ok) {
         throw new Error(`Failed to fetch feedbacks (${response.status})`)
@@ -38,7 +38,7 @@ export function useFeedbacks() {
   }, [])
 
   const deleteFeedback = async (id: string) => {
-    const response = await fetch(`/api/admin/feedback?id=${id}`, {
+    const response = await fetch(`/api/admin/feedbacks/${id}`, {
       method: 'DELETE'
     })
 
