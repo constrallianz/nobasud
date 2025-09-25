@@ -1,61 +1,64 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import Image from 'next/image'
-import { Button } from './ui/button'
-import { usePathname } from 'next/navigation'
-import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react'
-import { cn } from '@/lib/utils'
-import ThemeToggle from './ThemeToggle'
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "./ui/button";
+import { usePathname } from "next/navigation";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ChevronDownIcon,
+} from "@heroicons/react/24/outline";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import ThemeToggle from "./ThemeToggle";
 
 export function Header() {
-  const pathname = usePathname()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
-  
+  const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
   const routes = [
-    { 
-      name: 'Entreprise', 
-      href: '/a-propos',
+    {
+      name: "Entreprise",
+      href: "/a-propos",
       subItems: [
-        { name: 'À propos', href: '/a-propos' },
-        { name: 'Notre approche', href: '/notre-approche' },
-        { name: 'Équipe', href: '/a-propos#equipe' }
-      ]
+        { name: "À propos", href: "/a-propos" },
+        { name: "Notre approche", href: "/notre-approche" },
+        { name: "Équipe", href: "/a-propos#equipe" },
+      ],
     },
-    { 
-      name: 'Services', 
-      href: '/realisations',
+    {
+      name: "Services",
+      href: "/realisations",
       subItems: [
-        { name: 'Nos réalisations', href: '/realisations' },
-        { name: 'Bâtiments', href: '/realisations?type=batiment' },
-        { name: 'Infrastructure', href: '/realisations?type=infrastructure' },
-        { name: 'Aménagement', href: '/realisations?type=amenagement' }
-      ]
+        { name: "Nos réalisations", href: "/realisations" },
+        { name: "Bâtiments", href: "/realisations?type=batiment" },
+        { name: "Infrastructure", href: "/realisations?type=infrastructure" },
+        { name: "Aménagement", href: "/realisations?type=amenagement" },
+      ],
     },
-    { 
-      name: 'Ressources', 
-      href: '/media',
-      subItems: [
-        { name: 'Blog & Actualités', href: '/media' },
-        { name: 'Témoignages', href: '/feedback' },
-        { name: 'Documentation', href: '/media?category=documentation' }
-      ]
+    {
+      name: "Blog & Actualités",
+      href: "/media",
     },
-    { 
-      name: 'Carrières', 
-      href: '/carriere'
+    {
+      name: "Carrières",
+      href: "/carriere",
     },
-    { 
-      name: 'Contact', 
-      href: '/contact'
-    }
-  ]
+    {
+      name: "Feedback",
+      href: "/feedback",
+    },
+    {
+      name: "Contact",
+      href: "/contact",
+    },
+  ];
 
   const handleDropdownToggle = (name: string) => {
-    setActiveDropdown(activeDropdown === name ? null : name)
-  }
+    setActiveDropdown(activeDropdown === name ? null : name);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
@@ -83,16 +86,18 @@ export function Header() {
                     <button
                       className={cn(
                         "flex items-center space-x-1 px-4 py-2 text-sm font-medium transition-all duration-200 hover:text-brand-orange rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800",
-                        pathname.startsWith(route.href) ? "text-brand-blue bg-blue-50 dark:bg-blue-900/20" : "text-gray-700 dark:text-gray-300"
+                        pathname.startsWith(route.href)
+                          ? "text-brand-blue bg-blue-50 dark:bg-blue-900/20"
+                          : "text-gray-700 dark:text-gray-300"
                       )}
                       onMouseEnter={() => setActiveDropdown(route.name)}
                     >
                       <span>{route.name}</span>
                       <ChevronDownIcon className="w-4 h-4 transition-transform group-hover:rotate-180" />
                     </button>
-                    
+
                     {/* Dropdown Menu */}
-                    <div 
+                    <div
                       className="absolute top-full left-0 mt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0"
                       onMouseLeave={() => setActiveDropdown(null)}
                     >
@@ -103,7 +108,9 @@ export function Header() {
                             href={subItem.href}
                             className={cn(
                               "block px-4 py-3 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-brand-orange",
-                              pathname === subItem.href ? "text-brand-blue bg-blue-50 dark:bg-blue-900/20 font-medium" : "text-gray-700 dark:text-gray-300"
+                              pathname === subItem.href
+                                ? "text-brand-blue bg-blue-50 dark:bg-blue-900/20 font-medium"
+                                : "text-gray-700 dark:text-gray-300"
                             )}
                           >
                             {subItem.name}
@@ -117,7 +124,9 @@ export function Header() {
                     href={route.href}
                     className={cn(
                       "px-4 py-2 text-sm font-medium transition-all duration-200 hover:text-brand-orange rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800",
-                      pathname === route.href ? "text-brand-blue bg-blue-50 dark:bg-blue-900/20" : "text-gray-700 dark:text-gray-300"
+                      pathname === route.href
+                        ? "text-brand-blue bg-blue-50 dark:bg-blue-900/20"
+                        : "text-gray-700 dark:text-gray-300"
                     )}
                   >
                     {route.name}
@@ -140,7 +149,7 @@ export function Header() {
           {/* Mobile menu button */}
           <div className="lg:hidden flex items-center space-x-2">
             <ThemeToggle />
-            <button 
+            <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
@@ -153,7 +162,7 @@ export function Header() {
           </div>
         </div>
       </div>
-      
+
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-gray-100 dark:border-gray-800 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md">
@@ -167,11 +176,11 @@ export function Header() {
                       className="flex items-center justify-between w-full px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300 hover:text-brand-orange hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                     >
                       <span>{route.name}</span>
-                      <ChevronDownIcon 
+                      <ChevronDownIcon
                         className={cn(
                           "w-4 h-4 transition-transform",
                           activeDropdown === route.name ? "rotate-180" : ""
-                        )} 
+                        )}
                       />
                     </button>
                     {activeDropdown === route.name && (
@@ -182,7 +191,9 @@ export function Header() {
                             href={subItem.href}
                             className={cn(
                               "block px-4 py-2 text-sm rounded-lg transition-colors",
-                              pathname === subItem.href ? "text-brand-blue bg-blue-50 dark:bg-blue-900/20 font-medium" : "text-gray-600 dark:text-gray-400 hover:text-brand-orange hover:bg-gray-50 dark:hover:bg-gray-800"
+                              pathname === subItem.href
+                                ? "text-brand-blue bg-blue-50 dark:bg-blue-900/20 font-medium"
+                                : "text-gray-600 dark:text-gray-400 hover:text-brand-orange hover:bg-gray-50 dark:hover:bg-gray-800"
                             )}
                             onClick={() => setMobileMenuOpen(false)}
                           >
@@ -197,7 +208,9 @@ export function Header() {
                     href={route.href}
                     className={cn(
                       "block px-4 py-3 font-medium rounded-lg transition-colors",
-                      pathname === route.href ? "text-brand-blue bg-blue-50 dark:bg-blue-900/20" : "text-gray-700 dark:text-gray-300 hover:text-brand-orange hover:bg-gray-50 dark:hover:bg-gray-800"
+                      pathname === route.href
+                        ? "text-brand-blue bg-blue-50 dark:bg-blue-900/20"
+                        : "text-gray-700 dark:text-gray-300 hover:text-brand-orange hover:bg-gray-50 dark:hover:bg-gray-800"
                     )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -206,7 +219,7 @@ export function Header() {
                 )}
               </div>
             ))}
-            
+
             <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
               <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
                 <Button className="w-full bg-gradient-to-r from-brand-blue to-brand-orange text-white font-semibold">
@@ -218,5 +231,5 @@ export function Header() {
         </div>
       )}
     </header>
-  )
+  );
 }
