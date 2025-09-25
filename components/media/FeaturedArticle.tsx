@@ -7,8 +7,6 @@ import {
   UserIcon,
   TagIcon,
   ArrowRightIcon,
-  ShareIcon,
-  BookmarkIcon
 } from '@heroicons/react/24/outline'
 import { FeaturedArticleProps } from '@/types/media'
 import { FeaturedArticleSkeleton } from './MediaStates'
@@ -90,12 +88,7 @@ export default function FeaturedArticle({
                       <ArrowRightIcon className="w-5 h-5 ml-2" />
                     </Button>
                   </Link>
-                  <Button variant="outline" size="lg">
-                    <ShareIcon className="w-5 h-5" />
-                  </Button>
-                  <Button variant="outline" size="lg">
-                    <BookmarkIcon className="w-5 h-5" />
-                  </Button>
+                
                 </div>
               </div>
             </div>

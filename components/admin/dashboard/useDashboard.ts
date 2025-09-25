@@ -34,10 +34,8 @@ export default function useDashboard() {
       try {
         setData(prev => ({ ...prev, loading: true, error: null }))
         
-        // Simulate loading delay
         await new Promise(resolve => setTimeout(resolve, 1000))
         
-        // Use mock data instead of API calls for now
         setData({
           stats: {
             projects: 5,

@@ -12,7 +12,6 @@ interface ArticlePageProps {
   }
 }
 
-// Generate metadata for SEO
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const article = await prisma.article.findUnique({
     where: { 
@@ -45,7 +44,7 @@ export async function generateStaticParams() {
   const articles = await prisma.article.findMany({
     where: { published: true },
     select: { slug: true },
-    take: 100 // Limit for performance
+    take: 100 
   })
 
   return articles.map((article) => ({
@@ -54,7 +53,6 @@ export async function generateStaticParams() {
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  // Fetch the article
   const article = await prisma.article.findUnique({
     where: { 
       slug: params.slug,
@@ -66,7 +64,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound()
   }
 
-  // Fetch related articles
   const tags = parseArticleTags(article.tags)
   const relatedArticles = await prisma.article.findMany({
     where: {

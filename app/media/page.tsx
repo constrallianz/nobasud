@@ -46,11 +46,11 @@ export default function MediaPage() {
       />
       
       {/* Categories Filter */}
-      <MediaCategories 
+      {/* <MediaCategories 
         categories={categories}
         selectedCategory={selectedCategory}
         onCategorySelect={setSelectedCategory}
-      />
+      /> */}
       
       {/* Error State */}
       {error && (
@@ -61,7 +61,6 @@ export default function MediaPage() {
         </section>
       )}
 
-      {/* Content - only show if no error */}
       {!error && (
         <>
           {/* Featured Article */}

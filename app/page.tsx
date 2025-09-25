@@ -1,47 +1,30 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { ArrowRightIcon, CheckBadgeIcon, BuildingOffice2Icon, TruckIcon, UserGroupIcon } from '@heroicons/react/24/outline'
-import { prisma } from '@/lib/prisma'
+import { useProjects } from '@/components/admin/projects/listing'
+import { ProjectWithImages } from '@/types/realisations'
+import { services, statsMain } from '@/data/realisations'
 
-export default async function HomePage() {
-  // Fetch projects from database
-  const projects = await prisma.project.findMany({
-    take: 3,
-    orderBy: { createdAt: 'desc' }
-  })
+export default function HomePage() {
+   const {
+       projects,
+       loading,
+     } = useProjects()
 
-  // Parse images JSON for projects
-  const projectsWithImages = projects.map(project => ({
-    ...project,
-    images: project.images ? JSON.parse(project.images) : [],
-    image: project.images ? JSON.parse(project.images)[0] : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-  }))
 
-  const services = [
-    {
-      icon: BuildingOffice2Icon,
-      title: 'Construction de bâtiments',
-      description: 'Résidentiel, commercial, industriel - Du concept à la livraison'
-    },
-    {
-      icon: TruckIcon,
-      title: 'Infrastructure routière',
-      description: 'Routes, autoroutes, ponts et ouvrages d\'art de qualité'
-    },
-    {
-      icon: UserGroupIcon,
-      title: 'Aménagement urbain',
-      description: 'Espaces publics, parcs et zones d\'activité modernes'
-    }
-  ]
-
-  const stats = [
-    { value: '500+', label: 'Projets réalisés' },
-    { value: '15', label: 'Années d\'expérience' },
-    { value: '200+', label: 'Collaborateurs' },
-    { value: '98%', label: 'Clients satisfaits' }
-  ]
+     const projectsWithImages: ProjectWithImages[] = projects.map(project => {
+     const images = project.images ? JSON.parse(project.images) : [];
+     const image = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+     return {
+       ...project,
+       type: project.type as string,
+       images,
+       image
+     };
+   });
 
   return (
     <div className="relative">
@@ -81,7 +64,7 @@ export default async function HomePage() {
             
             {/* Floating stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-              {stats.map((stat, i) => (
+              {statsMain.map((stat, i) => (
                 <div key={i} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
                   <div className="text-3xl md:text-4xl font-bold text-brand-orange mb-2">{stat.value}</div>
                   <div className="text-sm md:text-base opacity-90">{stat.label}</div>
