@@ -9,23 +9,31 @@ export default function ApplicationForm() {
   const [submitting, setSubmitting] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setSubmitting(true)
-    const formData = new FormData(e.currentTarget)
-    
+    e.preventDefault();
+    setSubmitting(true);
+      const cvFile = (e.currentTarget.cv as HTMLInputElement)?.files?.[0];
+      const coverLetterFile = (e.currentTarget.coverLetter as HTMLInputElement)?.files?.[0];
+      const maxSize = 3 * 1024 * 1024; 
+      if (cvFile && cvFile.size > maxSize) {
+        alert('Le fichier CV dépasse la taille maximale de 3MB.');
+        return;
+      }
+      if (coverLetterFile && coverLetterFile.size > maxSize) {
+        alert('La lettre de motivation dépasse la taille maximale de 3MB.');
+        return;
+      }
+      const formData = new FormData(e.currentTarget);
     try {
-      const res = await fetch('/api/applications', { method: 'POST', body: formData })
+      const res = await fetch('/api/applications', { method: 'POST', body: formData });
       if (res.ok) {
-        e.currentTarget.reset()
-        alert('Candidature envoyée avec succès ! Nous vous recontacterons rapidement.')
+        alert('Candidature envoyée avec succès ! Nous vous recontacterons rapidement.');
       } else {
-        alert('Erreur lors de l\'envoi. Veuillez réessayer.')
+        alert('Erreur lors de l\'envoi. Veuillez réessayer.');
       }
     } catch (error) {
-      alert('Erreur lors de l\'envoi. Veuillez réessayer.')
+      alert('Erreur lors de l\'envoi. Veuillez réessayer.');
     }
-    
-    setSubmitting(false)
+    setSubmitting(false);
   }
 
   return (
@@ -65,14 +73,14 @@ export default function ApplicationForm() {
                     CV (PDF) *
                   </label>
                   <Input name="cv" type="file" accept="application/pdf" required />
-                  <p className="text-xs text-gray-500 mt-1">Format PDF uniquement, max 5MB</p>
+                    <p className="text-xs text-gray-500 mt-1">Format PDF uniquement, max 3MB</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Lettre de motivation (PDF)
                   </label>
                   <Input name="coverLetter" type="file" accept="application/pdf" />
-                  <p className="text-xs text-gray-500 mt-1">Optionnel, format PDF</p>
+                    <p className="text-xs text-gray-500 mt-1">Optionnel, format PDF, max 3MB</p>
                 </div>
               </div>
 
