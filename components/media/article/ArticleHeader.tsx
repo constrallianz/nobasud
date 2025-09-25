@@ -1,47 +1,54 @@
-'use client'
+"use client";
 
-import { Article } from '@prisma/client'
-import Image from 'next/image'
-import Link from 'next/link'
-import { CalendarDays, Clock, Tag, ArrowLeft } from 'lucide-react'
-import { formatDate } from '@/lib/utils'
+import { Article } from "@prisma/client";
+import Image from "next/image";
+import Link from "next/link";
+import { formatDate } from "@/lib/utils";
+import {
+  ArrowLeftCircleIcon,
+  CalendarDaysIcon,
+  ClockIcon,
+  TagIcon,
+} from "@heroicons/react/24/outline";
 
 interface ArticleHeaderProps {
-  article: Article
-  imageUrl: string
-  readTime: number
-  tags: string[]
+  article: Article;
+  imageUrl: string;
+  readTime: number;
+  tags: string[];
 }
 
-export default function ArticleHeader({ article, imageUrl, readTime, tags }: ArticleHeaderProps) {
+export default function ArticleHeader({
+  article,
+  imageUrl,
+  readTime,
+  tags,
+}: ArticleHeaderProps) {
   return (
     <>
-      {/* Breadcrumb */}
-      <div className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <Link
-            href="/media"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour aux articles
-          </Link>
-        </div>
-      </div>
 
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
+              <div className="mb-4">
+                <Link
+                  href="/media"
+                  className="inline-flex items-center text-brand-orange hover:text-brand-blue transition-colors"
+                >
+                  <ArrowLeftCircleIcon className="w-4 h-4 mr-2" />
+                  Retour aux articles
+                </Link>
+              </div>
             {/* Category & Date */}
             <div className="flex flex-wrap items-center gap-4 mb-6 text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-center">
-                <CalendarDays className="w-4 h-4 mr-2" />
+                <CalendarDaysIcon className="w-4 h-4 mr-2" />
                 {formatDate(article.publishedAt)}
               </div>
               <div className="flex items-center">
-                <Clock className="w-4 h-4 mr-2" />
-                {readTime} min de lecture
+                <ClockIcon className="w-4 h-4 mr-2" />
+                {readTime} de lecture
               </div>
             </div>
 
@@ -65,7 +72,7 @@ export default function ArticleHeader({ article, imageUrl, readTime, tags }: Art
                     key={tag}
                     className="inline-flex items-center bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 px-3 py-1 rounded-full text-sm"
                   >
-                    <Tag className="w-3 h-3 mr-1" />
+                    <TagIcon className="w-3 h-3 mr-1" />
                     {tag}
                   </span>
                 ))}
@@ -77,10 +84,10 @@ export default function ArticleHeader({ article, imageUrl, readTime, tags }: Art
 
       {/* Cover Image */}
       {imageUrl && (
-        <section className="py-8">
+        <section className="py-4">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
                 <Image
                   src={imageUrl}
                   alt={article.title}
@@ -94,5 +101,5 @@ export default function ArticleHeader({ article, imageUrl, readTime, tags }: Art
         </section>
       )}
     </>
-  )
+  );
 }
