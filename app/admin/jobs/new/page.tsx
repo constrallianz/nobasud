@@ -26,7 +26,7 @@ export default function NewJobPage() {
       />
 
       {/* Form */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 py-4 px-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
           <JobBasicInfo 

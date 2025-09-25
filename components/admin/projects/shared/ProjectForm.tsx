@@ -153,13 +153,13 @@ export default function ProjectForm({
               required
             >
               <option value="">Sélectionner un type</option>
-              <option value="bâtiment">Bâtiment</option>
-              <option value="voirie">Voirie</option>
-              <option value="terrassement">Terrassement</option>
-              <option value="infrastructure">Infrastructure</option>
-              <option value="travaux-publics">Travaux Publics</option>
-              <option value="assainissement">Assainissement</option>
-              <option value="rehabilitation">Réhabilitation</option>
+              <option value="Bâtiment">Bâtiment</option>
+              <option value="Voirie">Voirie</option>
+              <option value="Terrassement">Terrassement</option>
+              <option value="Infrastructure">Infrastructure</option>
+              <option value="Travaux Publics">Travaux Publics</option>
+              <option value="Assainissement">Assainissement</option>
+              <option value="Rehabilitation">Réhabilitation</option>
             </select>
           </div>
 

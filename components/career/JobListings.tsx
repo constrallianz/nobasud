@@ -7,28 +7,10 @@ import {
   ClockIcon, 
   ArrowRightIcon
 } from '@heroicons/react/24/outline'
+import { useJobs } from '../admin/jobs/jobs-listing/useJobs'
 
 export default function JobListings() {
-  const [jobs, setJobs] = useState<Job[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetchJobs()
-  }, [])
-
-  const fetchJobs = async () => {
-    try {
-      const response = await fetch('/api/jobs')
-      if (response.ok) {
-        const data = await response.json()
-        setJobs(data)
-      }
-    } catch (error) {
-      console.error('Error fetching jobs:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const {jobs, loading}=useJobs();
 
   return (
     <section id="offres" className="py-24 bg-white dark:bg-gray-800">

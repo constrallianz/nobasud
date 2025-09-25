@@ -16,7 +16,7 @@ export function JobFormHeader({
   backLabel = "Retour" 
 }: JobFormHeaderProps) {
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center space-x-4 pt-8 px-8">
       <Link href={backLink}>
         <Button variant="outline" size="sm" className="flex items-center space-x-2">
           <ArrowLeftIcon className="w-4 h-4" />
