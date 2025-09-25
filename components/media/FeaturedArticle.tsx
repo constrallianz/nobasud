@@ -11,6 +11,7 @@ import {
   BookmarkIcon
 } from '@heroicons/react/24/outline'
 import { FeaturedArticleProps } from '@/types/media'
+import { FeaturedArticleSkeleton } from './MediaStates'
 
 export default function FeaturedArticle({ 
   article, 
@@ -28,10 +29,7 @@ export default function FeaturedArticle({
         </div>
 
         {loading ? (
-          <div className="text-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-blue mx-auto"></div>
-            <p className="mt-4 text-gray-600">Chargement des articles...</p>
-          </div>
+          <FeaturedArticleSkeleton />
         ) : article ? (
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
