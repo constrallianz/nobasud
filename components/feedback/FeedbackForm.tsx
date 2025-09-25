@@ -10,6 +10,7 @@ export default function FeedbackForm() {
   const [submitting, setSubmitting] = useState(false)
   const [rating, setRating] = useState(0)
   const [hoveredRating, setHoveredRating] = useState(0)
+  const [isAnonymous, setIsAnonymous] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -22,16 +23,23 @@ export default function FeedbackForm() {
     const formData = new FormData(e.currentTarget)
     formData.append('rating', rating.toString())
     
+    // Handle anonymous submission
+    if (isAnonymous) {
+      formData.set('name', 'Anonyme')
+    }
+    
     try {
       const res = await fetch('/api/feedback', { method: 'POST', body: formData })
       if (res.ok) {
         e.currentTarget.reset()
         setRating(0)
+        setIsAnonymous(false)
         alert('Merci pour votre avis ! Il sera publié après validation.')
       } else {
         alert('Erreur lors de l\'envoi. Veuillez réessayer.')
       }
     } catch (error) {
+      console.error('Error submitting feedback:', error)
       alert('Erreur lors de l\'envoi. Veuillez réessayer.')
     }
     
@@ -56,38 +64,82 @@ export default function FeedbackForm() {
             <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Nom complet *
-                  </label>
-                  <Input name="name" required placeholder="Votre nom et prénom" />
+                  <div className="flex items-center justify-between mb-2">
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Nom complet {!isAnonymous && '*'}
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      <label htmlFor="anonymous-toggle" className="text-sm text-gray-600 dark:text-gray-400">
+                        Anonyme
+                      </label>
+                      <div className="relative inline-block w-10 mr-2 align-middle select-none">
+                        <input
+                          type="checkbox"
+                          id="anonymous-toggle"
+                          checked={isAnonymous}
+                          onChange={(e) => setIsAnonymous(e.target.checked)}
+                          className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-2 border-gray-300 appearance-none cursor-pointer transition-all duration-300 checked:right-0 checked:border-brand-orange checked:bg-brand-orange focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-opacity-50"
+                        />
+                        <label
+                          htmlFor="anonymous-toggle"
+                          className="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300 peer-checked:bg-brand-orange"
+                        >
+                          <span className="sr-only">Rester anonyme</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <Input
+                    id="name"
+                    name="name"
+                    required={!isAnonymous}
+                    disabled={isAnonymous}
+                    placeholder={isAnonymous ? "Témoignage anonyme" : "Votre nom et prénom"}
+                    value={isAnonymous ? "" : undefined}
+                    className={isAnonymous ? "bg-gray-100 dark:bg-gray-700 text-gray-500" : ""}
+                  />
+                  {isAnonymous && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Votre témoignage sera publié de manière anonyme
+                    </p>
+                  )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Email *
                   </label>
-                  <Input name="email" type="email" required placeholder="votre@email.com" />
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="votre@email.com"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {isAnonymous ? "Email requis pour validation (ne sera pas publié)" : "Email pour vous contacter si nécessaire"}
+                  </p>
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label htmlFor="company" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Entreprise/Organisation
                   </label>
-                  <Input name="company" placeholder="Nom de votre entreprise" />
+                  <Input id="company" name="company" placeholder="Nom de votre entreprise" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label htmlFor="project" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Projet réalisé *
                   </label>
-                  <Input name="project" required placeholder="Décrivez brièvement le projet" />
+                  <Input id="project" name="project" required placeholder="Décrivez brièvement le projet" />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+              <fieldset>
+                <legend className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
                   Votre note globale *
-                </label>
+                </legend>
                 <div className="flex space-x-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -108,13 +160,14 @@ export default function FeedbackForm() {
                     </button>
                   ))}
                 </div>
-              </div>
+              </fieldset>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="comment" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Votre témoignage *
                 </label>
                 <Textarea 
+                  id="comment"
                   name="comment" 
                   required
                   placeholder="Partagez votre expérience avec NOBASUD : qualité du travail, respect des délais, relation client, satisfaction générale..."
@@ -123,10 +176,11 @@ export default function FeedbackForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="images" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Photos du projet (optionnel)
                 </label>
                 <Input 
+                  id="images"
                   name="photos" 
                   type="file" 
                   accept="image/*" 

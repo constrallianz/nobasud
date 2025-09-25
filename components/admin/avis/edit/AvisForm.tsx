@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -26,6 +26,7 @@ export function AvisForm({ initialData, onSubmit, onCancel, isSubmitting, mode }
     published: initialData.published
   })
 
+  const [isAnonymous, setIsAnonymous] = useState(initialData.name === 'Anonyme')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(initialData.photoUrl || null)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -104,6 +105,7 @@ export function AvisForm({ initialData, onSubmit, onCancel, isSubmitting, mode }
 
       await onSubmit({
         ...formData,
+        name: isAnonymous ? 'Anonyme' : formData.name,
         photoUrl: finalImageUrl
       })
     } catch (error) {
@@ -113,10 +115,10 @@ export function AvisForm({ initialData, onSubmit, onCancel, isSubmitting, mode }
   }
 
   const renderStarRating = () => (
-    <div className="flex flex-col space-y-2">
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+    <fieldset className="flex flex-col space-y-2">
+      <legend className="block text-sm font-medium text-gray-700 dark:text-gray-300">
         Note <span className="text-red-500">*</span>
-      </label>
+      </legend>
       <div className="flex space-x-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
@@ -139,18 +141,19 @@ export function AvisForm({ initialData, onSubmit, onCancel, isSubmitting, mode }
         {formData.rating > 0 ? `${formData.rating}/5 étoiles` : 'Cliquez pour noter'}
       </span>
       {errors.rating && <p className="text-sm text-red-600">{errors.rating}</p>}
-    </div>
+    </fieldset>
   )
 
   const renderImageUpload = () => (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      <label htmlFor="photo-url" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
         Image
       </label>
       
       {/* URL Input */}
       <div>
         <Input
+          id="photo-url"
           type="url"
           placeholder="URL de l'image (optionnel)"
           value={formData.photoUrl}
@@ -161,7 +164,11 @@ export function AvisForm({ initialData, onSubmit, onCancel, isSubmitting, mode }
 
       {/* File Upload */}
       <div>
+        <label htmlFor="file-upload" className="sr-only">
+          Télécharger un fichier image
+        </label>
         <Input
+          id="file-upload"
           type="file"
           accept="image/*"
           onChange={handleFileChange}
@@ -205,30 +212,69 @@ export function AvisForm({ initialData, onSubmit, onCancel, isSubmitting, mode }
           </div>
         )}
 
+        {/* Anonymous Toggle */}
+        <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <div>
+            <label htmlFor="anonymous-toggle" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Témoignage anonyme
+            </label>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              Le nom apparaîtra comme "Anonyme" si activé
+            </p>
+          </div>
+          <input
+            id="anonymous-toggle"
+            type="checkbox"
+            checked={isAnonymous}
+            onChange={(e) => setIsAnonymous(e.target.checked)}
+            className="sr-only"
+          />
+          <div
+            onClick={() => setIsAnonymous(!isAnonymous)}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer transition-colors ${
+              isAnonymous ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                isAnonymous ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </div>
+        </div>
+
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Nom <span className="text-red-500">*</span>
           </label>
           <Input
+            id="name"
             type="text"
-            value={formData.name}
+            value={isAnonymous ? 'Anonyme' : formData.name}
             onChange={(e) => handleChange('name', e.target.value)}
+            disabled={isAnonymous}
             className={`dark:bg-gray-800 dark:border-gray-600 dark:text-white ${
               errors.name ? 'border-red-500' : ''
-            }`}
+            } ${isAnonymous ? 'bg-gray-100 dark:bg-gray-600 text-gray-500 cursor-not-allowed' : ''}`}
             placeholder="Nom du client"
-            required
+            required={!isAnonymous}
           />
+          {isAnonymous && (
+            <p className="text-xs text-gray-500 mt-1">
+              Le nom sera affiché comme "Anonyme" sur le site
+            </p>
+          )}
           {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
         </div>
 
         {/* Email */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Email <span className="text-red-500">*</span>
           </label>
           <Input
+            id="email"
             type="email"
             value={formData.email}
             onChange={(e) => handleChange('email', e.target.value)}
@@ -243,10 +289,11 @@ export function AvisForm({ initialData, onSubmit, onCancel, isSubmitting, mode }
 
         {/* Company */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="company" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Entreprise
           </label>
           <Input
+            id="company"
             type="text"
             value={formData.company}
             onChange={(e) => handleChange('company', e.target.value)}
@@ -257,10 +304,11 @@ export function AvisForm({ initialData, onSubmit, onCancel, isSubmitting, mode }
 
         {/* Project */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="project" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Projet <span className="text-red-500">*</span>
           </label>
           <Input
+            id="project"
             type="text"
             value={formData.project}
             onChange={(e) => handleChange('project', e.target.value)}
@@ -278,10 +326,11 @@ export function AvisForm({ initialData, onSubmit, onCancel, isSubmitting, mode }
 
         {/* Message */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Message <span className="text-red-500">*</span>
           </label>
           <Textarea
+            id="message"
             value={formData.message}
             onChange={(e) => handleChange('message', e.target.value)}
             rows={4}
