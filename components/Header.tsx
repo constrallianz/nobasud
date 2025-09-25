@@ -29,14 +29,9 @@ export function Header() {
       ],
     },
     {
-      name: "Services",
+      name: "Projets",
       href: "/realisations",
-      subItems: [
-        { name: "Nos réalisations", href: "/realisations" },
-        { name: "Bâtiments", href: "/realisations?type=batiment" },
-        { name: "Infrastructure", href: "/realisations?type=infrastructure" },
-        { name: "Aménagement", href: "/realisations?type=amenagement" },
-      ],
+     
     },
     {
       name: "Blog & Actualités",

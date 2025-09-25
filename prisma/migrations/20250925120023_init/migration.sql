@@ -56,7 +56,6 @@ CREATE TABLE "public"."Job" (
     "location" TEXT,
     "description" TEXT,
     "published" BOOLEAN NOT NULL DEFAULT true,
-<<<<<<<< HEAD:prisma/migrations/20250925120023_init/migration.sql
     "benefits" TEXT,
     "deadline" TIMESTAMP(3),
     "education" TEXT,
@@ -65,8 +64,6 @@ CREATE TABLE "public"."Job" (
     "requirements" TEXT,
     "salary" TEXT,
     "type" TEXT,
-========
-    "type" TEXT,
     "experience" TEXT,
     "education" TEXT,
     "requirements" TEXT,
@@ -74,7 +71,6 @@ CREATE TABLE "public"."Job" (
     "salary" TEXT,
     "deadline" TIMESTAMP(3),
     "imageUrl" TEXT,
->>>>>>>> 10eec0b709775312c7da11470c2a8c542408748b:prisma/migrations/20250924171004_init/migration.sql
 
     CONSTRAINT "Job_pkey" PRIMARY KEY ("id")
 );

@@ -74,7 +74,7 @@ export default function HomePage() {
                   size="lg"
                   className="border-2 border-white text-white hover:bg-white hover:text-brand-blue px-8 py-4 text-lg font-semibold"
                 >
-                  Voir nos réalisations
+                  Voir nos projets
                 </Button>
               </Link>
             </div>
