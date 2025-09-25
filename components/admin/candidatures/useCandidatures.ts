@@ -1,15 +1,14 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 
-interface Candidature {
+interface Application {
   id: string
   name: string
   email: string
-  phone: string
-  position: string
-  appliedAt: string
-  status: 'nouveau' | 'vu' | 'en_cours' | 'retenu' | 'refuse'
+  message: string | null
   cvUrl: string
-  experience: string
+  coverLetterUrl: string | null
+  createdAt: string
+  status: 'nouveau' | 'vu' | 'en_cours' | 'retenu' | 'refuse'
 }
 
 interface StatusOption {
@@ -19,130 +18,115 @@ interface StatusOption {
 }
 
 export function useCandidatures() {
+  const [applications, setApplications] = useState<Application[]>([])
+  const [loading, setLoading] = useState(true)
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
   const [searchTerm, setSearchTerm] = useState('')
 
-  // Mock data - in a real app, this would come from an API
-  const candidatures: Candidature[] = [
-    {
-      id: '1',
-      name: 'Ahmed Benali',
-      email: 'ahmed.benali@email.com',
-      phone: '+212 6 12 34 56 78',
-      position: 'Ingénieur Civil',
-      appliedAt: '2024-01-15',
-      status: 'nouveau',
-      cvUrl: '/cv/ahmed-benali.pdf',
-      experience: '5 ans'
-    },
-    {
-      id: '2',
-      name: 'Fatima El Alami',
-      email: 'fatima.elalami@email.com',
-      phone: '+212 6 87 65 43 21',
-      position: 'Architecte',
-      appliedAt: '2024-01-14',
-      status: 'en_cours',
-      cvUrl: '/cv/fatima-elalami.pdf',
-      experience: '8 ans'
-    },
-    {
-      id: '3',
-      name: 'Youssef Tadlaoui',
-      email: 'youssef.tadlaoui@email.com',
-      phone: '+212 6 55 44 33 22',
-      position: 'Chef de chantier',
-      appliedAt: '2024-01-13',
-      status: 'retenu',
-      cvUrl: '/cv/youssef-tadlaoui.pdf',
-      experience: '12 ans'
-    },
-    {
-      id: '4',
-      name: 'Aicha Moussaoui',
-      email: 'aicha.moussaoui@email.com',
-      phone: '+212 6 11 22 33 44',
-      position: 'Conductrice de travaux',
-      appliedAt: '2024-01-12',
-      status: 'vu',
-      cvUrl: '/cv/aicha-moussaoui.pdf',
-      experience: '3 ans'
-    },
-    {
-      id: '5',
-      name: 'Omar Lahlou',
-      email: 'omar.lahlou@email.com',
-      phone: '+212 6 99 88 77 66',
-      position: 'Ingénieur Civil',
-      appliedAt: '2024-01-11',
-      status: 'refuse',
-      cvUrl: '/cv/omar-lahlou.pdf',
-      experience: '2 ans'
-    },
-    {
-      id: '6',
-      name: 'Khadija Berrada',
-      email: 'khadija.berrada@email.com',
-      phone: '+212 6 77 66 55 44',
-      position: 'Architecte',
-      appliedAt: '2024-01-10',
-      status: 'nouveau',
-      cvUrl: '/cv/khadija-berrada.pdf',
-      experience: '6 ans'
-    },
-    {
-      id: '7',
-      name: 'Rachid Cherkaoui',
-      email: 'rachid.cherkaoui@email.com',
-      phone: '+212 6 33 44 55 66',
-      position: 'Chef de chantier',
-      appliedAt: '2024-01-09',
-      status: 'en_cours',
-      cvUrl: '/cv/rachid-cherkaoui.pdf',
-      experience: '15 ans'
+  // Fetch applications from API
+  useEffect(() => {
+    async function fetchApplications() {
+      try {
+        const response = await fetch('/api/admin/applications')
+        if (response.ok) {
+          const data = await response.json()
+          setApplications(data)
+        } else {
+          console.error('Failed to fetch applications')
+        }
+      } catch (error) {
+        console.error('Error fetching applications:', error)
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+
+    fetchApplications()
+  }, [])
 
   const statusOptions: StatusOption[] = useMemo(() => [
-    { value: 'all', label: 'Tous les statuts', count: candidatures.length },
-    { value: 'nouveau', label: 'Nouveau', count: candidatures.filter(c => c.status === 'nouveau').length },
-    { value: 'vu', label: 'Vu', count: candidatures.filter(c => c.status === 'vu').length },
-    { value: 'en_cours', label: 'En cours', count: candidatures.filter(c => c.status === 'en_cours').length },
-    { value: 'retenu', label: 'Retenu', count: candidatures.filter(c => c.status === 'retenu').length },
-    { value: 'refuse', label: 'Refusé', count: candidatures.filter(c => c.status === 'refuse').length }
-  ], [candidatures])
+    { value: 'all', label: 'Tous les statuts', count: applications.length },
+    { value: 'nouveau', label: 'Nouveau', count: applications.filter(c => c.status === 'nouveau').length },
+    { value: 'vu', label: 'Vu', count: applications.filter(c => c.status === 'vu').length },
+    { value: 'en_cours', label: 'En cours', count: applications.filter(c => c.status === 'en_cours').length },
+    { value: 'retenu', label: 'Retenu', count: applications.filter(c => c.status === 'retenu').length },
+    { value: 'refuse', label: 'Refusé', count: applications.filter(c => c.status === 'refuse').length }
+  ], [applications])
 
   const filteredCandidatures = useMemo(() => {
-    return candidatures.filter(candidature => {
-      const matchesStatus = selectedStatus === 'all' || candidature.status === selectedStatus
-      const matchesSearch = candidature.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           candidature.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           candidature.position.toLowerCase().includes(searchTerm.toLowerCase())
+    return applications.filter(application => {
+      const matchesStatus = selectedStatus === 'all' || application.status === selectedStatus
+      const matchesSearch = application.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           application.email.toLowerCase().includes(searchTerm.toLowerCase())
       return matchesStatus && matchesSearch
     })
-  }, [candidatures, selectedStatus, searchTerm])
+  }, [applications, selectedStatus, searchTerm])
 
-  const handleViewCV = (candidature: Candidature) => {
-    // In a real app, this would open the CV or navigate to a CV viewer
-    console.log('Viewing CV for:', candidature.name)
-    window.open(candidature.cvUrl, '_blank')
+  const handleViewCV = (application: Application) => {
+    // Open CV in new tab
+    if (application.cvUrl) {
+      window.open(application.cvUrl, '_blank')
+    }
   }
 
-  const handleDelete = (candidature: Candidature) => {
-    // In a real app, this would call an API to delete the candidature
-    console.log('Deleting candidature:', candidature.name)
-    // Show confirmation dialog and handle deletion
+  const handleUpdateStatus = async (applicationId: string, newStatus: string) => {
+    try {
+      const response = await fetch('/api/admin/applications', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: applicationId, status: newStatus }),
+      })
+
+      if (response.ok) {
+        const updatedApplication = await response.json()
+        setApplications(prev => 
+          prev.map(app => 
+            app.id === applicationId 
+              ? { ...app, status: updatedApplication.status }
+              : app
+          )
+        )
+      } else {
+        console.error('Failed to update application status')
+      }
+    } catch (error) {
+      console.error('Error updating application status:', error)
+    }
+  }
+
+  const handleDelete = async (application: Application) => {
+    if (confirm(`Êtes-vous sûr de vouloir supprimer la candidature de ${application.name} ?`)) {
+      try {
+        const response = await fetch(`/api/admin/applications?id=${application.id}`, {
+          method: 'DELETE',
+        })
+
+        if (response.ok) {
+          setApplications(prev => prev.filter(app => app.id !== application.id))
+        } else {
+          console.error('Failed to delete application')
+          alert('Erreur lors de la suppression')
+        }
+      } catch (error) {
+        console.error('Error deleting application:', error)
+        alert('Erreur lors de la suppression')
+      }
+    }
   }
 
   return {
-    candidatures,
+    candidatures: applications,
     filteredCandidatures,
+    loading,
     selectedStatus,
     setSelectedStatus,
     searchTerm,
     setSearchTerm,
     statusOptions,
     handleViewCV,
+    handleUpdateStatus,
     handleDelete
   }
 }

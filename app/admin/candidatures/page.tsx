@@ -12,12 +12,14 @@ import { useCandidatures } from '@/components/admin/candidatures/useCandidatures
 export default function CandidaturesPage() {
   const {
     filteredCandidatures,
+    loading,
     selectedStatus,
     setSelectedStatus,
     searchTerm,
     setSearchTerm,
     statusOptions,
     handleViewCV,
+    handleUpdateStatus,
     handleDelete
   } = useCandidatures()
 
@@ -53,19 +55,28 @@ export default function CandidaturesPage() {
 
       {/* Candidatures List */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-        {filteredCandidatures.length > 0 ? (
-          <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+        {loading && (
+          <div className="p-8 text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-blue"></div>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">Chargement des candidatures...</p>
+          </div>
+        )}
+
+        {!loading && filteredCandidatures.length > 0 && (
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {filteredCandidatures.map((candidature) => (
-              <li key={candidature.id}>
-                <CandidatureCard
-                  candidature={candidature}
-                  onViewCV={handleViewCV}
-                  onDelete={handleDelete}
-                />
-              </li>
+              <CandidatureCard
+                key={candidature.id}
+                candidature={candidature}
+                onViewCV={handleViewCV}
+                onUpdateStatus={handleUpdateStatus}
+                onDelete={handleDelete}
+              />
             ))}
-          </ul>
-        ) : (
+          </div>
+        )}
+
+        {!loading && filteredCandidatures.length === 0 && (
           <CandidaturePageStates
             isEmpty={true}
             selectedStatus={selectedStatus}

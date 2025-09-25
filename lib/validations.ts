@@ -31,6 +31,7 @@ export const applicationSchema = z.object({
   message: z.string().optional(),
   cvUrl: z.string().min(1, 'Le CV est requis'),
   coverLetterUrl: z.string().optional(),
+  status: z.enum(['nouveau', 'vu', 'en_cours', 'retenu', 'refuse']).optional().default('nouveau'),
 })
 
 export const contactSchema = z.object({

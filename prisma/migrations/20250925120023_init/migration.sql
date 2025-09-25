@@ -56,6 +56,14 @@ CREATE TABLE "public"."Job" (
     "location" TEXT,
     "description" TEXT,
     "published" BOOLEAN NOT NULL DEFAULT true,
+    "benefits" TEXT,
+    "deadline" TIMESTAMP(3),
+    "education" TEXT,
+    "experience" TEXT,
+    "imageUrl" TEXT,
+    "requirements" TEXT,
+    "salary" TEXT,
+    "type" TEXT,
 
     CONSTRAINT "Job_pkey" PRIMARY KEY ("id")
 );
@@ -69,6 +77,7 @@ CREATE TABLE "public"."Application" (
     "cvUrl" TEXT NOT NULL,
     "coverLetterUrl" TEXT,
     "message" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'nouveau',
 
     CONSTRAINT "Application_pkey" PRIMARY KEY ("id")
 );
