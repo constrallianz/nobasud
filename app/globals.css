@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 :root {
   --color-brand-blue: #1A2E81;
@@ -16,6 +17,7 @@ html {
 
 html, body {
   height: 100%;
+  font-family: 'Montserrat' !important;
 }
 
 body {
