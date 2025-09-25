@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 
-export default function FeedbackForm() {
+export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () => void}) {
   const [submitting, setSubmitting] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
@@ -44,6 +44,7 @@ export default function FeedbackForm() {
         body: formData,
       });
       if (res.ok) {
+        fetchTestimonials()
         setName("");
         setEmail("");
         setCompany("");

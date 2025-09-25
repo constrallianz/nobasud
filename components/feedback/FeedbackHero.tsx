@@ -11,7 +11,7 @@ export default function FeedbackHero() {
       <div className="absolute inset-0 bg-black/20"></div>
       <div className="container relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-6">
             Avis <span className="text-brand-orange">clients</span>
           </h1>
           <p className="text-xl md:text-2xl leading-relaxed mb-8">

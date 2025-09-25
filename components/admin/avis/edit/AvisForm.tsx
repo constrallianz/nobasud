@@ -45,14 +45,14 @@ export function AvisForm({ initialData, onSubmit, onCancel, isSubmitting, mode }
       setSelectedFile(file)
       const url = URL.createObjectURL(file)
       setPreviewUrl(url)
-      handleChange('photoUrl', '') // Clear URL when file is selected
+      handleChange('photoUrl', '') 
     }
   }
 
   const handleImageUrlChange = (url: string) => {
     handleChange('photoUrl', url)
     if (url) {
-      setSelectedFile(null) // Clear file when URL is entered
+      setSelectedFile(null) 
       setPreviewUrl(url)
     } else {
       setPreviewUrl(null)
@@ -83,7 +83,6 @@ export function AvisForm({ initialData, onSubmit, onCancel, isSubmitting, mode }
     try {
       let finalImageUrl = formData.photoUrl
 
-      // If a file is selected, upload it first
       if (selectedFile) {
         const uploadFormData = new FormData()
         uploadFormData.append('file', selectedFile)

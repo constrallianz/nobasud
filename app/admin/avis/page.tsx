@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import ThemeToggle from '@/components/ThemeToggle'
 import FeedbackFilters from '@/components/admin/avis/FeedbackFilters'
 import FeedbackStats from '@/components/admin/avis/FeedbackStats'
@@ -126,9 +125,8 @@ export default function AdminAvisPage() {
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <ThemeToggle />
                 <Link href="/admin/avis/new">
-                  <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                  <Button className="bg-brand-blue hover:bg-brand-orange dark:bg-brand-orange dark:hover:bg-brand-blue">
                     Nouvel Avis
                   </Button>
                 </Link>
