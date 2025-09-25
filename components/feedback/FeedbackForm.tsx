@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +10,14 @@ export default function FeedbackForm() {
   const [submitting, setSubmitting] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [company, setCompany] = useState("");
+  const [project, setProject] = useState("");
+  const [comment, setComment] = useState("");
+  const [consent, setConsent] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -17,10 +25,18 @@ export default function FeedbackForm() {
       alert("Veuillez donner une note avant d'envoyer votre avis.");
       return;
     }
-
     setSubmitting(true);
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("company", company);
+    formData.append("project", project);
+    formData.append("comment", comment);
     formData.append("rating", rating.toString());
+    formData.append("consent", consent ? "true" : "false");
+    if (photoFile) {
+      formData.append("photo", photoFile);
+    }
 
     try {
       const res = await fetch("/api/feedback", {
@@ -28,7 +44,15 @@ export default function FeedbackForm() {
         body: formData,
       });
       if (res.ok) {
+        setName("");
+        setEmail("");
+        setCompany("");
+        setProject("");
+        setComment("");
         setRating(0);
+        setPhotoFile(null);
+        setConsent(false);
+        if (fileInputRef.current) fileInputRef.current.value = "";
         alert("Merci pour votre avis !");
       } else {
         alert("Erreur lors de l'envoi. Veuillez réessayer.");
@@ -36,7 +60,6 @@ export default function FeedbackForm() {
     } catch (error) {
       alert("Erreur lors de l'envoi. Veuillez réessayer.");
     }
-
     setSubmitting(false);
   }
 
@@ -71,6 +94,8 @@ export default function FeedbackForm() {
                     name="name"
                     required
                     placeholder="Votre nom et prénom"
+                    value={name}
+                    onChange={e => setName(e.target.value)}
                   />
                 </div>
                 <div>
@@ -82,6 +107,8 @@ export default function FeedbackForm() {
                     type="email"
                     required
                     placeholder="votre@email.com"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -91,7 +118,12 @@ export default function FeedbackForm() {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Entreprise/Organisation
                   </label>
-                  <Input name="company" placeholder="Nom de votre entreprise" />
+                  <Input
+                    name="company"
+                    placeholder="Nom de votre entreprise"
+                    value={company}
+                    onChange={(e) => setCompany(e.target.value)}
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -101,6 +133,8 @@ export default function FeedbackForm() {
                     name="project"
                     required
                     placeholder="Décrivez brièvement le projet"
+                    value={project}
+                    onChange={e => setProject(e.target.value)}
                   />
                 </div>
               </div>
@@ -140,6 +174,8 @@ export default function FeedbackForm() {
                   required
                   placeholder="Partagez votre expérience avec NOBASUD : qualité du travail, respect des délais, relation client, satisfaction générale..."
                   className="h-32"
+                  value={comment}
+                  onChange={e => setComment(e.target.value)}
                 />
               </div>
 
@@ -148,10 +184,14 @@ export default function FeedbackForm() {
                   Photos du projet (optionnel)
                 </label>
                 <Input
-                  name="photos"
+                  name="photo"
                   type="file"
                   accept="image/*"
-                  multiple
+                  ref={fileInputRef}
+                  onChange={e => {
+                    const file = e.target.files?.[0] || null;
+                    setPhotoFile(file);
+                  }}
                   className="file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-brand-blue file:text-white hover:file:bg-brand-blue/90"
                 />
                 <p className="text-xs text-gray-500 mt-1">
@@ -165,6 +205,8 @@ export default function FeedbackForm() {
                   id="consent"
                   name="consent"
                   required
+                  checked={consent}
+                  onChange={e => setConsent(e.target.checked)}
                   className="w-4 h-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue"
                 />
                 <label

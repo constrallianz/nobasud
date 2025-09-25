@@ -1,16 +1,16 @@
-'use client'
-import { Button } from '@/components/ui/button'
-import { 
+"use client";
+import { Button } from "@/components/ui/button";
+import {
   CheckCircleIcon,
   UserIcon,
   CalendarIcon,
   BuildingOfficeIcon,
-  ArrowRightIcon
-} from '@heroicons/react/24/outline'
-import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid'
-import { useFeedbacks } from '@/hooks/useFeedbacks'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+  ArrowRightIcon,
+} from "@heroicons/react/24/outline";
+import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
+import { useFeedbacks } from "@/hooks/useFeedbacks";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function TestimonialsGrid() {
   const { feedbacks, loading } = useFeedbacks();
@@ -27,8 +27,8 @@ export default function TestimonialsGrid() {
             Témoignages <span className="text-brand-orange">clients</span>
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Découvrez les retours d&apos;expérience de nos clients sur leurs projets 
-            réalisés avec NOBASUD.
+            Découvrez les retours d&apos;expérience de nos clients sur leurs
+            projets réalisés avec NOBASUD.
           </p>
         </div>
 
@@ -58,7 +58,15 @@ export default function TestimonialsGrid() {
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center space-x-4">
                     <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                      <UserIcon className="w-8 h-8 text-gray-400" />
+                      {testimonial.photoUrl ? (
+                        <img
+                          src={testimonial.photoUrl}
+                          alt={testimonial.name}
+                          className="object-cover w-full h-full"
+                        />
+                      ) : (
+                        <UserIcon className="w-8 h-8 text-gray-400" />
+                      )}
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">

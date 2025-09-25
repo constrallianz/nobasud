@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { uploadBufferToCloudinary } from '@/lib/cloudinary'
 
 export const runtime = 'nodejs'
 
-// GET - Fetch published testimonials
 export async function GET() {
   try {
     const testimonials = await prisma.feedback.findMany({
@@ -22,7 +22,6 @@ export async function GET() {
   }
 }
 
-// POST - Submit new testimonial
 export async function POST(req: Request) {
   try {
     const formData = await req.formData()
@@ -33,6 +32,15 @@ export async function POST(req: Request) {
     const rating = parseInt(String(formData.get('rating') || '0'))
     const message = String(formData.get('comment') || '')
 
+    let photoUrl: string | null = null;
+    const file = formData.get('photo') as File | null;
+    if (file && file.size > 0) {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      // @ts-ignore
+      const result: any = await uploadBufferToCloudinary(buffer, 'nobasud/feedback');
+      photoUrl = result.secure_url;
+    }
     if (!name || !email || !project || !rating || !message) {
       return NextResponse.json({ 
         error: 'Name, email, project, rating and message are required' 
@@ -44,7 +52,7 @@ export async function POST(req: Request) {
         error: 'Rating must be between 1 and 5' 
       }, { status: 400 })
     }
-    
+
     const feedback = await prisma.feedback.create({
       data: {
         name,
@@ -53,10 +61,11 @@ export async function POST(req: Request) {
         project,
         rating,
         message,
-        published: false // Requires admin approval
+        photoUrl,
+        published: false 
       }
     })
-    
+
     return NextResponse.json({ id: feedback.id }, { status: 201 })
   } catch (error) {
     console.error('Error creating feedback:', error)
