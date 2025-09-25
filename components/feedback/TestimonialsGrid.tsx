@@ -1,7 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Feedback } from '@/types/feedback'
 import { 
   CheckCircleIcon,
   UserIcon,
@@ -10,28 +8,16 @@ import {
   ArrowRightIcon
 } from '@heroicons/react/24/outline'
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid'
+import { useFeedbacks } from '@/hooks/useFeedbacks'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 export default function TestimonialsGrid() {
-  const [testimonials, setTestimonials] = useState<Feedback[]>([])
-  const [loading, setLoading] = useState(true)
+  const { feedbacks, loading } = useFeedbacks();
+  const pathname = usePathname();
 
-  useEffect(() => {
-    fetchTestimonials()
-  }, [])
-
-  const fetchTestimonials = async () => {
-    try {
-      const response = await fetch('/api/feedback')
-      if (response.ok) {
-        const data = await response.json()
-        setTestimonials(data)
-      }
-    } catch (error) {
-      console.error('Error fetching testimonials:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const displayedFeedbacks =
+    pathname === "/feedback" ? feedbacks : feedbacks.slice(0, 2);
 
   return (
     <section id="avis" className="py-24 bg-white dark:bg-gray-800">
@@ -49,9 +35,11 @@ export default function TestimonialsGrid() {
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-brand-blue mx-auto"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400">Chargement des avis clients...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">
+              Chargement des avis clients...
+            </p>
           </div>
-        ) : testimonials.length === 0 ? (
+        ) : displayedFeedbacks.length === 0 ? (
           <div className="text-center py-12">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
               Aucun avis pour le moment
@@ -62,8 +50,11 @@ export default function TestimonialsGrid() {
           </div>
         ) : (
           <div className="grid lg:grid-cols-2 gap-8">
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
+            {displayedFeedbacks.map((testimonial) => (
+              <div
+                key={testimonial.id}
+                className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 hover:shadow-lg transition-all duration-300"
+              >
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center space-x-4">
                     <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
@@ -71,24 +62,32 @@ export default function TestimonialsGrid() {
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
-                        <h4 className="font-bold text-gray-900 dark:text-gray-100">{testimonial.name}</h4>
+                        <h4 className="font-bold text-gray-900 dark:text-gray-100">
+                          {testimonial.name}
+                        </h4>
                         <CheckCircleIcon className="w-5 h-5 text-brand-blue" />
                       </div>
                       {testimonial.email && (
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.email}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {testimonial.email}
+                        </p>
                       )}
                       {testimonial.company && (
-                        <p className="text-sm text-brand-orange font-medium">{testimonial.company}</p>
+                        <p className="text-sm text-brand-orange font-medium">
+                          {testimonial.company}
+                        </p>
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex space-x-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <StarIconSolid
                         key={star}
                         className={`w-5 h-5 ${
-                          star <= testimonial.rating ? 'text-yellow-400' : 'text-gray-300'
+                          star <= testimonial.rating
+                            ? "text-yellow-400"
+                            : "text-gray-300"
                         }`}
                       />
                     ))}
@@ -110,7 +109,9 @@ export default function TestimonialsGrid() {
                   </div>
                   <div className="flex items-center">
                     <CalendarIcon className="w-4 h-4 mr-1" />
-                    {new Date(testimonial.createdAt).toLocaleDateString('fr-FR')}
+                    {new Date(testimonial.createdAt).toLocaleDateString(
+                      "fr-FR"
+                    )}
                   </div>
                 </div>
               </div>
@@ -118,13 +119,17 @@ export default function TestimonialsGrid() {
           </div>
         )}
 
-        <div className="text-center mt-12">
-          <Button size="lg" variant="outline">
-            Voir plus d&apos;avis
-            <ArrowRightIcon className="w-5 h-5 ml-2" />
-          </Button>
-        </div>
+        {pathname !== "/feedback" && (
+          <div className="text-center mt-12">
+            <Link href="/feedback">
+              <Button size="lg" variant="outline">
+                Voir plus d&apos;avis
+                <ArrowRightIcon className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </section>
-  )
+  );
 }
