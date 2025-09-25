@@ -1,18 +1,26 @@
 'use client'
 
-import { Article } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
 
-interface RelatedArticlesProps {
-  articles: Article[]
-  getImageUrl: (article: Article) => string
-  getReadTime: (content: string | null) => string
+interface RelatedArticle {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  publishedAt: Date | string;
+  imageUrl: string;
+  readTime: string;
+  content?: string | null;
 }
 
-export default function RelatedArticles({ articles, getImageUrl, getReadTime }: RelatedArticlesProps) {
+interface RelatedArticlesProps {
+  articles: RelatedArticle[];
+}
+
+export default function RelatedArticles({ articles }: RelatedArticlesProps) {
   if (articles.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -36,21 +44,20 @@ export default function RelatedArticles({ articles, getImageUrl, getReadTime }: 
               >
                 <div className="relative aspect-video overflow-hidden">
                   <Image
-                    src={getImageUrl(article)}
+                    src={article.imageUrl}
                     alt={article.title}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
-                
                 <div className="p-8">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                       <svg className="w-4 h-4 mr-2 text-brand-orange" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                       </svg>
-                      <time dateTime={article.publishedAt.toISOString()}>
+                      <time dateTime={typeof article.publishedAt === 'string' ? article.publishedAt : article.publishedAt.toISOString()}>
                         {new Date(article.publishedAt).toLocaleDateString('fr-FR', { 
                           day: 'numeric', 
                           month: 'short',
@@ -62,20 +69,17 @@ export default function RelatedArticles({ articles, getImageUrl, getReadTime }: 
                       <svg className="w-4 h-4 mr-2 text-brand-blue" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                       </svg>
-                      <span>{getReadTime(article.content)}</span>
+                      <span>{article.readTime}</span>
                     </div>
                   </div>
-                  
                   <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-4 leading-tight group-hover:text-brand-orange transition-colors duration-300">
                     {article.title}
                   </h3>
-                  
                   {article.excerpt && (
                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 line-clamp-3">
                       {article.excerpt}
                     </p>
                   )}
-                  
                   <Link
                     href={`/media/${article.slug}`}
                     className="group/link inline-flex items-center text-brand-blue hover:text-brand-orange font-semibold transition-colors duration-200"

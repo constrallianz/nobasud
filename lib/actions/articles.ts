@@ -1,5 +1,9 @@
+
+
+
 import { prisma } from '@/lib/prisma'
 import { type Article, articleSchema } from '@/lib/validations'
+import { parseArticleTags } from '../media-utils';
 
 export async function getArticles() {
   return await prisma.article.findMany({
@@ -20,13 +24,31 @@ export async function getArticleBySlug(slug: string) {
   })
 }
 
+export async function getArticleWithRelatedBySlug(slug: string) {
+  const article = await prisma.article.findUnique({
+    where: { slug },
+  });
+  if (!article || !article.published) {
+    return { article: null, relatedArticles: [] };
+  }
+  const tags = parseArticleTags(article.tags);
+  const relatedArticles = await prisma.article.findMany({
+    where: {
+      published: true,
+      id: { not: article.id },
+    },
+    orderBy: { publishedAt: 'desc' },
+    take: 3,
+  });
+  return { tags, article, relatedArticles };
+}
+
 export async function createArticle(data: Omit<Article, 'id' | 'createdAt' | 'updatedAt'>) {
   const validatedData = articleSchema.parse({
     ...data,
     tags: data.tags || []
   })
   
-  // Séparons les tags du reste des données
   const { tags, ...restData } = validatedData
   
   return await prisma.article.create({

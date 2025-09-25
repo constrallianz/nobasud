@@ -5,6 +5,7 @@ import ArticleContent from '@/components/media/article/ArticleContent'
 import ArticleHeader from '@/components/media/article/ArticleHeader'
 import RelatedArticles from '@/components/media/article/RelatedArticles'
 import { getImageUrl, getReadTime, parseArticleTags } from '@/lib/media-utils'
+import MainArticle from '@/components/media/article/MainArticle'
 
 interface ArticlePageProps {
   params: {
@@ -39,7 +40,6 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   }
 }
 
-// Generate static params for ISR
 export async function generateStaticParams() {
   const articles = await prisma.article.findMany({
     where: { published: true },
@@ -51,53 +51,9 @@ export async function generateStaticParams() {
     slug: article.slug,
   }))
 }
-
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const article = await prisma.article.findUnique({
-    where: { 
-      slug: params.slug,
-      published: true
-    }
-  })
-
-  if (!article) {
-    notFound()
-  }
-
-  const tags = parseArticleTags(article.tags)
-  const relatedArticles = await prisma.article.findMany({
-    where: {
-      published: true,
-      id: { not: article.id },
-      OR: tags.length > 0 ? tags.map(tag => ({
-        tags: { contains: tag }
-      })) : undefined
-    },
-    orderBy: { publishedAt: 'desc' },
-    take: 3
-  })
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <ArticleHeader 
-        article={article}
-        imageUrl={getImageUrl(article)}
-        readTime={getReadTime(article.content)}
-        tags={tags}
-      />
-      
-      <ArticleContent 
-        article={article}
-        readTime={getReadTime(article.content)}
-      />
-      
-      {relatedArticles.length > 0 && (
-        <RelatedArticles 
-          articles={relatedArticles}
-          getImageUrl={getImageUrl}
-          getReadTime={getReadTime}
-        />
-      )}
-    </div>
+    <MainArticle params={params} />
   )
 }

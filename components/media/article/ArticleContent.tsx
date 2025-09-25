@@ -7,11 +7,9 @@ interface ArticleContentProps {
   readTime: string
 }
 
-// Function to format text content with proper line breaks and styling
 function formatArticleContent(content: string | null): string {
   if (!content) return ''
   
-  // Convert line breaks to HTML breaks and handle paragraphs
   return content
     .split('\n')
     .map(paragraph => paragraph.trim())
@@ -26,7 +24,7 @@ export default function ArticleContent({ article, readTime }: ArticleContentProp
   return (
     <main className="py-16 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="">
           {/* Article Meta Info */}
           <div className="flex items-center justify-between mb-16 pb-8 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
@@ -153,7 +151,6 @@ export default function ArticleContent({ article, readTime }: ArticleContentProp
         </div>
       </div>
       
-      {/* Custom Styles for Article Content */}
       <style jsx global>{`
         .article-content p {
           margin-bottom: 1.5rem;
