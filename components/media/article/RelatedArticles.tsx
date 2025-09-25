@@ -7,7 +7,7 @@ import Link from 'next/link'
 interface RelatedArticlesProps {
   articles: Article[]
   getImageUrl: (article: Article) => string
-  getReadTime: (content: string | null) => number
+  getReadTime: (content: string | null) => string
 }
 
 export default function RelatedArticles({ articles, getImageUrl, getReadTime }: RelatedArticlesProps) {

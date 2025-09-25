@@ -14,7 +14,7 @@ import {
 interface ArticleHeaderProps {
   article: Article;
   imageUrl: string;
-  readTime: number;
+  readTime: string;
   tags: string[];
 }
 

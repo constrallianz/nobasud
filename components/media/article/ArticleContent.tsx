@@ -4,7 +4,7 @@ import { Article } from '@prisma/client'
 
 interface ArticleContentProps {
   article: Article
-  readTime: number
+  readTime: string
 }
 
 export default function ArticleContent({ article, readTime }: ArticleContentProps) {
