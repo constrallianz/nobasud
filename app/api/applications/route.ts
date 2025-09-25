@@ -12,22 +12,22 @@ export async function POST(req: Request) {
     const message = String(formData.get('message') || '')
     const cv = formData.get('cv') as File | null
     const coverLetter = formData.get('coverLetter') as File | null
-    
+
     if (!name || !email || !cv) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
-    
+
     const cvUrl = cv ? await saveUpload(cv, 'cv') : ''
     const coverLetterUrl = coverLetter ? await saveUpload(coverLetter, 'letters') : undefined
-    
-    const application = await createApplication({ 
-      name, 
-      email, 
-      message, 
-      cvUrl, 
-      coverLetterUrl 
+
+    const application = await createApplication({
+      name,
+      email,
+      message,
+      cvUrl,
+      coverLetterUrl
     })
-    
+
     return NextResponse.json({ id: application.id }, { status: 201 })
   } catch (e) {
     console.error(e)

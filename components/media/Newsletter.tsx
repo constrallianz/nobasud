@@ -54,7 +54,7 @@ export default function Newsletter() {
               onClick={() => setIsSubscribed(false)}
               className="bg-white dark:bg-gray-800 text-brand-blue hover:bg-white/90 dark:hover:bg-gray-800/90"
             >
-              S&apos;abonner avec une autre adresse
+              S’abonner avec une autre adresse
             </Button>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function Newsletter() {
                   {isSubmitting ? (
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-blue"></div>
                   ) : (
-                    'S&apos;abonner'
+                    'S’abonner'
                   )}
                 </Button>
               </div>

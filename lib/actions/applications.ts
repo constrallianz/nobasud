@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { type Application, applicationSchema } from '@/lib/validations'
+import { type Application } from '@/lib/validations'
 
 export async function getApplications() {
   return await prisma.application.findMany({
@@ -13,16 +13,23 @@ export async function getApplication(id: string) {
   })
 }
 
-export async function createApplication(data: Omit<Application, 'id' | 'createdAt'>) {
-  const validatedData = applicationSchema.parse(data)
-  
+export async function createApplication(data: Omit<Application, 'id' | 'createdAt' | 'status'>) {
   return await prisma.application.create({
-    data: validatedData
+    data: {
+      name: data.name,
+      email: data.email,
+      cvUrl: data.cvUrl,
+      coverLetterUrl: data.coverLetterUrl,
+      message: data.message,
+      // status will default to 'nouveau' as defined in schema
+    }
   })
 }
 
 export async function deleteApplication(id: string) {
-  return await prisma.application.delete({
+  await prisma.application.delete({
     where: { id }
   })
+  
+  return { success: true }
 }
