@@ -52,16 +52,31 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
     }
   }
 
-  const handleSubmit = async (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleSubmit = async (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'> & { imageFiles?: File[] }) => {
     setIsSubmitting(true)
     
     try {
+      const form = new FormData()
+      form.append('name', data.name || '')
+      form.append('slug', data.slug || '')
+      form.append('type', data.type || '')
+      form.append('location', data.location || '')
+      form.append('description', data.description || '')
+      
+      // Add existing image URLs (from URL input and existing project images)
+      const existingImages = data.images?.filter(img => !img.startsWith('blob:')) || []
+      form.append('images', JSON.stringify(existingImages))
+      
+      // Add new files
+      if (data.imageFiles && data.imageFiles.length > 0) {
+        data.imageFiles.forEach(file => {
+          form.append('imageFiles', file)
+        })
+      }
+
       const response = await fetch(`/api/admin/projects/${params.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+        body: form, // Use FormData instead of JSON
       })
 
       if (!response.ok) {

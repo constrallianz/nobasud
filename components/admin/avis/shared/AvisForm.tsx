@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, FormEvent, useRef } from 'react'
-import { PhotoIcon, XMarkIcon, FolderOpenIcon, StarIcon } from '@heroicons/react/24/outline'
+import { XMarkIcon, FolderOpenIcon, StarIcon } from '@heroicons/react/24/outline'
 import { type Feedback } from '@/lib/validations'
 
 interface AvisFormProps {
@@ -28,15 +28,18 @@ export default function AvisForm({
     photoUrl: initialData?.photoUrl || ''
   })
 
+  const [isAnonymous, setIsAnonymous] = useState(initialData?.name === 'Anonyme')
   const [selectedImage, setSelectedImage] = useState<string | null>(initialData?.photoUrl || null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    await onSubmit({
+    const finalFormData = {
       ...formData,
+      name: isAnonymous ? 'Anonyme' : formData.name,
       photoUrl: selectedImage || undefined
-    })
+    }
+    await onSubmit(finalFormData)
   }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,24 +99,66 @@ export default function AvisForm({
         <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
           Informations personnelles
         </h3>
+        
+        {/* Anonymous Toggle */}
+        <div className="flex items-center justify-between mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <div>
+            <label htmlFor="anonymous-toggle" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Témoignage anonyme
+            </label>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              Le nom apparaîtra comme "Anonyme" si activé
+            </p>
+          </div>
+          <input
+            id="anonymous-toggle"
+            type="checkbox"
+            checked={isAnonymous}
+            onChange={(e) => setIsAnonymous(e.target.checked)}
+            className="sr-only"
+          />
+          <div
+            onClick={() => setIsAnonymous(!isAnonymous)}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer transition-colors ${
+              isAnonymous ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                isAnonymous ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Nom complet *
             </label>
             <input
+              id="name"
               type="text"
-              value={formData.name}
+              value={isAnonymous ? 'Anonyme' : formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100"
-              required
+              disabled={isAnonymous}
+              className={`w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100 ${
+                isAnonymous ? 'bg-gray-100 dark:bg-gray-600 text-gray-500 cursor-not-allowed' : ''
+              }`}
+              required={!isAnonymous}
             />
+            {isAnonymous && (
+              <p className="text-xs text-gray-500 mt-1">
+                Le nom sera affiché comme "Anonyme" sur le site
+              </p>
+            )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Email *
             </label>
             <input
+              id="email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
@@ -122,10 +167,11 @@ export default function AvisForm({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="company" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Entreprise
             </label>
             <input
+              id="company"
               type="text"
               value={formData.company}
               onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
@@ -133,10 +179,11 @@ export default function AvisForm({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="project" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Projet *
             </label>
             <input
+              id="project"
               type="text"
               value={formData.project}
               onChange={(e) => setFormData(prev => ({ ...prev, project: e.target.value }))}
@@ -153,17 +200,18 @@ export default function AvisForm({
           Évaluation
         </h3>
         <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <fieldset>
+            <legend className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Note *
-            </label>
+            </legend>
             {renderStarRating()}
-          </div>
+          </fieldset>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Message/Témoignage *
             </label>
             <textarea
+              id="message"
               value={formData.message}
               onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
               rows={6}
@@ -183,10 +231,11 @@ export default function AvisForm({
         
         {/* Image URL Input */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="photoUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             URL de l'image
           </label>
           <input
+            id="photoUrl"
             type="url"
             value={formData.photoUrl}
             onChange={(e) => handleImageUrlChange(e.target.value)}
@@ -197,11 +246,12 @@ export default function AvisForm({
 
         {/* File Upload */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="fileUpload" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Ou télécharger une image
           </label>
           <div className="flex items-center gap-3">
             <input
+              id="fileUpload"
               ref={fileInputRef}
               type="file"
               accept="image/*"

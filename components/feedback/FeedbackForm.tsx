@@ -7,9 +7,6 @@ import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 
 export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () => void}) {
-  const [submitting, setSubmitting] = useState(false);
-  const [rating, setRating] = useState(0);
-  const [hoveredRating, setHoveredRating] = useState(0);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,6 +15,13 @@ export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () 
   const [comment, setComment] = useState("");
   const [consent, setConsent] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [submitting, setSubmitting] = useState(false)
+  const [rating, setRating] = useState(0)
+  const [hoveredRating, setHoveredRating] = useState(0)
+  const [isAnonymous, setIsAnonymous] = useState(false)
+  // Store previous name/email to restore if toggling back
+  const prevNameRef = useRef("");
+  const prevEmailRef = useRef("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -27,7 +31,7 @@ export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () 
     }
     setSubmitting(true);
     const formData = new FormData();
-    formData.append("name", name);
+    formData.append("name", isAnonymous ? 'Témoignage anonyme' : name);
     formData.append("email", email);
     formData.append("company", company);
     formData.append("project", project);
@@ -44,7 +48,7 @@ export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () 
         body: formData,
       });
       if (res.ok) {
-        fetchTestimonials()
+        await fetchTestimonials()
         setName("");
         setEmail("");
         setCompany("");
@@ -55,6 +59,7 @@ export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () 
         setConsent(false);
         if (fileInputRef.current) fileInputRef.current.value = "";
         alert("Merci pour votre avis !");
+        setIsAnonymous(false)
       } else {
         alert("Erreur lors de l'envoi. Veuillez réessayer.");
       }
@@ -88,22 +93,65 @@ export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () 
             >
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Nom complet *
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Nom complet {!isAnonymous && '*'}
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      <label htmlFor="anonymous-toggle" className="text-sm text-gray-600 dark:text-gray-400">
+                        Anonyme
+                      </label>
+                      <div className="relative inline-block w-10 mr-2 align-middle select-none">
+                        <input
+                          type="checkbox"
+                          id="anonymous-toggle"
+                          checked={isAnonymous}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            setIsAnonymous(checked);
+                            if (checked) {
+                              prevNameRef.current = name;
+                              prevEmailRef.current = email;
+                              setName("");
+                              setEmail("");
+                            } else {
+                              setName(prevNameRef.current);
+                              setEmail(prevEmailRef.current);
+                            }
+                          }}
+                          className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-2 border-gray-300 appearance-none cursor-pointer transition-all duration-300 checked:right-0 checked:border-brand-orange checked:bg-brand-orange focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-opacity-50"
+                        />
+                        <label
+                          htmlFor="anonymous-toggle"
+                          className="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300 peer-checked:bg-brand-orange"
+                        >
+                          <span className="sr-only">Rester anonyme</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                   <Input
+                    id="name"
                     name="name"
-                    required
-                    placeholder="Votre nom et prénom"
-                    value={name}
+                    required={!isAnonymous}
+                    disabled={isAnonymous}
+                    placeholder={isAnonymous ? "Témoignage anonyme" : "Votre nom et prénom"}
+                    value={isAnonymous ? "" : name}
                     onChange={e => setName(e.target.value)}
+                    className={isAnonymous ? "bg-gray-100 dark:bg-gray-700 text-gray-500" : ""}
                   />
+                  {isAnonymous && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Votre témoignage sera publié de manière anonyme
+                    </p>
+                  )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Email *
                   </label>
                   <Input
+                    id="email"
                     name="email"
                     type="email"
                     required
@@ -111,12 +159,15 @@ export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () 
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {isAnonymous ? "Email requis pour validation (ne sera pas publié)" : "Email pour vous contacter si nécessaire"}
+                  </p>
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label htmlFor="company" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Entreprise/Organisation
                   </label>
                   <Input
@@ -127,7 +178,7 @@ export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () 
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label htmlFor="project" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Projet réalisé *
                   </label>
                   <Input
@@ -140,10 +191,10 @@ export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () 
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+              <fieldset>
+                <legend className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
                   Votre note globale *
-                </label>
+                </legend>
                 <div className="flex space-x-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -164,10 +215,10 @@ export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () 
                     </button>
                   ))}
                 </div>
-              </div>
+              </fieldset>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="comment" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Votre témoignage *
                 </label>
                 <Textarea
@@ -181,7 +232,7 @@ export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () 
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="images" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Photos du projet (optionnel)
                 </label>
                 <Input

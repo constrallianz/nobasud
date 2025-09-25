@@ -6,7 +6,7 @@ import { type Project } from '@/lib/validations'
 
 interface ProjectFormProps {
   initialData?: Partial<Project>
-  onSubmit: (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>
+  onSubmit: (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'> & { imageFiles?: File[] }) => Promise<void>
   isSubmitting: boolean
   submitButtonText: string
 }
@@ -27,6 +27,7 @@ export default function ProjectForm({
   })
 
   const [newImageUrl, setNewImageUrl] = useState('')
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Générer automatiquement le slug à partir du nom
@@ -70,21 +71,24 @@ export default function ProjectForm({
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      // Create a temporary URL for preview (in production, you'd upload to a server)
-      const fileUrl = URL.createObjectURL(file)
-      setFormData(prev => ({
-        ...prev,
-        images: [...(prev.images || []), fileUrl]
-      }))
+    const files = Array.from(e.target.files || [])
+    if (files.length > 0) {
+      // Add files to selected files array
+      setSelectedFiles(prev => [...prev, ...files])
+      
+      // Create preview URLs for display
+      files.forEach(file => {
+        const fileUrl = URL.createObjectURL(file)
+        setFormData(prev => ({
+          ...prev,
+          images: [...(prev.images || []), fileUrl]
+        }))
+      })
+      
       // Reset the file input
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
-      
-      // Note: In a real application, you would upload the file to a server here
-      // and use the returned URL instead of the local object URL
     }
   }
 
@@ -96,6 +100,13 @@ export default function ProjectForm({
   }
 
   const removeImage = (index: number) => {
+    // Also remove from selected files if it's a file upload
+    const imageToRemove = formData.images?.[index]
+    if (imageToRemove?.startsWith('blob:')) {
+      // This is a file upload, remove from selectedFiles
+      setSelectedFiles(prev => prev.filter((_, i) => i !== index))
+    }
+    
     setFormData(prev => ({
       ...prev,
       images: prev.images?.filter((_, i) => i !== index) || []
@@ -104,7 +115,14 @@ export default function ProjectForm({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    await onSubmit(formData)
+    
+    // Create FormData with files for Cloudinary upload
+    const submitData = {
+      ...formData,
+      imageFiles: selectedFiles // Pass files separately
+    }
+    
+    await onSubmit(submitData)
   }
 
   return (
@@ -200,11 +218,12 @@ export default function ProjectForm({
         <div className="space-y-4">
           {/* Add new image via URL */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="new-image-url" className="block text-sm font-medium text-gray-700 mb-2">
               Ajouter via URL
             </label>
             <div className="flex gap-2">
               <input
+                id="new-image-url"
                 type="url"
                 value={newImageUrl}
                 onChange={(e) => setNewImageUrl(e.target.value)}
@@ -225,21 +244,22 @@ export default function ProjectForm({
 
           {/* Add new image via file upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Ou télécharger un fichier
-            </label>
+            <span className="block text-sm font-medium text-gray-700 mb-2">
+              Ou télécharger des fichiers
+            </span>
             <button
               type="button"
               onClick={handleFileUpload}
               className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center gap-2"
             >
               <FolderOpenIcon className="h-4 w-4" />
-              Choisir un fichier
+              Choisir des fichiers
             </button>
             <input
               ref={fileInputRef}
               type="file"
               accept="image/*"
+              multiple
               onChange={handleFileChange}
               className="hidden"
             />
