@@ -54,7 +54,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Validate & upload CV
     assertAllowed(cv, 'cv');
     const cvBuf = await fileToBuffer(cv);
     const cvUpload:any = await uploadBufferToCloudinary(

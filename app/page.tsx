@@ -47,7 +47,7 @@ export default function HomePage() {
 
         <div className="container relative z-10 text-center">
           <div className="max-w-5xl mx-auto">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 leading-tight">
               Construire l&apos;
               <span className="text-brand-orange">avenir</span>
               <br />
@@ -103,7 +103,7 @@ export default function HomePage() {
       <section className="py-24 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-gray-100 mb-6">
               Nos <span className="text-brand-orange">services</span>
             </h2>
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
@@ -140,7 +140,7 @@ export default function HomePage() {
       <section className="py-24 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-gray-100 mb-6">
               Nos dernières{" "}
               <span className="text-brand-orange">réalisations</span>
             </h2>
@@ -178,7 +178,7 @@ export default function HomePage() {
                   </div>
                   <div className="p-8">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-brand-blue transition-colors">
+                      <h3 className="text-xl font-extrabold text-gray-900 dark:text-gray-100 group-hover:text-brand-blue transition-colors">
                         {project.name}
                       </h3>
                       <span className="text-sm text-brand-orange font-medium">

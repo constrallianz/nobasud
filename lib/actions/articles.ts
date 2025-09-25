@@ -38,7 +38,7 @@ export async function getArticleWithRelatedBySlug(slug: string) {
       id: { not: article.id },
     },
     orderBy: { publishedAt: 'desc' },
-    take: 3,
+    take: 7,
   });
   return { tags, article, relatedArticles };
 }
