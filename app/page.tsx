@@ -3,16 +3,52 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import { ArrowRightIcon, CheckBadgeIcon, BuildingOffice2Icon, TruckIcon, UserGroupIcon } from '@heroicons/react/24/outline'
+import { ArrowRightIcon, CheckBadgeIcon, TruckIcon, UserGroupIcon, StarIcon } from '@heroicons/react/24/outline'
+import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid'
 import { useProjects } from '@/components/admin/projects/listing'
 import { ProjectWithImages } from '@/types/realisations'
 import { services, statsMain } from '@/data/realisations'
+import { useEffect, useState } from 'react'
+
+interface Feedback {
+  id: string
+  name: string
+  email: string
+  company?: string
+  project: string
+  rating: number
+  message: string
+  published: boolean
+  photoUrl?: string
+  createdAt: Date
+}
 
 export default function HomePage() {
    const {
        projects,
-       loading,
      } = useProjects()
+
+     const [feedbacks, setFeedbacks] = useState<Feedback[]>([])
+     const [loadingFeedbacks, setLoadingFeedbacks] = useState(true)
+
+     // Fetch published feedbacks
+     useEffect(() => {
+       const fetchFeedbacks = async () => {
+         try {
+           const response = await fetch('/api/feedbacks?published=true')
+           if (response.ok) {
+             const data = await response.json()
+             setFeedbacks(data)
+           }
+         } catch (error) {
+           console.error('Error fetching feedbacks:', error)
+         } finally {
+           setLoadingFeedbacks(false)
+         }
+       }
+
+       fetchFeedbacks()
+     }, [])
 
 
      const projectsWithImages: ProjectWithImages[] = projects.map(project => {
@@ -65,7 +101,7 @@ export default function HomePage() {
             {/* Floating stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
               {statsMain.map((stat, i) => (
-                <div key={i} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                <div key={stat.label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
                   <div className="text-3xl md:text-4xl font-bold text-brand-orange mb-2">{stat.value}</div>
                   <div className="text-sm md:text-base opacity-90">{stat.label}</div>
                 </div>
@@ -88,10 +124,10 @@ export default function HomePage() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-            {services.map((service, i) => {
+            {services.map((service) => {
               const IconComponent = service.icon
               return (
-                <div key={i} className="group bg-white dark:bg-gray-700 rounded-3xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4">
+                <div key={service.title} className="group bg-white dark:bg-gray-700 rounded-3xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4">
                   <div className="w-20 h-20 bg-gradient-to-br from-brand-blue to-brand-orange rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
                     <IconComponent className="w-10 h-10 text-white" />
                   </div>
@@ -207,6 +243,123 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Testimonials section */}
+      <section className="py-24 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+              Ce que disent nos <span className="text-brand-orange">clients</span>
+            </h2>
+            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+              Leur satisfaction est notre plus belle récompense
+            </p>
+          </div>
+
+          {loadingFeedbacks && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, i) => (
+                <div key={`skeleton-${i}`} className="bg-white dark:bg-gray-700 rounded-3xl p-8 animate-pulse">
+                  <div className="flex items-center space-x-1 mb-4">
+                    {[...Array(5)].map((_, j) => (
+                      <div key={`star-${j}`} className="w-5 h-5 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                    ))}
+                  </div>
+                  <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded mb-4"></div>
+                  <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+                  <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded mb-6"></div>
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-full mr-4"></div>
+                    <div>
+                      <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded mb-2 w-24"></div>
+                      <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-32"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!loadingFeedbacks && feedbacks.length > 0 && (
+            <>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {feedbacks.slice(0, 6).map((feedback) => (
+                  <div 
+                    key={feedback.id} 
+                    className="group bg-white dark:bg-gray-700 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-200 dark:border-gray-600"
+                  >
+                    {/* Rating stars */}
+                    <div className="flex items-center space-x-1 mb-6">
+                      {[...Array(5)].map((_, i) => (
+                        <div key={`rating-${feedback.id}-${i}`}>
+                          {i < feedback.rating ? (
+                            <StarIconSolid className="w-5 h-5 text-yellow-400" />
+                          ) : (
+                            <StarIcon className="w-5 h-5 text-gray-300 dark:text-gray-600" />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Message */}
+                    <blockquote className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed text-lg italic">
+                      &ldquo;{feedback.message}&rdquo;
+                    </blockquote>
+
+                    {/* Project info */}
+                    <div className="text-sm text-brand-orange font-semibold mb-4">
+                      Projet: {feedback.project}
+                    </div>
+
+                    {/* Author info */}
+                    <div className="flex items-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-brand-blue to-brand-orange rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
+                        {feedback.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-900 dark:text-gray-100">
+                          {feedback.name}
+                        </div>
+                        {feedback.company && (
+                          <div className="text-sm text-gray-600 dark:text-gray-400">
+                            {feedback.company}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {feedbacks.length > 6 && (
+                <div className="text-center mt-12">
+                  <Link href="/feedback">
+                    <Button size="lg" className="bg-brand-blue hover:bg-brand-blue/90 px-8 py-4 text-lg">
+                      Voir tous les témoignages
+                      <ArrowRightIcon className="w-6 h-6 ml-2" />
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </>
+          )}
+
+          {!loadingFeedbacks && feedbacks.length === 0 && (
+            <div className="text-center py-16">
+              <div className="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-8">
+                <StarIcon className="w-12 h-12 text-gray-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                Bientôt des témoignages
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+                Nous travaillons dur pour offrir la meilleure expérience à nos clients. 
+                Leurs témoignages apparaîtront bientôt ici.
+              </p>
+            </div>
+          )}
         </div>
       </section>
     </div>
