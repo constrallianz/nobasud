@@ -1,22 +1,34 @@
-import { prisma } from '@/lib/prisma'
+'use client'
+
 import { categories, stats } from '@/data/realisations'
 import { ProjectWithImages } from '@/types/realisations'
 import RealisationsHero from '@/components/realisations/RealisationsHero'
 import RealisationsProjects from '@/components/realisations/RealisationsProjects'
 import RealisationsStats from '@/components/realisations/RealisationsStats'
+import { useProjects } from '@/components/admin/projects/listing'
+import { LoadingState } from '@/components/admin/projects/states'
 
-export default async function RealisationsPage() {
-  // Fetch projects from database
-  const projects = await prisma.project.findMany({
-    orderBy: { createdAt: 'desc' }
-  })
+export default function RealisationsPage() {
+    const {
+       projects,
+       loading,
+     } = useProjects()
+    
+  const projectsWithImages: ProjectWithImages[] = projects.map(project => {
+    const images = project.images ? JSON.parse(project.images) : [];
+    const image = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+    return {
+      ...project,
+      type: project.type as string,
+      images,
+      image
+    };
+  });
 
-  // Parse images JSON for projects
-  const projectsWithImages: ProjectWithImages[] = projects.map(project => ({
-    ...project,
-    images: project.images ? JSON.parse(project.images) : [],
-    image: project.images ? JSON.parse(project.images)[0] : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-  }))
+  
+    if (loading) {
+      return <LoadingState />
+    }
   
   return (
     <div className="relative">
