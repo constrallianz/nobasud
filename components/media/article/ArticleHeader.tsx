@@ -31,9 +31,9 @@ export default function ArticleHeader({
       <section className="relative bg-gradient-to-br from-blue-50 via-white to-orange-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 py-20 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-10 left-10 w-20 h-20 bg-brand-orange rounded-full animate-pulse"></div>
-          <div className="absolute top-40 right-20 w-32 h-32 bg-brand-blue rounded-full animate-bounce delay-1000"></div>
-          <div className="absolute bottom-20 left-1/4 w-16 h-16 bg-brand-orange rounded-full animate-pulse delay-500"></div>
+          <div className="absolute top-10 left-10 w-20 h-20 bg-accent rounded-full animate-pulse"></div>
+          <div className="absolute top-40 right-20 w-32 h-32 bg-primary rounded-full animate-bounce delay-1000"></div>
+          <div className="absolute bottom-20 left-1/4 w-16 h-16 bg-accent rounded-full animate-pulse delay-500"></div>
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
@@ -41,7 +41,7 @@ export default function ArticleHeader({
             <div className="mb-8">
               <Link
                 href="/media"
-                className="group inline-flex items-center text-brand-orange hover:text-brand-blue transition-all duration-200 bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-md hover:shadow-lg transform hover:scale-105"
+                className="group inline-flex items-center text-accent hover:text-primary transition-all duration-200 bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-md hover:shadow-lg transform hover:scale-105"
               >
                 <ArrowLeftCircleIcon className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
                 <span className="font-medium">Retour aux articles</span>
@@ -51,13 +51,13 @@ export default function ArticleHeader({
             {/* Category & Date */}
             <div className="flex flex-wrap items-center gap-6 mb-8">
               <div className="flex items-center bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-sm">
-                <CalendarDaysIcon className="w-5 h-5 mr-2 text-brand-orange" />
+                <CalendarDaysIcon className="w-5 h-5 mr-2 text-accent" />
                 <span className="font-medium text-gray-700 dark:text-gray-300">
                   {formatDate(article.publishedAt)}
                 </span>
               </div>
               <div className="flex items-center bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-sm">
-                <ClockIcon className="w-5 h-5 mr-2 text-brand-blue" />
+                <ClockIcon className="w-5 h-5 mr-2 text-primary" />
                 <span className="font-medium text-gray-700 dark:text-gray-300">
                   {readTime} de lecture
                 </span>
@@ -88,8 +88,8 @@ export default function ArticleHeader({
                     key={tag}
                     className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 ${
                       index % 2 === 0 
-                        ? 'bg-brand-orange text-white shadow-md hover:shadow-lg' 
-                        : 'bg-brand-blue text-white shadow-md hover:shadow-lg'
+                        ? 'bg-accent text-white shadow-md hover:shadow-lg' 
+                        : 'bg-primary text-white shadow-md hover:shadow-lg'
                     }`}
                   >
                     <TagIcon className="w-4 h-4 mr-2" />

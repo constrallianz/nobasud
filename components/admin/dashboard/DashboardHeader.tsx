@@ -1,11 +1,11 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import ThemeToggle from '@/components/ThemeToggle'
 import { 
   Cog6ToothIcon,
   EyeIcon,
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline'
+import { Button } from '@/components/ui/button'
 
 interface DashboardHeaderProps {
   variant?: 'default' | 'new' | 'new-2'
@@ -24,7 +24,6 @@ export default function DashboardHeader({ variant = 'default', onLogout }: Dashb
   }
 
   if (variant === 'new' || variant === 'new-2') {
-    // Header for page-new.tsx and page-new-2.tsx
     return (
       <header className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 py-6">
@@ -40,10 +39,7 @@ export default function DashboardHeader({ variant = 'default', onLogout }: Dashb
                   <span>Voir le site</span>
                 </Button>
               </Link>
-              <Button className="flex items-center space-x-2">
-                <Cog6ToothIcon className="w-4 h-4" />
-                <span>Paramètres</span>
-              </Button>
+             
             </div>
           </div>
         </div>
@@ -51,7 +47,6 @@ export default function DashboardHeader({ variant = 'default', onLogout }: Dashb
     )
   }
 
-  // Default header for main page.tsx
   return (
     <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
       <div className="px-6 py-8">
@@ -68,10 +63,7 @@ export default function DashboardHeader({ variant = 'default', onLogout }: Dashb
                 <span>Voir le site</span>
               </Button>
             </Link>
-            <Button variant="outline" className="flex items-center space-x-2">
-              <Cog6ToothIcon className="w-4 h-4" />
-              <span>Paramètres</span>
-            </Button>
+          
             <Button 
               variant="outline" 
               onClick={handleLogout}
