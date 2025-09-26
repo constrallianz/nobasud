@@ -19,7 +19,6 @@ export default function FeedbackForm({fetchTestimonials}:{fetchTestimonials: () 
   const [rating, setRating] = useState(0)
   const [hoveredRating, setHoveredRating] = useState(0)
   const [isAnonymous, setIsAnonymous] = useState(false)
-  // Store previous name/email to restore if toggling back
   const prevNameRef = useRef("");
   const prevEmailRef = useRef("");
 
