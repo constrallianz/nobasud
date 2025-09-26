@@ -76,7 +76,7 @@ export default function LoginForm({ formData, error, isLoading, onSubmit, onChan
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full flex justify-center py-2 px-4 text-white bg-brand-blue hover:bg-brand-blue/90 disabled:opacity-50"
+            className="w-full flex justify-center py-2 px-4 text-white bg-accent hover:bg-primary disabled:opacity-50"
           >
             {isLoading ? 'Connexion...' : 'Se connecter'}
           </Button>
