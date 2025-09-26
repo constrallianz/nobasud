@@ -1,31 +1,34 @@
-import { RealisationsStatsProps } from '@/types/realisations'
 
-export default function RealisationsStats({ stats }: RealisationsStatsProps) {
+export default function RealisationsStats() {
   return (
-    <section className="py-24 bg-white dark:bg-gray-800">
-      <div className="container">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-            Nos <span className="text-brand-orange">performances</span>
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Des chiffres qui témoignent de notre expertise et de notre engagement 
-            pour la qualité dans chaque projet.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map((stat, i) => (
-            <div key={i} className="text-center group">
-              <div className="w-20 h-20 bg-gradient-to-br from-brand-blue to-brand-orange rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl font-bold text-white">{stat.value}</span>
+      <section className="py-20 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl lg:text-4xl font-black mb-12">
+              Performance et qualité
+            </h2>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              <div>
+                <div className="text-5xl font-black text-accent mb-4">95%</div>
+                <div className="text-lg font-semibold mb-2">Projets livrés dans les délais</div>
+                <p className="text-sm opacity-90">Respect strict des plannings établis</p>
               </div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{stat.label}</div>
-              <div className="text-gray-600 dark:text-gray-400">{stat.sublabel}</div>
+              
+              <div>
+                <div className="text-5xl font-black text-accent mb-4">100%</div>
+                <div className="text-lg font-semibold mb-2">Conformité qualité</div>
+                <p className="text-sm opacity-90">Tous nos projets respectent les normes</p>
+              </div>
+              
+              <div>
+                <div className="text-5xl font-black text-accent mb-4">0</div>
+                <div className="text-lg font-semibold mb-2">Accident de travail</div>
+                <p className="text-sm opacity-90">Sécurité prioritaire sur nos chantiers</p>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
   )
 }
