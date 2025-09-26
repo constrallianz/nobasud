@@ -1,277 +1,252 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowRightIcon,
-  CheckBadgeIcon,
-  BuildingOffice2Icon,
-  TruckIcon,
-  UserGroupIcon,
-} from "@heroicons/react/24/outline";
-import { useProjects } from "@/components/admin/projects/listing";
-import { ProjectWithImages } from "@/types/realisations";
-import { services, statsMain } from "@/data/realisations";
-import { LoadingState } from "@/components/admin/projects/states";
-import TestimonialsGrid from "@/components/feedback/TestimonialsGrid";
+import { Card, CardContent } from "@/components/ui/card";
+import { Building, Users, Rocket, MapPin, Trophy, TrendingUp, Briefcase, Send, ChevronDown } from "lucide-react";
+import { COMPANY_INFO, COMPANY_VALUES, SERVICES, KEY_NUMBERS, SAMPLE_PROJECTS } from "@/lib/constants";
 
 export default function HomePage() {
-  const { projects, loading } = useProjects();
-
-  const projectsWithImages: ProjectWithImages[] = projects.map((project) => {
-    const images = project.images ? JSON.parse(project.images) : [];
-    const image =
-      images.length > 0
-        ? images[0]
-        : "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
-    return {
-      ...project,
-      type: project.type as string,
-      images,
-      image,
-    };
-  });
-
   return (
-    <div className="relative">
-      {/* Hero section */}
-      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-blue via-brand-blue to-brand-orange text-white overflow-hidden">
-        <div className="absolute inset-0 bg-black/30"></div>
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541976590-713941681591?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center opacity-20"></div>
-
-        {/* Floating elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-brand-orange/20 rounded-full animate-bounce delay-1000"></div>
-        <div className="absolute top-40 right-20 w-16 h-16 bg-white/10 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-40 left-20 w-12 h-12 bg-brand-orange/30 rounded-full animate-bounce delay-500"></div>
-
-        <div className="container relative z-10 text-center">
-          <div className="max-w-5xl mx-auto">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 leading-tight">
-              Construire l&apos;
-              <span className="text-brand-orange">avenir</span>
-              <br />
-              du <span className="text-brand-orange">Maroc</span>
-            </h1>
-            <p className="text-lg md:text-xl lg:text-2xl mb-12 leading-relaxed max-w-4xl mx-auto">
-              NOBASUD, votre partenaire de confiance pour tous vos projets de
-              construction, d&apos;infrastructure et d&apos;aménagement urbain
-              depuis plus de 15 ans.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-6 mb-16">
-              <Link href="/contact">
-                <Button
-                  size="lg"
-                  className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-4 text-lg font-semibold shadow-xl"
-                >
-                  Demander un devis
-                  <ArrowRightIcon className="w-6 h-6 ml-2" />
-                </Button>
+    <div className="font-montserrat">
+      {/* Hero Section */}
+      <section 
+        className="relative h-screen flex items-center justify-center text-white overflow-hidden"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1541976590-713941681591?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080')",
+          backgroundSize: "cover",
+          backgroundPosition: "center"
+        }}
+      >
+        <div className="absolute inset-0 hero-bg"></div>
+        
+        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
+          <h1 className="text-5xl lg:text-7xl font-black mb-6 tracking-tight" data-testid="hero-title">
+            {COMPANY_INFO.slogan}
+          </h1>
+          <p className="text-xl lg:text-2xl mb-8 font-medium max-w-3xl mx-auto leading-relaxed">
+            Acteur engagé du secteur BTP au Maroc, NOBASUD porte une vision ambitieuse : bâtir des infrastructures pérennes qui améliorent la vie des citoyens.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button asChild size="lg" className="bg-white text-primary hover:bg-muted font-bold text-lg shadow-lg">
+              <Link href="/a-propos" data-testid="button-discover-company">
+                <Building className="mr-2 h-5 w-5" />
+                Découvrir NOBASUD
               </Link>
-              <Link href="/realisations">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-2 border-white text-white hover:bg-white hover:text-brand-blue px-8 py-4 text-lg font-semibold"
-                >
-                  Voir nos projets
-                </Button>
+            </Button>
+            <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-lg shadow-lg">
+              <Link href="/carriere" data-testid="button-apply-job">
+                <Users className="mr-2 h-5 w-5" />
+                Postuler
               </Link>
-            </div>
-
-            {/* Floating stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-              {statsMain.map((stat, i) => (
-                <div
-                  key={i}
-                  className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105"
-                >
-                  <div className="text-3xl md:text-4xl font-bold text-brand-orange mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm md:text-base opacity-90">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
+            </Button>
           </div>
+        </div>
+        
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+          <ChevronDown className="h-8 w-8" />
         </div>
       </section>
 
-      {/* Services section */}
-      <section className="py-24 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
-        <div className="container">
+      {/* Company Values Section */}
+      <section className="py-20 bg-muted">
+        <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-gray-100 mb-6">
-              Nos <span className="text-brand-orange">services</span>
+            <h2 className="text-4xl lg:text-5xl font-black text-primary mb-6" data-testid="values-title">
+              Nos engagements structurent notre quotidien
             </h2>
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Une expertise complète pour tous vos projets de construction et
-              d&apos;aménagement
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Notre approche repose sur l'excellence opérationnelle, l'engagement humain et une profonde connaissance du terrain.
             </p>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-            {services.map((service, i) => {
-              const IconComponent = service.icon;
-              return (
-                <div
-                  key={i}
-                  className="group bg-white dark:bg-gray-700 rounded-3xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4"
-                >
-                  <div className="w-20 h-20 bg-gradient-to-br from-brand-blue to-brand-orange rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
-                    <IconComponent className="w-10 h-10 text-white" />
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {COMPANY_VALUES.map((value, index) => (
+              <Card key={index} className="text-center hover:shadow-xl transition-shadow">
+                <CardContent className="p-8">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                    {value.icon === "handshake" && <Building className="h-8 w-8 text-primary" />}
+                    {value.icon === "rocket" && <Rocket className="h-8 w-8 text-accent" />}
+                    {value.icon === "map-marker-alt" && <MapPin className="h-8 w-8 text-primary" />}
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 group-hover:text-brand-blue transition-colors">
-                    {service.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
-                    {service.description}
-                  </p>
-                </div>
-              );
-            })}
+                  <h3 className="text-2xl font-bold text-foreground mb-4">{value.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{value.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Projects showcase */}
-      <section className="py-24 bg-white dark:bg-gray-900 transition-colors duration-300">
-        <div className="container">
+      {/* Services Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-gray-100 mb-6">
-              Nos dernières{" "}
-              <span className="text-brand-orange">réalisations</span>
+            <h2 className="text-4xl lg:text-5xl font-black text-primary mb-6" data-testid="services-title">
+              Nos métiers
             </h2>
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Découvrez quelques-uns de nos projets les plus emblématiques
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              NOBASUD intervient sur toute la chaîne de valeur du BTP, du gros œuvre à l'aménagement final des espaces.
             </p>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {loading ? (
-              <LoadingState />
-            ) : (
-              projectsWithImages.slice(0, 3).map((project, i) => (
-                <div
-                  key={project.id}
-                  className="group bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
+          
+          <div className="grid lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
+            {SERVICES.map((service, index) => (
+              <Card key={index} className="overflow-hidden hover:shadow-xl transition-shadow">
+                <div 
+                  className="h-64 bg-cover bg-center relative"
+                  style={{ backgroundImage: `url('${service.image}')` }}
                 >
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src={project.image}
-                      alt={project.name}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-brand-orange text-white px-3 py-1 rounded-full text-sm font-medium">
-                        Réalisé
-                      </span>
+                  <div className="absolute inset-0 gradient-overlay flex items-end">
+                    <div className="p-6 text-white">
+                      <h3 className="text-2xl font-bold mb-2">{service.title}</h3>
+                      <p className="text-lg">{service.subtitle}</p>
                     </div>
-                    <div className="absolute top-4 right-4">
-                      <span className="px-3 py-1 bg-brand-orange text-white rounded-full text-sm font-medium">
-                        {new Date(project.createdAt).getFullYear()}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-8">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xl font-extrabold text-gray-900 dark:text-gray-100 group-hover:text-brand-blue transition-colors">
-                        {project.name}
-                      </h3>
-                      <span className="text-sm text-brand-orange font-medium">
-                        {project.type}
-                      </span>
-                    </div>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">
-                      {project.location}
-                    </p>
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                      {project.description}
-                    </p>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link href="/realisations">
-              <Button
-                size="lg"
-                className="bg-brand-blue hover:bg-brand-blue/90 px-8 py-4 text-lg"
-              >
-                Voir tous nos projets
-                <ArrowRightIcon className="w-6 h-6 ml-2" />
-              </Button>
-            </Link>
+                <CardContent className="p-6">
+                  <ul className="space-y-3 text-muted-foreground">
+                    {service.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center">
+                        <div className="w-2 h-2 bg-accent rounded-full mr-3 flex-shrink-0"></div>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Why choose us */}
-      <section className="py-24 bg-gradient-to-br from-brand-blue to-brand-orange text-white">
-        <div className="container">
+      {/* Key Numbers Section */}
+      <section className="py-20 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-black mb-6" data-testid="numbers-title">
+              Une croissance maîtrisée, portée par le terrain
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto opacity-90">
+              Depuis sa création, NOBASUD s'impose comme un partenaire de confiance avec des résultats concrets.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
+            {KEY_NUMBERS.map((number, index) => (
+              <div key={index} className="text-center">
+                <div className="text-5xl lg:text-6xl font-black text-accent mb-4" data-testid={`stat-value-${index}`}>
+                  {number.value}
+                </div>
+                <div className="text-lg font-semibold" data-testid={`stat-label-${index}`}>
+                  {number.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Recent Projects Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-black text-primary mb-6" data-testid="projects-title">
+              Nos réalisations récentes
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Un portefeuille de réalisations à forte valeur structurante dans les régions du Sud et au-delà.
+            </p>
+          </div>
+          
+          <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-12">
+            {SAMPLE_PROJECTS.map((project) => (
+              <Card key={project.id} className="overflow-hidden hover:shadow-xl transition-shadow">
+                <div 
+                  className="h-48 bg-cover bg-center"
+                  style={{ backgroundImage: `url('${project.image}')` }}
+                ></div>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                      {project.type}
+                    </span>
+                    <span className="text-muted-foreground text-sm">{project.year}</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">{project.name}</h3>
+                  <p className="text-muted-foreground text-sm">{project.location}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="text-center">
+            <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg">
+              <Link href="/realisations" data-testid="button-view-all-projects">
+                <Building className="mr-2 h-5 w-5" />
+                Voir toutes nos réalisations
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Careers Section */}
+      <section className="py-20 bg-muted">
+        <div className="container mx-auto px-4 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
-              Pourquoi choisir{" "}
-              <span className="text-brand-orange">NOBASUD</span> ?
+            <h2 className="text-4xl lg:text-5xl font-black text-primary mb-6" data-testid="careers-title">
+              Rejoignez les bâtisseurs du Sud
             </h2>
-            <p className="text-xl md:text-2xl mb-16 leading-relaxed">
-              Une expertise reconnue, une équipe passionnée et un engagement
-              total pour votre satisfaction
+            <p className="text-xl text-muted-foreground mb-12 leading-relaxed">
+              Chez NOBASUD, nous croyons au potentiel humain et à l'engagement local. Rejoignez une entreprise en pleine croissance, au cœur des projets qui façonnent le Maroc de demain.
             </p>
-
-            <div className="grid md:grid-cols-3 gap-8 mb-16">
+            
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
               <div className="text-center">
-                <CheckBadgeIcon className="w-16 h-16 mx-auto mb-6 text-brand-orange" />
-                <h3 className="text-2xl font-bold mb-4">Qualité garantie</h3>
-                <p className="text-lg opacity-90">
-                  Certifications ISO et respect des normes les plus strictes
-                </p>
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Trophy className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-lg font-bold text-foreground mb-2">Projets structurants</h3>
+                <p className="text-muted-foreground">Participez à des réalisations qui marquent le territoire</p>
               </div>
+              
               <div className="text-center">
-                <UserGroupIcon className="w-16 h-16 mx-auto mb-6 text-brand-orange" />
-                <h3 className="text-2xl font-bold mb-4">Équipe experte</h3>
-                <p className="text-lg opacity-90">
-                  200+ professionnels qualifiés à votre service
-                </p>
+                <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="h-8 w-8 text-accent" />
+                </div>
+                <h3 className="text-lg font-bold text-foreground mb-2">Progression rapide</h3>
+                <p className="text-muted-foreground">Évoluez dans une entreprise en forte croissance</p>
               </div>
+              
               <div className="text-center">
-                <TruckIcon className="w-16 h-16 mx-auto mb-6 text-brand-orange" />
-                <h3 className="text-2xl font-bold mb-4">Délais respectés</h3>
-                <p className="text-lg opacity-90">
-                  98% de nos projets livrés dans les temps
-                </p>
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-lg font-bold text-foreground mb-2">Expertise technique</h3>
+                <p className="text-muted-foreground">Développez vos compétences aux côtés d'experts</p>
               </div>
             </div>
-
-            <div className="flex flex-col sm:flex-row justify-center gap-6">
-              <Link href="/contact">
-                <Button
-                  size="lg"
-                  className="bg-white text-brand-blue hover:bg-white/90 px-8 py-4 text-lg font-semibold"
-                >
-                  Contactez-nous
-                  <ArrowRightIcon className="w-6 h-6 ml-2" />
-                </Button>
-              </Link>
-              <Link href="/a-propos">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-2 border-white text-white hover:bg-white hover:text-brand-blue px-8 py-4 text-lg font-semibold"
-                >
-                  En savoir plus
-                </Button>
-              </Link>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg">
+                <Link href="/carriere" data-testid="button-view-job-offers">
+                  <Briefcase className="mr-2 h-5 w-5" />
+                  Voir les offres d'emploi
+                </Link>
+              </Button>
+              <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold shadow-lg">
+                <Link href="/carriere#candidature-spontanee" data-testid="button-spontaneous-application">
+                  <Send className="mr-2 h-5 w-5" />
+                  Candidature spontanée
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
       </section>
-        <TestimonialsGrid />
     </div>
   );
 }
