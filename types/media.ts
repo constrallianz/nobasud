@@ -18,13 +18,8 @@ export interface Category {
   count: number
 }
 
-export interface MediaHeroProps {
-  searchTerm: string
-  onSearchChange: (value: string) => void
-}
-
 export interface MediaCategoriesProps {
-  categories: Category[]
+  categories: string[]
   selectedCategory: string
   onCategorySelect: (categoryId: string) => void
 }

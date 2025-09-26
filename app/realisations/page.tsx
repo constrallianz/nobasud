@@ -1,12 +1,14 @@
 'use client'
 
-import { categories, stats } from '@/data/realisations'
+import { categories } from '@/data/realisations'
 import { ProjectWithImages } from '@/types/realisations'
 import RealisationsHero from '@/components/realisations/RealisationsHero'
 import RealisationsProjects from '@/components/realisations/RealisationsProjects'
 import RealisationsStats from '@/components/realisations/RealisationsStats'
 import { useProjects } from '@/components/admin/projects/listing'
 import { LoadingState } from '@/components/admin/projects/states'
+import RealisationsType from '@/components/realisations/RealisationsType'
+import RealisationsCTA from '@/components/realisations/RealisationsCTA'
 
 export default function RealisationsPage() {
     const {
@@ -31,10 +33,12 @@ export default function RealisationsPage() {
     }
   
   return (
-    <div className="relative">
+    <div className="relative font-montserrat">
       <RealisationsHero />
       <RealisationsProjects projects={projectsWithImages} categories={categories} />
-      <RealisationsStats stats={stats} />
+      <RealisationsType />
+      <RealisationsStats />
+      <RealisationsCTA />
     </div>
   )
 }

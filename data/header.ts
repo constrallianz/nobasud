@@ -1,9 +1,10 @@
 export const logoPath = "/logo-nobasud.png";
 export const NAVIGATION_ITEMS = [
-  { label: "Entreprise", href: "/a-propos" },
-  { label: "Projets", href: "/realisations" },
-  { label: "Blog & Actualités", href: "/media" },
+  { label: "Accueil", href: "/" },
+  { label: "À propos", href: "/a-propos" },
+  { label: "Notre Approche", href: "/notre-approche" },
+  { label: "Nos Réalisations", href: "/realisations" },
   { label: "Carrières", href: "/carriere" },
-  { label: "Feedback", href: "/feedback" },
+  { label: "Médias", href: "/media" },
   { label: "Contact", href: "/contact" },
 ];

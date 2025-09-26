@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { 
   CalendarIcon,
   ClockIcon,
@@ -10,6 +9,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { FeaturedArticleProps } from '@/types/media'
 import { FeaturedArticleSkeleton } from './MediaStates'
+import { Button } from '../ui/button'
 
 export default function FeaturedArticle({ 
   article, 
@@ -18,11 +18,11 @@ export default function FeaturedArticle({
   getReadTime 
 }: FeaturedArticleProps) {
   return (
-    <section className="py-24 bg-white dark:bg-gray-800">
+    <section className="bg-white dark:bg-gray-800">
       <div className="container">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-            Article <span className="text-brand-orange">à la une</span>
+          <h2 className="text-3xl lg:text-4xl font-black text-primary mb-12 text-center">
+            Article à la une
           </h2>
         </div>
 

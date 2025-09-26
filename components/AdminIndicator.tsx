@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ShieldCheckIcon, Cog6ToothIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Button } from '@/components/ui/button'
+import { Button } from './ui/button'
 
 export default function AdminIndicator() {
   const [isAdmin, setIsAdmin] = useState(false)
@@ -27,7 +27,7 @@ export default function AdminIndicator() {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      <div className="bg-brand-blue text-white rounded-lg shadow-lg p-4 max-w-sm">
+      <div className="bg-primary text-primary-foreground rounded-lg shadow-lg p-4 max-w-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <ShieldCheckIcon className="w-6 h-6 text-brand-orange" />
@@ -38,7 +38,7 @@ export default function AdminIndicator() {
           </div>
           <button
             onClick={() => setIsVisible(false)}
-            className="text-white/80 hover:text-white"
+            className=""
           >
             <XMarkIcon className="w-5 h-5" />
           </button>
@@ -47,19 +47,15 @@ export default function AdminIndicator() {
         <div className="flex items-center space-x-2 mt-3">
           <Link href="/admin">
             <Button 
-              variant="outline" 
-              size="sm" 
-              className="text-xs bg-white text-brand-blue border-white hover:bg-gray-100"
+              className="text-xs py-1 bg-accent hover:bg-accent/90 text-accent-foreground"
             >
               <Cog6ToothIcon className="w-4 h-4 mr-1" />
               Admin
             </Button>
           </Link>
           <Button 
-            variant="outline" 
-            size="sm" 
             onClick={handleLogout}
-            className="text-xs bg-transparent text-white border-white hover:bg-white/10"
+            className="text-xs bg-transparent text-white border-white "
           >
             Déconnecter
           </Button>

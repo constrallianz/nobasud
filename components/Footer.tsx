@@ -1,6 +1,7 @@
+import { COMPANY_INFO } from '@/data/footer'
+import { logoPath } from '@/data/header'
+import { Linkedin, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
 import Link from 'next/link'
-import { MapPin, Phone, Mail, MessageCircle } from "lucide-react";
-import { COMPANY_INFO } from "@/lib/constants";
 
 export function Footer() {
   return (
@@ -10,7 +11,7 @@ export function Footer() {
           {/* Company Info */}
           <div className="lg:col-span-2">
             <img 
-              src="/logo-nobasud.png" 
+              src={logoPath} 
               alt="NOBASUD Logo" 
               className="h-12 w-auto mb-6 filter brightness-0 invert"
               data-testid="footer-logo"
@@ -24,9 +25,7 @@ export function Footer() {
                 className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors"
                 data-testid="link-linkedin"
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 00.1.4V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"></path>
-                </svg>
+                <Linkedin />
               </a>
               <Link 
                 href="/feedback" 

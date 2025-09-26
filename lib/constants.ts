@@ -1,24 +1,4 @@
-export const COMPANY_INFO = {
-  name: "NOBASUD",
-  slogan: "Les nouveaux bâtisseurs du Sud",
-  description: "Acteur engagé du secteur BTP au Maroc, NOBASUD porte une vision ambitieuse : bâtir des infrastructures pérennes qui améliorent la vie des citoyens et accompagnent le développement des territoires.",
-  
-  contact: {
-    phone: "+212 528-29975",
-    email: "contact@nobasud.com",
-  },
-  
-  address: {
-    street: "Quartier Industriel",
-    details: "Résidence Yasmine, 3ème Étage, Bloc B1, N° 24",
-    city: "Agadir",
-    country: "Maroc"
-  },
-  
-  social: {
-    linkedin: "https://linkedin.com/company/nobasud"
-  }
-};
+
 
 export const NAVIGATION_ITEMS = [
   { label: "Accueil", href: "/" },

@@ -10,14 +10,7 @@ export interface ProjectWithImages {
   image: string
 }
 
-// Statistics Interface
-export interface Statistic {
-  value: string
-  label: string
-  sublabel: string
-}
 
-// Component Props Interfaces
 export interface RealisationsHeroProps {}
 
 export interface RealisationsProjectsProps {
@@ -25,6 +18,3 @@ export interface RealisationsProjectsProps {
   categories: string[]
 }
 
-export interface RealisationsStatsProps {
-  stats: Statistic[]
-}

@@ -1,30 +1,29 @@
-import { Statistic } from '@/types/realisations'
 import { BuildingOffice2Icon, TruckIcon, UserGroupIcon } from '@heroicons/react/24/outline'
 
-export const categories = ['Tous', 'Bâtiment', 'Voirie', 'Infrastructure', 'Travaux Publics', 'Assainissement']
-export const stats: Statistic[] = [
-  {
-    value: '75+',
-    label: 'Projets',
-    sublabel: 'réalisés'
-  },
-  {
-    value: '500M',
-    label: 'MAD',
-    sublabel: 'investis'
-  },
-  {
-    value: '98%',
-    label: 'Satisfaction',
-    sublabel: 'client'
-  },
-  {
-    value: '15+',
-    label: 'Années',
-    sublabel: 'd\'expérience'
-  }
-]
-
+  export const categories = ["Tous", "Résidentiel", "Infrastructure", "Commercial", "Industriel"];
+// export const categories = ['Tous', 'Bâtiment', 'Voirie', 'Infrastructure', 'Travaux Publics', 'Assainissement']
+export const projetRealise = [
+                { 
+                  title: "Bâtiments publics", 
+                  count: "25+", 
+                  description: "Écoles, centres administratifs, équipements sportifs" 
+                },
+                { 
+                  title: "Logements", 
+                  count: "40+", 
+                  description: "Résidences collectives, logements sociaux, complexes touristiques" 
+                },
+                { 
+                  title: "Infrastructures", 
+                  count: "30+", 
+                  description: "Routes, réseaux VRD, aménagements urbains" 
+                },
+                { 
+                  title: "Industriel", 
+                  count: "15+", 
+                  description: "Entrepôts, zones industrielles, plateformes logistiques" 
+                }
+              ];
 export const services = [
     {
       icon: BuildingOffice2Icon,
