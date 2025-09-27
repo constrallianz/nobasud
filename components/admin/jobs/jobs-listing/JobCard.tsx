@@ -1,23 +1,11 @@
+import { Button } from '@/components/ui/button'
+import { Job } from '@/types/career'
 import { 
   PencilIcon,
   TrashIcon,
-  EyeIcon,
   MapPinIcon,
   CalendarIcon
 } from '@heroicons/react/24/outline'
-import { Button } from '@/components/ui/button'
-
-interface Job {
-  id: string
-  createdAt: Date
-  updatedAt: Date
-  title: string
-  slug: string
-  department: string | null
-  location: string | null
-  description: string | null
-  published: boolean
-}
 
 interface JobCardProps {
   job: Job

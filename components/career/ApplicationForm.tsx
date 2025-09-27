@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
 import { Button } from '../ui/button'
 
-export default function ApplicationForm() {
+export default function ApplicationForm({ jobId }: { jobId?: string }) {
   const [submitting, setSubmitting] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -51,6 +51,9 @@ export default function ApplicationForm() {
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg">
             <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
+              {jobId && (
+                <input type="hidden" name="jobId" value={jobId} />
+              )}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

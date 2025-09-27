@@ -6,6 +6,7 @@ import {
 import { useJobs } from '../admin/jobs/jobs-listing/useJobs'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Button } from '../ui/button';
+import Link from 'next/link';
 
 export default function JobListings() {
   const {jobs, loading}=useJobs();
@@ -62,8 +63,10 @@ export default function JobListings() {
                       </div>
                     </div>
                     <Button className="w-full" variant="outline">
+                     <Link href={`/carriere/postuler/${job.slug}`} className="flex items-center justify-center group">
                       Postuler pour ce poste
                       <ArrowRightIcon className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                     </Link>
                     </Button>
                   </CardContent>
                 </Card>
