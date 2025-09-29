@@ -5,7 +5,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
 import { Menu, MessageCircle } from "lucide-react";
-import { NAVIGATION_ITEMS } from "@/lib/constants";
+import { NAVIGATION_ITEMS } from "@/data/constants";
 import { logoPath } from "@/data/header";
 import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
 import { Button } from "./ui/button";

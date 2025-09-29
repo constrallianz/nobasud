@@ -2,9 +2,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model AdminUser {
@@ -17,7 +19,6 @@ model AdminUser {
   name      String?
   lastLogin DateTime?
   active    Boolean   @default(true)
-
   @@index([username])
 }
 
@@ -73,7 +74,12 @@ model Job {
 
   @@index([slug])
 }
-
+enum ApplicationStatus {
+  Nouveau
+  Révision
+  Accepté
+  Refusé
+}
 model Application {
   id             String   @id @default(cuid())
   createdAt      DateTime @default(now())
@@ -82,7 +88,7 @@ model Application {
   cvUrl          String
   coverLetterUrl String?
   message        String?
-  status         String   @default("nouveau")
+  status    ApplicationStatus @default(Nouveau)
 }
 
 model Feedback {

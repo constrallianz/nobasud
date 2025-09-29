@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "public"."ApplicationStatus" AS ENUM ('Nouveau', 'Révision', 'Accepté', 'Refusé');
+
 -- CreateTable
 CREATE TABLE "public"."AdminUser" (
     "id" TEXT NOT NULL,
@@ -56,14 +59,14 @@ CREATE TABLE "public"."Job" (
     "location" TEXT,
     "description" TEXT,
     "published" BOOLEAN NOT NULL DEFAULT true,
+    "benefits" TEXT,
+    "deadline" TIMESTAMP(3),
     "education" TEXT,
     "experience" TEXT,
+    "imageUrl" TEXT,
     "requirements" TEXT,
     "salary" TEXT,
     "type" TEXT,
-    "benefits" TEXT,
-    "deadline" TIMESTAMP(3),
-    "imageUrl" TEXT,
 
     CONSTRAINT "Job_pkey" PRIMARY KEY ("id")
 );
@@ -77,7 +80,7 @@ CREATE TABLE "public"."Application" (
     "cvUrl" TEXT NOT NULL,
     "coverLetterUrl" TEXT,
     "message" TEXT,
-    "status" TEXT NOT NULL DEFAULT 'nouveau',
+    "status" "public"."ApplicationStatus" NOT NULL DEFAULT 'Nouveau',
 
     CONSTRAINT "Application_pkey" PRIMARY KEY ("id")
 );

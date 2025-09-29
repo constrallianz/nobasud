@@ -43,10 +43,8 @@ export default function ContactForm() {
       const result = await res.json();
       
       if (res.ok && result.success) {
-        e.currentTarget.reset();
         alert(result.message || "Message envoyé avec succès ! Nous vous recontacterons rapidement.");
       } else if (result.details) {
-        // Show validation errors if available
         const errorMessages = Object.values(result.details).join('\n');
         alert(`Erreurs de validation:\n${errorMessages}`);
       } else {

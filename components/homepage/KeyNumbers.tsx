@@ -1,4 +1,4 @@
-import { KEY_NUMBERS } from '@/lib/constants'
+import { KEY_NUMBERS } from '@/data/constants'
 import React from 'react'
 
 const KeyNumbers = () => {

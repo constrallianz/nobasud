@@ -1,4 +1,4 @@
-import { SERVICES } from '@/lib/constants'
+import { SERVICES } from '@/data/constants'
 import React from 'react'
 import { Card, CardContent } from '../ui/card'
 

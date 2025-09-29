@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, CardContent } from '../ui/card'
 import { Building, MapPin, Rocket } from 'lucide-react'
-import { COMPANY_VALUES } from '@/lib/constants'
+import { COMPANY_VALUES } from '@/data/constants'
 
 const CompanyValues = () => {
   return (
