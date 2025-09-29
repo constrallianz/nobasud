@@ -16,20 +16,44 @@ export default function ContactForm() {
     setSubmitting(true);
     const formData = new FormData(e.currentTarget);
 
+    // Combine first and last name into a single name field
+    const firstName = formData.get('firstName') as string;
+    const lastName = formData.get('lastName') as string;
+    const name = `${firstName} ${lastName}`.trim();
+
+    // Prepare data for the API
+    const contactData = {
+      name,
+      email: formData.get('email') as string,
+      message: formData.get('message') as string,
+      // Optional fields - only include if they have values
+      ...(formData.get('phone') && { phone: formData.get('phone') as string }),
+      ...(formData.get('company') && { company: formData.get('company') as string }),
+    };
+
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactData),
       });
-      if (res.ok) {
+      
+      const result = await res.json();
+      
+      if (res.ok && result.success) {
         e.currentTarget.reset();
-        alert(
-          "Message envoyé avec succès ! Nous vous recontacterons rapidement."
-        );
+        alert(result.message || "Message envoyé avec succès ! Nous vous recontacterons rapidement.");
+      } else if (result.details) {
+        // Show validation errors if available
+        const errorMessages = Object.values(result.details).join('\n');
+        alert(`Erreurs de validation:\n${errorMessages}`);
       } else {
-        alert("Erreur lors de l'envoi. Veuillez réessayer.");
+        alert(result.message || result.error || "Erreur lors de l'envoi. Veuillez réessayer.");
       }
     } catch (error) {
+      console.error('Contact form error:', error);
       alert("Erreur lors de l'envoi. Veuillez réessayer.");
     }
 
@@ -58,7 +82,6 @@ export default function ContactForm() {
 
             <div>
               <Label htmlFor="email">Email *</Label>
-
               <Input
                 name="email"
                 type="email"
@@ -67,10 +90,22 @@ export default function ContactForm() {
               />
             </div>
 
-            <div>
-              <Label htmlFor="subject">Sujet *</Label>
-
-              <Input name="subject" required placeholder="Sujet" />
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <Label htmlFor="phone">Téléphone</Label>
+                <Input 
+                  name="phone" 
+                  type="tel"
+                  placeholder="+212 6XX XXX XXX" 
+                />
+              </div>
+              <div>
+                <Label htmlFor="company">Entreprise</Label>
+                <Input 
+                  name="company" 
+                  placeholder="Nom de votre entreprise" 
+                />
+              </div>
             </div>
 
             <div>

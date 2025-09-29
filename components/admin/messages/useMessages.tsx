@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface Message {
   id: string
@@ -14,84 +14,50 @@ interface Message {
 }
 
 export function useMessages() {
+  const [messages, setMessages] = useState<Message[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
   const [selectedPriority, setSelectedPriority] = useState<string>('all')
   const [searchTerm, setSearchTerm] = useState('')
 
-  // Données fictives des messages
-  const messages: Message[] = [
-    {
-      id: '1',
-      name: 'Hassan Benali',
-      email: 'hassan.benali@email.com',
-      phone: '+212 6 12 34 56 78',
-      subject: 'Demande de devis pour construction villa',
-      message: 'Bonjour, je souhaiterais obtenir un devis pour la construction d\'une villa de 200m² à Agadir. Pourriez-vous me contacter pour discuter des détails ?',
-      submittedAt: '2024-01-15T10:30:00',
-      status: 'nouveau',
-      priority: 'haute',
-      source: 'devis'
-    },
-    {
-      id: '2',
-      name: 'Amina El Fassi',
-      email: 'amina.elfassi@email.com',
-      phone: '+212 6 87 65 43 21',
-      subject: 'Question sur vos services de rénovation',
-      message: 'Je souhaite rénover mon appartement à Casablanca. Quels sont vos tarifs et délais habituels pour ce type de projet ?',
-      submittedAt: '2024-01-14T14:15:00',
-      status: 'lu',
-      priority: 'normale',
-      source: 'contact'
-    },
-    {
-      id: '3',
-      name: 'Omar Chraibi',
-      email: 'omar.chraibi@societe.ma',
-      phone: '+212 5 22 45 67 89',
-      subject: 'Partenariat commercial',
-      message: 'Notre société souhaite explorer des opportunités de partenariat avec NOBASUD. Pouvons-nous programmer une réunion ?',
-      submittedAt: '2024-01-13T09:45:00',
-      status: 'traite',
-      priority: 'haute',
-      source: 'autre'
-    },
-    {
-      id: '4',
-      name: 'Fatima Alaoui',
-      email: 'fatima.alaoui@email.com',
-      subject: 'Candidature spontanée',
-      message: 'Ingénieure civile avec 5 ans d\'expérience, je souhaite rejoindre votre équipe. Vous trouverez mon CV en pièce jointe.',
-      submittedAt: '2024-01-12T16:20:00',
-      status: 'lu',
-      priority: 'normale',
-      source: 'carriere'
-    },
-    {
-      id: '5',
-      name: 'Ahmed Tazi',
-      email: 'ahmed.tazi@email.com',
-      phone: '+212 6 55 44 33 22',
-      subject: 'URGENT - Problème chantier',
-      message: 'Il y a un problème urgent sur le chantier du complexe commercial. Merci de me rappeler immédiatement.',
-      submittedAt: '2024-01-11T08:30:00',
-      status: 'traite',
-      priority: 'urgente',
-      source: 'autre'
-    },
-    {
-      id: '6',
-      name: 'Zineb Berrada',
-      email: 'zineb.berrada@email.com',
-      phone: '+212 6 77 66 55 44',
-      subject: 'Remerciements pour le projet',
-      message: 'Je tenais à vous remercier pour l\'excellent travail réalisé sur notre villa. Nous sommes très satisfaits du résultat.',
-      submittedAt: '2024-01-10T12:00:00',
-      status: 'archive',
-      priority: 'faible',
-      source: 'contact'
+  // Fetch messages from API
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        
+        const response = await fetch('/api/admin/messages', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+
+        const result = await response.json()
+        
+        if (result.success) {
+          setMessages(result.messages)
+        } else {
+          throw new Error(result.error || 'Failed to fetch messages')
+        }
+      } catch (error) {
+        console.error('Error fetching messages:', error)
+        setError(error instanceof Error ? error.message : 'An error occurred')
+        // Keep empty array on error
+        setMessages([])
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+
+    fetchMessages()
+  }, [])
 
   const statusOptions = [
     { value: 'all', label: 'Tous les messages', count: messages.length },
@@ -126,9 +92,43 @@ export function useMessages() {
     // Ici vous ajouteriez la logique pour supprimer le message
   }
 
+  const refreshMessages = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      const response = await fetch('/api/admin/messages', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-cache' // Force fresh data
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+      
+      if (result.success) {
+        setMessages(result.messages)
+      } else {
+        throw new Error(result.error || 'Failed to refresh messages')
+      }
+    } catch (error) {
+      console.error('Error refreshing messages:', error)
+      setError(error instanceof Error ? error.message : 'Failed to refresh messages')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     messages,
     filteredMessages,
+    loading,
+    error,
     selectedStatus,
     selectedPriority,
     searchTerm,
@@ -136,6 +136,7 @@ export function useMessages() {
     setSelectedStatus,
     setSelectedPriority,
     setSearchTerm,
+    refreshMessages,
     handleMarkAsRead,
     handleViewDetails,
     handleDelete

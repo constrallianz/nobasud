@@ -11,6 +11,8 @@ export default function MessagesPage() {
   const {
     messages,
     filteredMessages,
+    loading,
+    error,
     selectedStatus,
     selectedPriority,
     searchTerm,
@@ -18,10 +20,29 @@ export default function MessagesPage() {
     setSelectedStatus,
     setSelectedPriority,
     setSearchTerm,
+    refreshMessages,
     handleMarkAsRead,
     handleViewDetails,
     handleDelete
   } = useMessages()
+
+  if (error) {
+    return (
+      <div className="space-y-8">
+        <MessagePageHeader />
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Erreur</h3>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={refreshMessages}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Réessayer
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">
@@ -40,7 +61,14 @@ export default function MessagesPage() {
       />
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        {filteredMessages.length > 0 ? (
+        {loading && (
+          <div className="p-8 text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Chargement des messages...</p>
+          </div>
+        )}
+        
+        {!loading && filteredMessages.length > 0 && (
           <ul className="divide-y divide-gray-200">
             {filteredMessages.map((message) => (
               <MessageCard
@@ -52,7 +80,9 @@ export default function MessagesPage() {
               />
             ))}
           </ul>
-        ) : (
+        )}
+        
+        {!loading && filteredMessages.length === 0 && (
           <MessagePageStates 
             selectedStatus={selectedStatus}
             statusOptions={statusOptions}
