@@ -1,22 +1,30 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createContactMessage } from '@/lib/actions/contacts'
+import { withValidation, commonSchemas } from '@/lib/api-validation'
 
-export async function POST(req: Request) {
-  try {
-    const formData = await req.formData()
-    const name = String(formData.get('name') || '')
-    const email = String(formData.get('email') || '')
-    const message = String(formData.get('message') || '')
-    
-    if (!name || !email || !message) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+export const POST = withValidation(
+  commonSchemas.contact,
+  async (req: NextRequest, validatedData: any) => {
+    try {
+      const contact = await createContactMessage(validatedData)
+      
+      return NextResponse.json(
+        { 
+          success: true,
+          id: contact.id,
+          message: 'Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.'
+        }, 
+        { status: 201 }
+      )
+    } catch (error) {
+      console.error('Contact API error:', error)
+      return NextResponse.json(
+        { 
+          error: 'Erreur serveur',
+          message: 'Une erreur est survenue lors de l\'envoi de votre message. Veuillez réessayer.'
+        }, 
+        { status: 500 }
+      )
     }
-    
-    const contact = await createContactMessage({ name, email, message })
-    
-    return NextResponse.json({ id: contact.id }, { status: 201 })
-  } catch (e) {
-    console.error(e)
-    return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
-}
+)

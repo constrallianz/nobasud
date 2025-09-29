@@ -34,20 +34,28 @@ export default function useDashboard() {
       try {
         setData(prev => ({ ...prev, loading: true, error: null }))
         
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        setData({
-          stats: {
-            projects: 5,
-            articles: 3,
-            jobs: 3,
-            applications: 2,
-            feedbacks: 3,
-            messages: 2
+        const response = await fetch('/api/admin/dashboard', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
           },
-          loading: false,
-          error: null
         })
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+
+        const result = await response.json()
+        
+        if (result.success) {
+          setData({
+            stats: result.stats,
+            loading: false,
+            error: null
+          })
+        } else {
+          throw new Error(result.error || 'Failed to fetch dashboard data')
+        }
       } catch (error) {
         console.error('Error fetching dashboard data:', error)
         setData(prev => ({
@@ -61,25 +69,42 @@ export default function useDashboard() {
     fetchDashboardData()
   }, [])
 
-  const refreshData = () => {
-    // Re-trigger the useEffect by updating the state
-    setData(prev => ({ ...prev, loading: true, error: null }))
-    
-    // Simulate loading and refresh with mock data
-    setTimeout(() => {
-      setData({
-        stats: {
-          projects: 5,
-          articles: 3,
-          jobs: 3,
-          applications: 2,
-          feedbacks: 3,
-          messages: 2
+  const refreshData = async () => {
+    try {
+      setData(prev => ({ ...prev, loading: true, error: null }))
+      
+      const response = await fetch('/api/admin/dashboard', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        loading: false,
-        error: null
+        // Add cache busting to ensure fresh data
+        cache: 'no-cache'
       })
-    }, 1000)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+      
+      if (result.success) {
+        setData({
+          stats: result.stats,
+          loading: false,
+          error: null
+        })
+      } else {
+        throw new Error(result.error || 'Failed to refresh dashboard data')
+      }
+    } catch (error) {
+      console.error('Error refreshing dashboard data:', error)
+      setData(prev => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to refresh data'
+      }))
+    }
   }
 
   return {

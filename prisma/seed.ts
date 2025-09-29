@@ -358,23 +358,23 @@ Concevoir et réaliser l'aménagement intérieur de nos projets résidentiels et
     })
   ])
 
-  // // Seed sample contact messages
-  // const contacts = await Promise.all([
-  //   prisma.contactMessage.create({
-  //     data: {
-  //       name: 'Ahmed Tazi',
-  //       email: 'ahmed.tazi@entreprise.ma',
-  //       message: 'Bonjour, nous sommes intéressés par vos services pour la construction d\'un complexe industriel à Tanger. Pouvez-vous nous envoyer une proposition ?',
-  //     }
-  //   }),
-  //   prisma.contactMessage.create({
-  //     data: {
-  //       name: 'Société Immobilière Atlas',
-  //       email: 'contact@atlas-immo.ma',
-  //       message: 'Nous recherchons un partenaire BTP fiable pour le développement d\'un projet résidentiel de 200 logements. Merci de nous contacter.',
-  //     }
-  //   })
-  // ])
+  // Seed sample contact messages
+  const contacts = await Promise.all([
+    prisma.contactMessage.create({
+      data: {
+        name: 'Ahmed Tazi',
+        email: 'ahmed.tazi@entreprise.ma',
+        message: 'Bonjour, nous sommes intéressés par vos services pour la construction d\'un complexe industriel à Tanger. Pouvez-vous nous envoyer une proposition ?',
+      }
+    }),
+    prisma.contactMessage.create({
+      data: {
+        name: 'Société Immobilière Atlas',
+        email: 'contact@atlas-immo.ma',
+        message: 'Nous recherchons un partenaire BTP fiable pour le développement d\'un projet résidentiel de 200 logements. Merci de nous contacter.',
+      }
+    })
+  ])
 
   console.log('✅ Database seeded successfully!')
   console.log(`📊 Created:
@@ -383,7 +383,8 @@ Concevoir et réaliser l'aménagement intérieur de nos projets résidentiels et
   - ${articles.length} articles  
   - ${jobs.length} jobs
   - ${feedbacks.length} feedbacks
-  - ${applications.length} applications`)
+  - ${applications.length} applications
+  - 2 contact messages`)
 }
 
 main()
