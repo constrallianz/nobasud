@@ -13,10 +13,39 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter()
 
   useEffect(() => {
-    const checkAuth = () => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('adminToken')
       const adminAuth = localStorage.getItem('adminAuth')
-      if (adminAuth === 'true') {
-        setIsAuthenticated(true)
+      
+      if (token && adminAuth === 'true') {
+        try {
+          // Verify token by making a test API request
+          const response = await fetch('/api/admin/verify', {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          })
+          
+          if (response.ok) {
+            setIsAuthenticated(true)
+          } else {
+            // Token is invalid, clear storage and redirect
+            localStorage.removeItem('adminToken')
+            localStorage.removeItem('adminAuth')
+            localStorage.removeItem('adminUser')
+            localStorage.removeItem('authHeader')
+            router.push('/admin/login')
+          }
+        } catch (error) {
+          console.error('Auth verification failed:', error)
+          // Clear storage and redirect on error
+          localStorage.removeItem('adminToken')
+          localStorage.removeItem('adminAuth')
+          localStorage.removeItem('adminUser')
+          localStorage.removeItem('authHeader')
+          router.push('/admin/login')
+        }
       } else {
         router.push('/admin/login')
       }

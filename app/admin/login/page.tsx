@@ -2,7 +2,6 @@
 
 import LoginHeader from '@/components/admin/login/LoginHeader'
 import LoginForm from '@/components/admin/login/LoginForm'
-import TestCredentials from '@/components/admin/login/TestCredentials'
 import { useAdminLogin } from '@/components/admin/login/useAdminLogin'
 
 export default function AdminLoginPage() {
@@ -20,7 +19,6 @@ export default function AdminLoginPage() {
           onSubmit={handleSubmit}
           onChange={handleChange}
         />
-        <TestCredentials />
       </div>
     </div>
   )

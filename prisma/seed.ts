@@ -1,23 +1,30 @@
 import { PrismaClient } from '@prisma/client'
+import { hashPassword } from '../lib/auth-utils'
 
 const prisma = new PrismaClient()
 
 async function main() {
   console.log('🌱 Starting database seeding...')
 
-  // Clear existing data
-  await prisma.feedback.deleteMany()
-  await prisma.application.deleteMany()
-  await prisma.article.deleteMany()
-  await prisma.job.deleteMany()
-  await prisma.project.deleteMany()
-  await prisma.adminUser.deleteMany()
+  // Clear existing data (handle empty database gracefully)
+  try {
+    await prisma.feedback.deleteMany()
+    await prisma.application.deleteMany()
+    await prisma.article.deleteMany()
+    await prisma.job.deleteMany()
+    await prisma.project.deleteMany()
+    await prisma.adminUser.deleteMany()
+    console.log('🧹 Cleared existing data')
+  } catch (error) {
+    console.log('ℹ️ Database is empty, proceeding with seeding...')
+  }
 
   // Seed Admin User
+  const hashedPassword = await hashPassword('admin123')
   await prisma.adminUser.create({
     data: {
       username: 'admin',
-      password: 'admin123',
+      password: hashedPassword,
       email: 'admin@nobasud.ma',
       name: 'Administrateur NOBASUD',
       active: true

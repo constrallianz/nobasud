@@ -16,11 +16,29 @@ export function useAdminAuth() {
     checkAuth()
   }, [])
 
-  const logout = () => {
-    localStorage.removeItem('adminAuth')
-    localStorage.removeItem('adminUser')
-    setIsAuthenticated(false)
-    window.location.href = '/admin/login'
+  const logout = async () => {
+    try {
+      // Call logout endpoint to invalidate server-side cookie
+      const token = localStorage.getItem('adminToken')
+      if (token) {
+        await fetch('/api/admin/auth', {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+      }
+    } catch (error) {
+      console.error('Logout API call failed:', error)
+    } finally {
+      // Always clear local storage
+      localStorage.removeItem('adminToken')
+      localStorage.removeItem('adminAuth')
+      localStorage.removeItem('adminUser')
+      localStorage.removeItem('authHeader')
+      setIsAuthenticated(false)
+      window.location.href = '/admin/login'
+    }
   }
 
   return {
