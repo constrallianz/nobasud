@@ -17,7 +17,7 @@ async function main() {
   await prisma.adminUser.create({
     data: {
       username: 'admin',
-      password: '123456',
+      password: 'admin123',
       email: 'admin@nobasud.ma',
       name: 'Administrateur NOBASUD',
       active: true

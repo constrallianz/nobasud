@@ -1,18 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import { useMediaData } from "@/hooks/useMediaData";
 import { getReadTime, getImageUrl } from "@/lib/media-utils";
+import BreakingNewsTicker from "@/components/media/BreakingNewsTicker";
+import MediaNavBar from "@/components/media/MediaNavBar";
 import MediaHero from "@/components/media/MediaHero";
-import MediaCategories from "@/components/media/MediaCategories";
-import FeaturedArticle from "@/components/media/FeaturedArticle";
 import ArticlesGrid from "@/components/media/ArticlesGrid";
-import Newsletter from "@/components/media/Newsletter";
+import FilterSidebar from "@/components/media/FilterSidebar";
+import SidebarWidgets from "@/components/media/SidebarWidgets";
 import {
   ErrorState,
   NoArticlesState,
   EmptySearchResults,
 } from "@/components/media/MediaStates";
-import { categories } from "@/data/media";
+import { Button } from "@/components/ui/button";
 
 export default function MediaPage() {
   const {
@@ -26,6 +28,12 @@ export default function MediaPage() {
     setSelectedCategory,
   } = useMediaData();
 
+  // Additional filter states for the enhanced filtering system
+  const [selectedDateFilter, setSelectedDateFilter] = useState("all");
+  const [selectedSortBy, setSelectedSortBy] = useState("latest");
+  const [currentPage, setCurrentPage] = useState(1);
+  const articlesPerPage = 9;
+
   // Handle retry for error state
   const handleRetry = () => {
     window.location.reload();
@@ -36,96 +44,170 @@ export default function MediaPage() {
     setSelectedCategory("all");
   };
 
-  return (
-    <div className="relative font-montserrat">
-      {/* Hero Section with Search */}
-      <MediaHero />
+  const handleResetFilters = () => {
+    setSearchTerm("");
+    setSelectedCategory("all");
+    setSelectedDateFilter("all");
+    setSelectedSortBy("latest");
+    setCurrentPage(1);
+  };
 
-      {/* Categories Filter */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            {/* Error State */}
-            {error && (
-              <section className="py-24 bg-white dark:bg-gray-800">
+  // Get secondary articles for hero section
+  const secondaryArticles = filteredArticles.slice(1, 5);
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
+  const startIndex = (currentPage - 1) * articlesPerPage;
+  const paginatedArticles = filteredArticles.slice(startIndex, startIndex + articlesPerPage);
+
+  const handleLoadMore = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Breaking News Ticker */}
+      <BreakingNewsTicker />
+      
+      {/* Enhanced Navigation */}
+      <MediaNavBar
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+      />
+
+      {/* Hero Section with Featured Articles */}
+      <MediaHero
+        featuredArticle={featuredArticle || undefined}
+        secondaryArticles={secondaryArticles}
+        loading={loading}
+      />
+
+      {/* Main Content Area */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid lg:grid-cols-4 gap-8">
+          {/* Sidebar - Filters and Widgets */}
+          <aside className="lg:col-span-1 space-y-6">
+            <FilterSidebar
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              selectedDateFilter={selectedDateFilter}
+              onDateFilterChange={setSelectedDateFilter}
+              selectedSortBy={selectedSortBy}
+              onSortByChange={setSelectedSortBy}
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              onResetFilters={handleResetFilters}
+            />
+            <SidebarWidgets
+              latestArticles={filteredArticles.slice(0, 4)}
+              popularArticles={filteredArticles.slice(0, 3)}
+            />
+          </aside>
+
+          {/* Main Articles Content */}
+          <main className="lg:col-span-3">
+            {error ? (
+              <section className="py-24 bg-white dark:bg-gray-800 rounded-lg">
                 <div className="container">
                   <ErrorState error={error} onRetry={handleRetry} />
                 </div>
               </section>
-            )}
-
-            {!error && (
-              <>
-                <FeaturedArticle
-                  article={featuredArticle}
-                  loading={loading}
-                  getImageUrl={getImageUrl}
-                  getReadTime={getReadTime}
-                />
-                
-                {/* Articles Grid */}
-                <section className="py-24 bg-gray-50 dark:bg-gray-900">
-                  <MediaCategories
-                  categories={categories}
-                  selectedCategory={selectedCategory}
-                  onCategorySelect={setSelectedCategory}
-                />
-                  <div className="container">
-                    <div className="text-center mb-16">
-                      <h2 className="text-3xl lg:text-4xl font-black text-primary mb-6 text-center">
-                        Derniers articles
-                      </h2>
-                      <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                        Découvrez nos dernières publications sur
-                        l&apos;actualité du BTP, nos projets et nos innovations.
-                      </p>
-                    </div>
-
-                    {/* Show appropriate state based on data */}
-                    {(() => {
-                      if (loading) {
-                        return (
-                          <ArticlesGrid
-                            articles={[]}
-                            loading={true}
-                            searchTerm={searchTerm}
-                            getImageUrl={getImageUrl}
-                            getReadTime={getReadTime}
-                          />
-                        );
-                      }
-
-                      if (filteredArticles.length === 0) {
-                        return searchTerm ? (
-                          <EmptySearchResults
-                            searchTerm={searchTerm}
-                            onClearSearch={handleClearSearch}
-                          />
-                        ) : (
-                          <NoArticlesState />
-                        );
-                      }
-
-                      return (
-                        <ArticlesGrid
-                          articles={filteredArticles}
-                          loading={false}
-                          searchTerm={searchTerm}
-                          getImageUrl={getImageUrl}
-                          getReadTime={getReadTime}
-                        />
-                      );
-                    })()}
+            ) : (
+              <div className="space-y-8">
+                {/* Articles Header */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
+                      {selectedCategory === "all" ? "Toutes les actualités" : "Actualités filtrées"}
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-400 mt-1">
+                      {filteredArticles.length} article{filteredArticles.length !== 1 ? "s" : ""} trouvé{filteredArticles.length !== 1 ? "s" : ""}
+                    </p>
                   </div>
-                </section>
-              </>
-            )}
+                  
+                  {/* Sort Options for Mobile */}
+                  <div className="lg:hidden">
+                    <select
+                      value={selectedSortBy}
+                      onChange={(e) => setSelectedSortBy(e.target.value)}
+                      className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-sm"
+                    >
+                      <option value="latest">Plus récent</option>
+                      <option value="popular">Plus populaire</option>
+                      <option value="trending">Tendances</option>
+                      <option value="alphabetical">Alphabétique</option>
+                    </select>
+                  </div>
+                </div>
 
-            {/* Newsletter Section */}
-            <Newsletter />
-          </div>
+                {/* Articles Grid */}
+                {(() => {
+                  if (loading) {
+                    return (
+                      <ArticlesGrid
+                        articles={[]}
+                        loading={true}
+                        searchTerm={searchTerm}
+                        getImageUrl={getImageUrl}
+                        getReadTime={getReadTime}
+                      />
+                    );
+                  }
+
+                  if (filteredArticles.length === 0) {
+                    return searchTerm ? (
+                      <EmptySearchResults
+                        searchTerm={searchTerm}
+                        onClearSearch={handleClearSearch}
+                      />
+                    ) : (
+                      <NoArticlesState />
+                    );
+                  }
+
+                  return (
+                    <ArticlesGrid
+                      articles={paginatedArticles}
+                      loading={false}
+                      searchTerm={searchTerm}
+                      getImageUrl={getImageUrl}
+                      getReadTime={getReadTime}
+                    />
+                  );
+                })()}
+
+                {/* Load More / Pagination */}
+                {totalPages > 1 && currentPage < totalPages && (
+                  <div className="text-center py-8">
+                    <Button
+                      onClick={handleLoadMore}
+                      variant="outline"
+                      size="lg"
+                      className="px-8"
+                    >
+                      Charger plus d'articles
+                    </Button>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                      Page {currentPage} sur {totalPages}
+                    </p>
+                  </div>
+                )}
+
+                {/* Results Summary */}
+                {filteredArticles.length > 0 && (
+                  <div className="text-center text-sm text-gray-500 dark:text-gray-400 py-4 border-t border-gray-200 dark:border-gray-700">
+                    Affichage de {Math.min(currentPage * articlesPerPage, filteredArticles.length)} sur {filteredArticles.length} articles
+                  </div>
+                )}
+              </div>
+            )}
+          </main>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
