@@ -14,11 +14,27 @@ export default function AdminIndicator() {
     setIsAdmin(adminAuth === 'true')
   }, [])
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminAuth')
-    localStorage.removeItem('adminUser')
-    setIsAdmin(false)
-    window.location.reload()
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('adminToken')
+      if (token) {
+        await fetch('/api/admin/auth', {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+      }
+    } catch (error) {
+      console.error('Logout failed:', error)
+    } finally {
+      localStorage.removeItem('adminToken')
+      localStorage.removeItem('adminAuth')
+      localStorage.removeItem('adminUser')
+      localStorage.removeItem('authHeader')
+      setIsAdmin(false)
+      window.location.reload()
+    }
   }
 
   if (!isAdmin || !isVisible) {

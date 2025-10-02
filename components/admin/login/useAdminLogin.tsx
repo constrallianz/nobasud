@@ -21,28 +21,32 @@ export function useAdminLogin() {
     setError('')
 
     try {
-      const submitData = new FormData()
-      submitData.append('username', formData.username)
-      submitData.append('password', formData.password)
-
       const response = await fetch('/api/admin/auth', {
         method: 'POST',
-        body: submitData
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username.trim(),
+          password: formData.password
+        })
       })
 
       const data = await response.json()
 
       if (response.ok && data.success) {
-        // Stocker la session admin
+        localStorage.setItem('adminToken', data.token)
         localStorage.setItem('adminAuth', 'true')
         localStorage.setItem('adminUser', JSON.stringify(data.user))
         
-        // Rediriger vers le dashboard admin
+        localStorage.setItem('authHeader', `Bearer ${data.token}`)
+        
         router.push('/admin')
       } else {
         setError(data.error || 'Erreur de connexion')
       }
     } catch (error) {
+      console.error('Login error:', error)
       setError('Erreur de connexion au serveur')
     }
     

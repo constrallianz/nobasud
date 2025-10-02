@@ -12,14 +12,30 @@ interface DashboardHeaderProps {
   onLogout?: () => void
 }
 
-export default function DashboardHeader({ variant = 'default', onLogout }: DashboardHeaderProps) {
-  const handleLogout = () => {
+export default function DashboardHeader({ variant = 'default', onLogout }: Readonly<DashboardHeaderProps>) {
+  const handleLogout = async () => {
     if (onLogout) {
       onLogout()
     } else {
-      localStorage.removeItem('adminAuth')
-      localStorage.removeItem('adminUser')
-      window.location.href = '/admin/login'
+      try {
+        const token = localStorage.getItem('adminToken')
+        if (token) {
+          await fetch('/api/admin/auth', {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+        }
+      } catch (error) {
+        console.error('Logout failed:', error)
+      } finally {
+        localStorage.removeItem('adminToken')
+        localStorage.removeItem('adminAuth')
+        localStorage.removeItem('adminUser')
+        localStorage.removeItem('authHeader')
+        window.location.href = '/admin/login'
+      }
     }
   }
 

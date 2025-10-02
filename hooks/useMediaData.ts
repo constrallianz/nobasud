@@ -8,7 +8,6 @@ export function useMediaData() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Fetch articles from API
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -33,7 +32,6 @@ export function useMediaData() {
     fetchArticles()
   }, [])
 
-  // Parse tags (assuming they're stored as JSON strings)
   const parseArticleTags = (tags: string | null): string[] => {
     if (!tags) return []
     try {
@@ -43,7 +41,6 @@ export function useMediaData() {
     }
   }
 
-  // Generate categories with counts
   const categories: Category[] = useMemo(() => {
     const tagCounts: Record<string, number> = {}
     
@@ -58,7 +55,6 @@ export function useMediaData() {
       { id: 'all', name: 'Tous les articles', count: articles.length }
     ]
 
-    // Add common categories
     const commonCategories = ['Actualités', 'Projets', 'Innovation', 'Conseils']
     commonCategories.forEach(cat => {
       if (tagCounts[cat]) {
@@ -73,7 +69,6 @@ export function useMediaData() {
     return dynamicCategories
   }, [articles])
 
-  // Filter articles based on search and category
   const filteredArticles = useMemo(() => {
     return articles.filter(article => {
       const matchesSearch = searchTerm === '' || 
@@ -90,12 +85,10 @@ export function useMediaData() {
     })
   }, [articles, searchTerm, selectedCategory, categories])
 
-  // Get featured article (first published article)
   const featuredArticle = useMemo(() => {
     return articles.find(article => article.published) || null
   }, [articles])
 
-  // Get remaining articles (excluding featured)
   const remainingArticles = useMemo(() => {
     if (!featuredArticle) return filteredArticles
     return filteredArticles.filter(article => article.id !== featuredArticle.id)
