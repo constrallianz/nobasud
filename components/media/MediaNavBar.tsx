@@ -45,7 +45,7 @@ export default function MediaNavBar({
         {/* Quick Links Bar */}
         <div className="border-b border-gray-200 dark:border-gray-700 py-2">
           <div className="flex items-center justify-between">
-            <div className="hidden md:flex items-center space-x-6">
+            {/* <div className="hidden md:flex items-center space-x-6">
               {quickLinks.map((link) => (
                 <Link
                   key={link.name}
@@ -55,7 +55,8 @@ export default function MediaNavBar({
                   {link.name}
                 </Link>
               ))}
-            </div>
+            </div> */}
+            <div></div>
             <div className="flex items-center space-x-4">
               <span className="text-xs text-gray-500">
                 {new Date().toLocaleDateString('fr-FR', { 
