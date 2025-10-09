@@ -16,6 +16,7 @@ import {
   SelectContent,
   SelectItem
 } from "../ui/select";
+import { useFeedbackSubmit } from "@/hooks/useFeedbackSubmit";
 
 export default function FeedbackForm() {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -26,12 +27,13 @@ export default function FeedbackForm() {
   const [comment, setComment] = useState("");
   const [consent, setConsent] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [submitting, setSubmitting] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const prevNameRef = useRef("");
   const prevEmailRef = useRef("");
+  
+  const { submitting, submitFeedback } = useFeedbackSubmit();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -39,10 +41,10 @@ export default function FeedbackForm() {
       alert("Veuillez donner une note avant d'envoyer votre avis.");
       return;
     }
-    setSubmitting(true);
+    
     const formData = new FormData();
-      formData.append("name", isAnonymous ? "anonyme" : name);
-      formData.append("email", isAnonymous ? "anonyme" : email);
+    formData.append("name", isAnonymous ? "anonyme" : name);
+    formData.append("email", isAnonymous ? "anonyme" : email);
     formData.append("company", company);
     formData.append("project", project);
     formData.append("comment", comment);
@@ -52,30 +54,23 @@ export default function FeedbackForm() {
       formData.append("photo", photoFile);
     }
 
-    try {
-      const res = await fetch("/api/feedback", {
-        method: "POST",
-        body: formData,
-      });
-      if (res.ok) {
-        setName("");
-        setEmail("");
-        setCompany("");
-        setProject("");
-        setComment("");
-        setRating(0);
-        setPhotoFile(null);
-        setConsent(false);
-        if (fileInputRef.current) fileInputRef.current.value = "";
-        alert("Merci pour votre avis !");
-        setIsAnonymous(false);
-      } else {
-        alert("Erreur lors de l'envoi. Veuillez réessayer.");
-      }
-    } catch (error) {
-      alert("Erreur lors de l'envoi. Veuillez réessayer.");
+    const result = await submitFeedback(formData);
+    
+    if (result.success) {
+      setName("");
+      setEmail("");
+      setCompany("");
+      setProject("");
+      setComment("");
+      setRating(0);
+      setPhotoFile(null);
+      setConsent(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      alert("Merci pour votre avis !");
+      setIsAnonymous(false);
+    } else {
+      alert(result.error || "Erreur lors de l'envoi. Veuillez réessayer.");
     }
-    setSubmitting(false);
   }
 
   return (

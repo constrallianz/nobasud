@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { protectRoute, AuthenticatedRequest } from '@/lib/auth-middleware'
 
 // Get all applications for admin
-export async function GET() {
+async function getApplicationsHandler(request: AuthenticatedRequest) {
   try {
     const applications = await prisma.application.findMany({
       orderBy: { createdAt: 'desc' }
@@ -19,7 +20,7 @@ export async function GET() {
 }
 
 // Update application status
-export async function PATCH(req: Request) {
+async function patchApplicationHandler(req: AuthenticatedRequest) {
   try {
     const { id, status } = await req.json()
     
@@ -54,7 +55,7 @@ export async function PATCH(req: Request) {
 }
 
 // Delete application
-export async function DELETE(req: Request) {
+async function deleteApplicationHandler(req: AuthenticatedRequest) {
   try {
     const { searchParams } = new URL(req.url)
     const id = searchParams.get('id')
@@ -79,3 +80,7 @@ export async function DELETE(req: Request) {
     )
   }
 }
+
+export const GET = protectRoute(getApplicationsHandler)
+export const PATCH = protectRoute(patchApplicationHandler)
+export const DELETE = protectRoute(deleteApplicationHandler)

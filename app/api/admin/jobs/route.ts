@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getAllJobs, createJob } from '@/lib/actions/jobs'
 import { uploadBufferToCloudinary } from '@/lib/cloudinary';
 import { jobSchema } from '@/lib/validations';
+import { protectRoute, AuthenticatedRequest } from '@/lib/auth-middleware'
 
 
 const slugify = (s: string) =>
@@ -12,7 +13,7 @@ const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)+/g, '')
 
-export async function POST(request: Request) {
+async function createJobHandler(request: AuthenticatedRequest) {
   try {
     const contentType = request.headers.get('content-type') || ''
     let draft: Record<string, any> = {}
@@ -52,7 +53,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to create job' }, { status: 500 })
   }
 }
-export async function GET() {
+
+async function getJobsHandler(request: AuthenticatedRequest) {
   try {
     const jobs = await getAllJobs()
     return NextResponse.json(jobs)
@@ -61,3 +63,6 @@ export async function GET() {
     return NextResponse.json({ error: 'Failed to fetch jobs' }, { status: 500 })
   }
 }
+
+export const POST = protectRoute(createJobHandler)
+export const GET = protectRoute(getJobsHandler)

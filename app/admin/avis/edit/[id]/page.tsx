@@ -7,6 +7,7 @@ import AvisFormPageHeader from '@/components/admin/avis/shared/AvisFormPageHeade
 import LoadingState from '@/components/admin/avis/states/LoadingState'
 import ErrorState from '@/components/admin/avis/states/ErrorState'
 import { type Feedback } from '@/lib/validations'
+import { useFeedbacks } from '@/hooks/useFeedbacks'
 
 interface EditAvisPageProps {
   params: {
@@ -15,6 +16,7 @@ interface EditAvisPageProps {
 }
 
 export default function EditAvisPage({ params }: EditAvisPageProps) {
+  const { fetchFeedbackById, updateFeedback } = useFeedbacks()
   const [feedback, setFeedback] = useState<Feedback | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -22,14 +24,12 @@ export default function EditAvisPage({ params }: EditAvisPageProps) {
   const router = useRouter()
 
   useEffect(() => {
-    const fetchFeedback = async () => {
+    const loadFeedback = async () => {
       try {
-        const response = await fetch(`/api/admin/feedbacks/${params.id}`)
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || 'Erreur lors de la récupération de l\'avis')
+        const data = await fetchFeedbackById(params.id)
+        if (!data) {
+          throw new Error('Avis non trouvé')
         }
-        const data = await response.json()
         setFeedback(data)
       } catch (err) {
         console.error('Error fetching feedback:', err)
@@ -40,9 +40,9 @@ export default function EditAvisPage({ params }: EditAvisPageProps) {
     }
 
     if (params.id) {
-      fetchFeedback()
+      loadFeedback()
     }
-  }, [params.id])
+  }, [params.id, fetchFeedbackById])
 
   const handleSubmit = async (data: Omit<Feedback, 'id' | 'createdAt' | 'updatedAt'>) => {
     if (isSubmitting || !feedback) return
@@ -50,28 +50,16 @@ export default function EditAvisPage({ params }: EditAvisPageProps) {
     setIsSubmitting(true)
     setError(null)
 
-    try {
-      const response = await fetch(`/api/admin/feedbacks/${params.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Erreur lors de la mise à jour de l\'avis')
-      }
-
+    const result = await updateFeedback(params.id, data)
+    
+    if (result.success) {
       router.push('/admin/avis')
       router.refresh()
-    } catch (err) {
-      console.error('Error updating feedback:', err)
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue')
-    } finally {
-      setIsSubmitting(false)
+    } else {
+      setError(result.error || 'Une erreur est survenue')
     }
+    
+    setIsSubmitting(false)
   }
 
   const handleCancel = () => {

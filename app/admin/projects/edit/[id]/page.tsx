@@ -7,12 +7,14 @@ import ProjectFormContainer from '@/components/admin/projects/shared/ProjectForm
 import LoadingState from '@/components/admin/projects/states/LoadingState'
 import ErrorState from '@/components/admin/projects/states/ErrorState'
 import { type Project } from '@/lib/validations'
+import { useProjects } from '@/components/admin/projects/listing/useProjects'
 
 interface EditProjectPageProps {
   params: { id: string }
 }
 
 export default function EditProjectPage({ params }: EditProjectPageProps) {
+  const { fetchProjectById, updateProject } = useProjects()
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -20,19 +22,17 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetchProject()
+    loadProject()
   }, [params.id])
 
-  const fetchProject = async () => {
+  const loadProject = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch(`/api/admin/projects/${params.id}`)
+      const projectData = await fetchProjectById(params.id)
       
-      if (!response.ok) {
-        throw new Error('Failed to fetch project')
+      if (!projectData) {
+        throw new Error('Projet non trouvé')
       }
-
-      const projectData = await response.json()
       
       // Parse images if they're stored as JSON string
       if (projectData.images && typeof projectData.images === 'string') {
@@ -54,6 +54,7 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
 
   const handleSubmit = async (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'> & { imageFiles?: File[] }) => {
     setIsSubmitting(true)
+    setError(null)
     
     try {
       const form = new FormData()
@@ -74,19 +75,16 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
         })
       }
 
-      const response = await fetch(`/api/admin/projects/${params.id}`, {
-        method: 'PUT',
-        body: form, // Use FormData instead of JSON
-      })
+      const result = await updateProject(params.id, form)
 
-      if (!response.ok) {
-        throw new Error('Failed to update project')
+      if (result.success) {
+        router.push('/admin/projects')
+      } else {
+        setError(result.error || 'Une erreur est survenue')
       }
-
-      router.push('/admin/projects')
     } catch (error) {
       console.error('Error updating project:', error)
-      alert('Erreur lors de la mise à jour du projet')
+      setError('Erreur lors de la mise à jour du projet')
     } finally {
       setIsSubmitting(false)
     }

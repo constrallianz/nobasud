@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { protectRoute, AuthenticatedRequest } from '@/lib/auth-middleware'
 
-export async function GET() {
+async function messagesHandler(request: AuthenticatedRequest) {
   try {
     // Fetch all contact messages from database
     const messages = await prisma.contactMessage.findMany({
@@ -39,3 +40,5 @@ export async function GET() {
     }, { status: 500 })
   }
 }
+
+export const GET = protectRoute(messagesHandler)

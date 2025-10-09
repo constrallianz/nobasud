@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { protectRoute, AuthenticatedRequest } from '@/lib/auth-middleware'
 
-export async function GET(request: NextRequest) {
+async function dashboardHandler(request: AuthenticatedRequest) {
   try {
-   
     // Fetch all counts in parallel for better performance
     const [
       projectsCount,
@@ -54,3 +54,5 @@ export async function GET(request: NextRequest) {
     }, { status: 500 })
   }
 }
+
+export const GET = protectRoute(dashboardHandler)

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getJobById, updateJob, deleteJob } from '@/lib/actions/jobs';
+import { protectRoute, AuthenticatedRequest } from '@/lib/auth-middleware'
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+async function getJobHandler(request: AuthenticatedRequest, { params }: { params: { id: string } }) {
   try {
     console.log("Fetching job with ID:", params.id);
     const job = await getJobById(params.id);
@@ -13,7 +14,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+async function updateJobHandler(request: AuthenticatedRequest, { params }: { params: { id: string } }) {
   try {
     const formData = await request.formData();
     const data: any = {};
@@ -28,7 +29,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+async function deleteJobHandler(request: AuthenticatedRequest, { params }: { params: { id: string } }) {
   try {
     await deleteJob(params.id);
     return NextResponse.json({ success: true });
@@ -37,3 +38,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     return NextResponse.json({ error: 'Failed to delete job' }, { status: 500 });
   }
 }
+
+export const GET = protectRoute(getJobHandler)
+export const PUT = protectRoute(updateJobHandler)
+export const DELETE = protectRoute(deleteJobHandler)

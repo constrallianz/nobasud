@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server'
 import { getAllArticles, createArticle } from '@/lib/actions/articles'
 import { uploadBufferToCloudinary } from '@/lib/cloudinary'
 import { articleSchema } from '@/lib/validations'
+import { protectRoute, AuthenticatedRequest } from '@/lib/auth-middleware'
 
-export async function GET() {
+async function getArticlesHandler(request: AuthenticatedRequest) {
   try {
     const articles = await getAllArticles()
     return NextResponse.json(articles)
@@ -12,7 +13,8 @@ export async function GET() {
     return NextResponse.json({ error: 'Failed to fetch articles' }, { status: 500 })
   }
 }
-export async function POST(request: Request) {
+
+async function createArticleHandler(request: AuthenticatedRequest) {
   try {
     const contentType = request.headers.get('content-type') || '';
 
@@ -57,4 +59,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to create article' }, { status: 500 });
   }
 }
+
+export const GET = protectRoute(getArticlesHandler)
+export const POST = protectRoute(createArticleHandler)
 

@@ -3,9 +3,10 @@ import { updateProject, deleteProject } from '@/lib/actions/projects'
 import { uploadBufferToCloudinary } from '@/lib/cloudinary'
 import { projectSchema } from '@/lib/validations'
 import { prisma } from '@/lib/prisma'
+import { protectRoute, AuthenticatedRequest } from '@/lib/auth-middleware'
 
-export async function GET(
-  request: Request,
+async function getProjectHandler(
+  request: AuthenticatedRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -24,8 +25,8 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: Request,
+async function updateProjectHandler(
+  request: AuthenticatedRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -74,8 +75,8 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: Request,
+async function deleteProjectHandler(
+  request: AuthenticatedRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -86,3 +87,7 @@ export async function DELETE(
     return NextResponse.json({ error: 'Failed to delete project' }, { status: 500 })
   }
 }
+
+export const GET = protectRoute(getProjectHandler)
+export const PUT = protectRoute(updateProjectHandler)
+export const DELETE = protectRoute(deleteProjectHandler)

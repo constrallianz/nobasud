@@ -5,7 +5,7 @@ export default function AboutNumbers() {
       label: "Collaborateurs"
     },
     {
-      number: "75+",
+      number: "15+",
       label: "Projets réalisés"
     },
     {

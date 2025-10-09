@@ -8,6 +8,7 @@ import FeedbackFilters from '@/components/admin/avis/FeedbackFilters'
 import FeedbackStats from '@/components/admin/avis/FeedbackStats'
 import FeedbackPageStates from '@/components/admin/avis/FeedbackPageStates'
 import { type Feedback } from '@/lib/validations'
+import { useFeedbacks } from '@/hooks/useFeedbacks'
 
 interface ZoneOption {
   value: string
@@ -16,10 +17,8 @@ interface ZoneOption {
 }
 
 export default function AdminAvisPage() {
-  const [feedbacks, setFeedbacks] = useState<Feedback[]>([])
+  const { feedbacks, loading: isLoading, error, deleteFeedback } = useFeedbacks()
   const [filteredFeedbacks, setFilteredFeedbacks] = useState<Feedback[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedZone, setSelectedZone] = useState('all')
 
@@ -31,26 +30,6 @@ export default function AdminAvisPage() {
       count: feedbacks.filter(f => f.project === project).length
     }))
   ]
-
-  useEffect(() => {
-    const fetchFeedbacks = async () => {
-      try {
-        const response = await fetch('/api/admin/feedbacks')
-        if (!response.ok) {
-          throw new Error('Erreur lors de la récupération des avis')
-        }
-        const data = await response.json()
-        setFeedbacks(data || [])
-      } catch (err) {
-        console.error('Error fetching feedbacks:', err)
-        setError(err instanceof Error ? err.message : 'Une erreur est survenue')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchFeedbacks()
-  }, [])
 
   useEffect(() => {
     let filtered = feedbacks.filter(feedback =>
@@ -69,15 +48,7 @@ export default function AdminAvisPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`/api/admin/feedbacks/${id}`, {
-        method: 'DELETE'
-      })
-
-      if (!response.ok) {
-        throw new Error('Erreur lors de la suppression')
-      }
-
-      setFeedbacks(prev => prev.filter(f => f.id !== id))
+      await deleteFeedback(id)
     } catch (err) {
       console.error('Error deleting feedback:', err)
       throw err

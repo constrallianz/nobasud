@@ -5,13 +5,17 @@ import { useRouter } from 'next/navigation'
 import ProjectFormPageHeader from '@/components/admin/projects/shared/ProjectFormPageHeader'
 import ProjectFormContainer from '@/components/admin/projects/shared/ProjectFormContainer'
 import { type Project } from '@/lib/validations'
+import { useProjects } from '@/components/admin/projects/listing/useProjects'
 
 export default function NewProjectPage() {
+  const { createProject } = useProjects()
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'> & { imageFiles?: File[] }) => {
     setIsSubmitting(true)
+    setError(null)
     
     try {
       const form = new FormData()
@@ -32,19 +36,19 @@ export default function NewProjectPage() {
         })
       }
 
-      const response = await fetch('/api/admin/projects', {
-        method: 'POST',
-        body: form, // Use FormData instead of JSON
-      })
+      const result = await createProject(form)
 
-      if (!response.ok) {
-        throw new Error('Failed to create project')
+      if (result.success) {
+        router.push('/admin/projects')
+      } else {
+        setError(result.error || 'Une erreur est survenue')
+        alert(result.error || 'Erreur lors de la création du projet')
       }
-
-      router.push('/admin/projects')
     } catch (error) {
       console.error('Error creating project:', error)
-      alert('Erreur lors de la création du projet')
+      const errorMsg = 'Erreur lors de la création du projet'
+      setError(errorMsg)
+      alert(errorMsg)
     } finally {
       setIsSubmitting(false)
     }

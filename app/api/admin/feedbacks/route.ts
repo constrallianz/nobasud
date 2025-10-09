@@ -1,11 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { feedbackSchema } from '@/lib/validations';
+import { protectRoute, AuthenticatedRequest } from '@/lib/auth-middleware'
 
 const prisma = new PrismaClient();
 
 // GET /api/admin/feedbacks - Get all feedbacks
-export async function GET() {
+async function getFeedbacksHandler(request: AuthenticatedRequest) {
   try {
     const feedbacks = await prisma.feedback.findMany({
       orderBy: { createdAt: 'desc' },
@@ -22,7 +23,7 @@ export async function GET() {
 }
 
 // POST /api/admin/feedbacks - Create a new feedback
-export async function POST(request: NextRequest) {
+async function createFeedbackHandler(request: AuthenticatedRequest) {
   try {
     const body = await request.json();
     
@@ -57,3 +58,6 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export const GET = protectRoute(getFeedbacksHandler)
+export const POST = protectRoute(createFeedbackHandler)

@@ -9,13 +9,13 @@ interface RelatedArticle {
   slug: string;
   excerpt?: string | null;
   publishedAt: Date | string;
-  imageUrl: string;
-  readTime: string;
+  imageUrl?: string;
+  readTime?: string;
   content?: string | null;
 }
 
 interface RelatedArticlesProps {
-  articles: RelatedArticle[];
+  readonly articles: RelatedArticle[];
 }
 
 export default function RelatedArticles({ articles }: RelatedArticlesProps) {
@@ -44,7 +44,7 @@ export default function RelatedArticles({ articles }: RelatedArticlesProps) {
               >
                 <div className="relative aspect-video overflow-hidden">
                   <Image
-                    src={article.imageUrl}
+                    src={article.imageUrl || '/placeholder-image.jpg'}
                     alt={article.title}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-700"

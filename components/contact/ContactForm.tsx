@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 
 import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
@@ -7,13 +6,13 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Send } from "lucide-react";
+import { useContactForm } from "@/hooks/useContactForm";
 
 export default function ContactForm() {
-  const [submitting, setSubmitting] = useState(false);
+  const { submitting, submitContact } = useContactForm();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitting(true);
     const formData = new FormData(e.currentTarget);
 
     // Combine first and last name into a single name field
@@ -31,33 +30,18 @@ export default function ContactForm() {
       ...(formData.get('company') && { company: formData.get('company') as string }),
     };
 
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(contactData),
-      });
-      
-      const result = await res.json();
-      
-      if (res.ok && result.success) {
-        e.currentTarget.reset();
-        alert(result.message || "Message envoyé avec succès ! Nous vous recontacterons rapidement.");
-      } else if (result.details) {
-        // Show validation errors if available
-        const errorMessages = Object.values(result.details).join('\n');
-        alert(`Erreurs de validation:\n${errorMessages}`);
-      } else {
-        alert(result.message || result.error || "Erreur lors de l'envoi. Veuillez réessayer.");
-      }
-    } catch (error) {
-      console.error('Contact form error:', error);
-      alert("Erreur lors de l'envoi. Veuillez réessayer.");
+    const result = await submitContact(contactData);
+    
+    if (result.success) {
+      e.currentTarget.reset();
+      alert(result.message || "Message envoyé avec succès ! Nous vous recontacterons rapidement.");
+    } else if (result.details) {
+      // Show validation errors if available
+      const errorMessages = Object.values(result.details).join('\n');
+      alert(`Erreurs de validation:\n${errorMessages}`);
+    } else {
+      alert(result.message || result.error || "Erreur lors de l'envoi. Veuillez réessayer.");
     }
-
-    setSubmitting(false);
   }
 
   return (

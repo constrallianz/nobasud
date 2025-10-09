@@ -62,9 +62,14 @@ const RecentProjects = () => {
                       <h3 className="text-xl font-bold text-foreground mb-2">
                         {project.name}
                       </h3>
-                      <p className="text-muted-foreground text-sm">
+                      <p className="text-muted-foreground text-sm mb-3">
                         {project.location}
                       </p>
+                      {project.description && (
+                        <p className="text-muted-foreground text-sm line-clamp-3">
+                          {project.description}
+                        </p>
+                      )}
                     </CardContent>
                   </Card>
                 ))}

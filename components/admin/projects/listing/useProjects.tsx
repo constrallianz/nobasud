@@ -56,6 +56,61 @@ export function useProjects() {
     router.push(`/admin/projects/edit/${projectId}`)
   }
 
+  const fetchProjectById = async (id: string) => {
+    try {
+      const response = await fetch(`/api/admin/projects/${id}`)
+      if (!response.ok) {
+        throw new Error('Projet non trouvé')
+      }
+      return await response.json()
+    } catch (error) {
+      console.error('Error fetching project:', error)
+      return null
+    }
+  }
+
+  const updateProject = async (id: string, data: FormData): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch(`/api/admin/projects/${id}`, {
+        method: 'PUT',
+        body: data,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Erreur lors de la mise à jour du projet')
+      }
+
+      return { success: true }
+    } catch (err) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Une erreur est survenue'
+      }
+    }
+  }
+
+  const createProject = async (data: FormData): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch('/api/admin/projects', {
+        method: 'POST',
+        body: data,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Erreur lors de la création du projet')
+      }
+
+      return { success: true }
+    } catch (err) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Une erreur est survenue'
+      }
+    }
+  }
+
   const handleDelete = async (projectId: string) => {
     if (!confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
       return
@@ -83,6 +138,9 @@ export function useProjects() {
     projects,
     loading,
     fetchProjects,
+    fetchProjectById,
+    updateProject,
+    createProject,
     handleView,
     handleEdit,
     handleDelete

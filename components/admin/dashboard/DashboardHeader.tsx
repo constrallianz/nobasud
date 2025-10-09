@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import ThemeToggle from '@/components/ThemeToggle'
 import { 
@@ -6,6 +8,7 @@ import {
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
+import { useAdminLogout } from '@/hooks/useAdminLogout'
 
 interface DashboardHeaderProps {
   variant?: 'default' | 'new' | 'new-2'
@@ -13,29 +16,13 @@ interface DashboardHeaderProps {
 }
 
 export default function DashboardHeader({ variant = 'default', onLogout }: Readonly<DashboardHeaderProps>) {
+  const { logout } = useAdminLogout()
+  
   const handleLogout = async () => {
     if (onLogout) {
       onLogout()
     } else {
-      try {
-        const token = localStorage.getItem('adminToken')
-        if (token) {
-          await fetch('/api/admin/auth', {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          })
-        }
-      } catch (error) {
-        console.error('Logout failed:', error)
-      } finally {
-        localStorage.removeItem('adminToken')
-        localStorage.removeItem('adminAuth')
-        localStorage.removeItem('adminUser')
-        localStorage.removeItem('authHeader')
-        window.location.href = '/admin/login'
-      }
+      await logout()
     }
   }
 
