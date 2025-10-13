@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useMediaData } from "@/hooks/useMediaData";
 import { getReadTime, getImageUrl } from "@/lib/media-utils";
-import BreakingNewsTicker from "@/components/media/BreakingNewsTicker";
 import MediaNavBar from "@/components/media/MediaNavBar";
 import MediaHero from "@/components/media/MediaHero";
 import ArticlesGrid from "@/components/media/ArticlesGrid";
@@ -68,9 +67,6 @@ export default function MediaPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Breaking News Ticker */}
-      <BreakingNewsTicker />
-      
       {/* Enhanced Navigation */}
       <MediaNavBar
         searchTerm={searchTerm}

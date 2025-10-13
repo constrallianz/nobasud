@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
 import { updateArticle, deleteArticle } from '@/lib/actions/articles'
 import { prisma } from '@/lib/prisma'
+import { protectRoute, AuthenticatedRequest } from '@/lib/auth-middleware'
 
-export async function GET(
-  request: Request,
+async function getArticleHandler(
+  request: AuthenticatedRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -22,8 +23,8 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: Request,
+async function updateArticleHandler(
+  request: AuthenticatedRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -36,8 +37,8 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: Request,
+async function deleteArticleHandler(
+  request: AuthenticatedRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -48,3 +49,7 @@ export async function DELETE(
     return NextResponse.json({ error: 'Failed to delete article' }, { status: 500 })
   }
 }
+
+export const GET = protectRoute(getArticleHandler)
+export const PUT = protectRoute(updateArticleHandler)
+export const DELETE = protectRoute(deleteArticleHandler)

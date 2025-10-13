@@ -6,6 +6,20 @@ export interface AuthenticatedRequest extends NextRequest {
 }
 
 /**
+ * Extract JWT token from request (header or cookie)
+ */
+function extractTokenFromRequest(req: NextRequest): string | null {
+  // First try Authorization header
+  const authHeader = req.headers.get('Authorization')
+  const headerToken = extractTokenFromHeader(authHeader || undefined)
+  if (headerToken) return headerToken
+
+  // Then try cookie
+  const cookieToken = req.cookies.get('admin-token')?.value
+  return cookieToken || null
+}
+
+/**
  * Middleware function to verify JWT tokens in API routes
  */
 export async function withAuth<T extends any[]>(
@@ -14,8 +28,7 @@ export async function withAuth<T extends any[]>(
   ...args: T
 ): Promise<NextResponse> {
   try {
-    const authHeader = req.headers.get('Authorization')
-    const token = extractTokenFromHeader(authHeader || undefined)
+    const token = extractTokenFromRequest(req)
 
     if (!token) {
       const error = createAuthError('Access token is required')

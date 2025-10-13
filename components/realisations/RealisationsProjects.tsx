@@ -1,50 +1,16 @@
-import Image from 'next/image'
-import { MapPinIcon } from '@heroicons/react/24/outline'
 import { RealisationsProjectsProps } from '@/types/realisations'
-import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 
 export default function RealisationsProjects({ projects, categories }: RealisationsProjectsProps) {
-  const [selectedCategory, setSelectedCategory] = useState('Tous');
-
-  const filteredProjects = selectedCategory === 'Tous'
-    ? projects
-    : projects.filter(project => project.type?.toLowerCase() === selectedCategory?.toLowerCase());
-
-  // Import Button, Card, CardContent, Badge from your UI library
-  // If not imported, add these imports at the top as needed
-  // import { Button } from '@/components/ui/button';
-  // import { Card, CardContent } from '@/components/ui/card';
-  // import { Badge } from '@/components/ui/badge';
-
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                variant={selectedCategory === category ? "default" : "outline"}
-                onClick={() => setSelectedCategory(category)}
-                className={`font-semibold ${
-                  selectedCategory === category
-                    ? "bg-primary text-primary-foreground"
-                    : "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-                }`}
-                data-testid={`filter-${category.toLowerCase()}`}
-              >
-                {category}
-              </Button>
-            ))}
-          </div>
-
           {/* Projects Grid */}
           <div className="grid lg:grid-cols-3 gap-8 mb-12">
-            {filteredProjects.map((project) => (
+            {projects.map((project) => (
               <Card key={project.id} className="overflow-hidden hover:shadow-xl transition-shadow group">
                 <div className="relative">
                   <div 
@@ -63,17 +29,22 @@ export default function RealisationsProjects({ projects, categories }: Realisati
                   <h3 className="text-xl font-bold text-foreground mb-2" data-testid={`project-name-${project.id}`}>
                     {project.name}
                   </h3>
-                  <p className="text-muted-foreground text-sm">{project.location}</p>
+                  <p className="text-muted-foreground text-sm mb-3">{project.location}</p>
+                  {project.description && (
+                    <p className="text-muted-foreground text-sm line-clamp-3">
+                      {project.description}
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             ))}
           </div>
 
           {/* Empty State */}
-          {filteredProjects.length === 0 && (
+          {projects.length === 0 && (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg">
-                Aucun projet trouvé dans cette catégorie.
+                Aucun projet trouvé.
               </p>
             </div>
           )}

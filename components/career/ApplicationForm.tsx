@@ -1,39 +1,37 @@
 'use client'
-import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
 import { Button } from '../ui/button'
+import { useApplicationSubmit } from '@/hooks/useApplicationSubmit'
 
 export default function ApplicationForm({ jobId }: { jobId?: string }) {
-  const [submitting, setSubmitting] = useState(false)
+  const { submitting, submitApplication } = useApplicationSubmit()
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitting(true);
-      const cvFile = (e.currentTarget.cv as HTMLInputElement)?.files?.[0];
-      const coverLetterFile = (e.currentTarget.coverLetter as HTMLInputElement)?.files?.[0];
-      const maxSize = 3 * 1024 * 1024; 
-      if (cvFile && cvFile.size > maxSize) {
-        alert('Le fichier CV dépasse la taille maximale de 3MB.');
-        return;
-      }
-      if (coverLetterFile && coverLetterFile.size > maxSize) {
-        alert('La lettre de motivation dépasse la taille maximale de 3MB.');
-        return;
-      }
-      const formData = new FormData(e.currentTarget);
-    try {
-      const res = await fetch('/api/applications', { method: 'POST', body: formData });
-      if (res.ok) {
-        alert('Candidature envoyée avec succès ! Nous vous recontacterons rapidement.');
-      } else {
-        alert('Erreur lors de l\'envoi. Veuillez réessayer.');
-      }
-    } catch (error) {
-      alert('Erreur lors de l\'envoi. Veuillez réessayer.');
+    
+    const cvFile = (e.currentTarget.cv as HTMLInputElement)?.files?.[0];
+    const coverLetterFile = (e.currentTarget.coverLetter as HTMLInputElement)?.files?.[0];
+    const maxSize = 3 * 1024 * 1024; 
+    
+    if (cvFile && cvFile.size > maxSize) {
+      alert('Le fichier CV dépasse la taille maximale de 3MB.');
+      return;
     }
-    setSubmitting(false);
+    if (coverLetterFile && coverLetterFile.size > maxSize) {
+      alert('La lettre de motivation dépasse la taille maximale de 3MB.');
+      return;
+    }
+    
+    const formData = new FormData(e.currentTarget);
+    const result = await submitApplication(formData);
+    
+    if (result.success) {
+      alert('Candidature envoyée avec succès ! Nous vous recontacterons rapidement.');
+    } else {
+      alert(result.error || 'Erreur lors de l\'envoi. Veuillez réessayer.');
+    }
   }
 
   return (

@@ -27,6 +27,63 @@ export function useArticles() {
     }
   };
 
+  const fetchArticleById = async (id: string): Promise<Article | null> => {
+    try {
+      const response = await fetch(`/api/admin/articles/${id}`);
+      if (!response.ok) {
+        throw new Error('Article non trouvé');
+      }
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      console.error('Error fetching article:', err);
+      return null;
+    }
+  };
+
+  const updateArticle = async (id: string, data: Omit<Article, 'id' | 'createdAt' | 'updatedAt'>): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch(`/api/admin/articles/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la mise à jour de l\'article');
+      }
+
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Une erreur est survenue',
+      };
+    }
+  };
+
+  const createArticle = async (data: FormData): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch('/api/admin/articles', {
+        method: 'POST',
+        body: data,
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la création de l\'article');
+      }
+
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Une erreur est survenue',
+      };
+    }
+  };
+
   const deleteArticle = async (id: string) => {
     try {
       const response = await fetch(`/api/admin/articles/${id}`, {
@@ -52,6 +109,9 @@ export function useArticles() {
     articles,
     isLoading,
     error,
+    fetchArticleById,
+    updateArticle,
+    createArticle,
     deleteArticle,
     refetch: fetchArticles,
   };

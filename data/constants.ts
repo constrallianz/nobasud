@@ -57,7 +57,7 @@ export const SERVICES = [
 
 // Key numbers for homepage
 export const KEY_NUMBERS = [
-  { value: "75+", label: "Projets réalisés" },
+  { value: "15+", label: "Projets réalisés" },
   { value: "500M", label: "MAD investis" },
   { value: "98%", label: "Satisfaction client" },
   { value: "15+", label: "Années d'expérience" }

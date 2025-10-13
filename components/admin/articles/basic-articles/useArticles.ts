@@ -45,6 +45,49 @@ export function useArticles() {
     fetchArticles()
   }, [])
 
+  const updateArticle = async (id: string, data: Omit<ArticleValidation, 'id' | 'createdAt' | 'updatedAt'>): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch(`/api/admin/articles/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la mise à jour de l\'article');
+      }
+
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Une erreur est survenue',
+      };
+    }
+  };
+
+  const createArticle = async (data: FormData): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch('/api/admin/articles', {
+        method: 'POST',
+        body: data,
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la création de l\'article');
+      }
+
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Une erreur est survenue',
+      };
+    }
+  };
+
   const deleteArticle = (id: string) => {
     setArticles(prev => prev.filter(article => article.id !== id))
   }
@@ -63,6 +106,8 @@ export function useArticles() {
     handleView,
     handleEdit,
     refetch: fetchArticles,
-    fetchArticleById
+    fetchArticleById,
+    updateArticle,
+    createArticle
   }
 }

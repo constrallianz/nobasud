@@ -7,8 +7,10 @@ import AvisFormContainer from '@/components/admin/avis/shared/AvisFormContainer'
 import LoadingState from '@/components/admin/avis/states/LoadingState'
 import ErrorState from '@/components/admin/avis/states/ErrorState'
 import { type Feedback } from '@/lib/validations'
+import { useFeedbacks } from '@/hooks/useFeedbacks'
 
 export default function NewAvisPage() {
+  const { createFeedback } = useFeedbacks()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -19,28 +21,16 @@ export default function NewAvisPage() {
     setIsSubmitting(true)
     setError(null)
 
-    try {
-      const response = await fetch('/api/admin/feedbacks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Erreur lors de la création de l\'avis')
-      }
-
+    const result = await createFeedback(data)
+    
+    if (result.success) {
       router.push('/admin/avis')
       router.refresh()
-    } catch (err) {
-      console.error('Error creating feedback:', err)
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue')
-    } finally {
-      setIsSubmitting(false)
+    } else {
+      setError(result.error || 'Une erreur est survenue')
     }
+    
+    setIsSubmitting(false)
   }
 
   if (error) {

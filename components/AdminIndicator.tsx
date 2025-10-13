@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ShieldCheckIcon, Cog6ToothIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Button } from './ui/button'
+import { useAdminLogout } from '@/hooks/useAdminLogout'
 
 export default function AdminIndicator() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
+  const { logout, isLoggingOut } = useAdminLogout()
 
   useEffect(() => {
     const adminAuth = localStorage.getItem('adminAuth')
@@ -15,26 +17,8 @@ export default function AdminIndicator() {
   }, [])
 
   const handleLogout = async () => {
-    try {
-      const token = localStorage.getItem('adminToken')
-      if (token) {
-        await fetch('/api/admin/auth', {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
-      }
-    } catch (error) {
-      console.error('Logout failed:', error)
-    } finally {
-      localStorage.removeItem('adminToken')
-      localStorage.removeItem('adminAuth')
-      localStorage.removeItem('adminUser')
-      localStorage.removeItem('authHeader')
-      setIsAdmin(false)
-      window.location.reload()
-    }
+    setIsAdmin(false)
+    await logout()
   }
 
   if (!isAdmin || !isVisible) {
@@ -71,9 +55,10 @@ export default function AdminIndicator() {
           </Link>
           <Button 
             onClick={handleLogout}
+            disabled={isLoggingOut}
             className="text-xs bg-transparent text-white border-white "
           >
-            Déconnecter
+            {isLoggingOut ? 'Déconnexion...' : 'Déconnecter'}
           </Button>
         </div>
       </div>

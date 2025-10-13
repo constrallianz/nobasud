@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server'
 import { getProjects, createProject } from '@/lib/actions/projects'
 import { uploadBufferToCloudinary } from '@/lib/cloudinary'
 import { projectSchema } from '@/lib/validations'
+import { protectRoute, AuthenticatedRequest } from '@/lib/auth-middleware'
 
-export async function GET() {
+async function getProjectsHandler(request: AuthenticatedRequest) {
   try {
     const projects = await getProjects()
     return NextResponse.json(projects)
@@ -13,7 +14,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+async function createProjectHandler(request: AuthenticatedRequest) {
   try {
     const contentType = request.headers.get('content-type') || ''
 
@@ -59,3 +60,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to create project' }, { status: 500 })
   }
 }
+
+export const GET = protectRoute(getProjectsHandler)
+export const POST = protectRoute(createProjectHandler)

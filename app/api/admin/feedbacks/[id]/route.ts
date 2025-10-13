@@ -1,12 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { feedbackSchema } from '@/lib/validations';
+import { protectRoute, AuthenticatedRequest } from '@/lib/auth-middleware'
 
 const prisma = new PrismaClient();
 
 // GET /api/admin/feedbacks/[id] - Get a single feedback
-export async function GET(
-  request: NextRequest,
+async function getFeedbackHandler(
+  request: AuthenticatedRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -34,8 +35,8 @@ export async function GET(
 }
 
 // PUT /api/admin/feedbacks/[id] - Update a feedback
-export async function PUT(
-  request: NextRequest,
+async function updateFeedbackHandler(
+  request: AuthenticatedRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -95,8 +96,8 @@ export async function PUT(
 }
 
 // DELETE /api/admin/feedbacks/[id] - Delete a feedback
-export async function DELETE(
-  request: NextRequest,
+async function deleteFeedbackHandler(
+  request: AuthenticatedRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -131,3 +132,7 @@ export async function DELETE(
     );
   }
 }
+
+export const GET = protectRoute(getFeedbackHandler)
+export const PUT = protectRoute(updateFeedbackHandler)
+export const DELETE = protectRoute(deleteFeedbackHandler)

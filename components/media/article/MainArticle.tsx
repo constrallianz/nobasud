@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ArticleContent from "@/components/media/article/ArticleContent";
 import ArticleHeader from "@/components/media/article/ArticleHeader";
 import RelatedArticles from "@/components/media/article/RelatedArticles";
@@ -12,6 +12,7 @@ import { SidebarList, SidebarSection } from "./SidebarList";
 import { ArrowLeftIcon, ShareIcon, BookmarkIcon, PrinterIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useArticleData } from "@/hooks/useArticleData";
 
 interface ArticlePageProps {
   params: {
@@ -20,40 +21,17 @@ interface ArticlePageProps {
 }
 
 export default function MainArticle({ params }: Readonly<ArticlePageProps>) {
-  const [article, setArticle] = useState<any>(null);
-  const [relatedArticles, setRelatedArticles] = useState<any[]>([]);
+  const { article, relatedArticles } = useArticleData(params.slug);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch(`/api/articles?slug=${params.slug}`);
-        const data = await res.json();
-        setArticle(data.article);
-        setRelatedArticles(
-          (data.relatedArticles || []).map((a: any) => ({
-            ...a,
-            imageUrl: getImageUrl(a),
-            readTime: getReadTime(a.content),
-          }))
-        );
-      } catch (err) {
-        console.error("Error fetching article:", err);
-      }
-    };
-    if (params.slug) {
-      fetchData();
-    }
-  }, [params.slug]);
-
-  const tags = parseArticleTags(article?.tags);
+  const tags = parseArticleTags(article?.tags || null);
 
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: article?.title,
-        text: article?.excerpt,
+        title: article?.title || '',
+        text: article?.excerpt || '',
         url: window.location.href,
       });
     } else {

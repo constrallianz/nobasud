@@ -11,7 +11,7 @@ import type { Article } from '@/lib/validations';
 import { useArticles } from '@/components/admin/articles/basic-articles/useArticles';
 
 export default function EditArticlePage() {
-  const {fetchArticleById} = useArticles();
+  const { fetchArticleById, updateArticle } = useArticles();
   const [article, setArticle] = useState<Article | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,7 +21,7 @@ export default function EditArticlePage() {
   const articleId = params.id as string;
 
   useEffect(() => {
-    const fetchArticle = async () => {
+    const loadArticle = async () => {
       try {
         const data = await fetchArticleById(articleId);
         if (!data) throw new Error('Article non trouvé');
@@ -33,33 +33,23 @@ export default function EditArticlePage() {
       }
     };
     if (articleId) {
-      fetchArticle();
+      loadArticle();
     }
-  }, [articleId]);
+  }, [articleId, fetchArticleById]);
 
   const handleSubmit = async (data: Omit<Article, 'id' | 'createdAt' | 'updatedAt'>) => {
     setIsSubmitting(true);
     setError(null);
 
-    try {
-      const response = await fetch(`/api/admin/articles/${articleId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error('Erreur lors de la mise à jour de l\'article');
-      }
-
+    const result = await updateArticle(articleId, data);
+    
+    if (result.success) {
       router.push('/admin/articles');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-    } finally {
-      setIsSubmitting(false);
+    } else {
+      setError(result.error || 'Une erreur est survenue');
     }
+    
+    setIsSubmitting(false);
   };
 
   if (isLoading) {

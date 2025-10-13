@@ -35,6 +35,68 @@ export function useFeedbacks() {
     fetchFeedbacks()
   }, [])
 
+  const fetchFeedbackById = async (id: string) => {
+    try {
+      const response = await fetch(`/api/admin/feedbacks/${id}`)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erreur lors de la récupération de l\'avis')
+      }
+      return await response.json()
+    } catch (err) {
+      console.error('Error fetching feedback:', err)
+      return null
+    }
+  }
+
+  const updateFeedback = async (id: string, data: any): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch(`/api/admin/feedbacks/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erreur lors de la mise à jour de l\'avis')
+      }
+
+      return { success: true }
+    } catch (err) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Une erreur est survenue'
+      }
+    }
+  }
+
+  const createFeedback = async (data: any): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch('/api/admin/feedbacks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erreur lors de la création de l\'avis')
+      }
+
+      return { success: true }
+    } catch (err) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Une erreur est survenue'
+      }
+    }
+  }
+
   const deleteFeedback = async (id: string) => {
     const response = await fetch(`/api/admin/feedbacks/${id}`, {
       method: 'DELETE'
@@ -52,6 +114,9 @@ export function useFeedbacks() {
     feedbacks,
     loading,
     error,
+    fetchFeedbackById,
+    updateFeedback,
+    createFeedback,
     deleteFeedback,
     refetch: fetchFeedbacks
   }
