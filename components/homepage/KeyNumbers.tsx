@@ -9,7 +9,6 @@ interface Statistic {
   order: number
 }
 import { KEY_NUMBERS } from '@/data/constants'
-import React from 'react'
 
 const KeyNumbers = () => {
   const [statistics, setStatistics] = useState<Statistic[]>([])
