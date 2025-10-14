@@ -9,7 +9,9 @@ import {
   UserGroupIcon,
   ChatBubbleLeftRightIcon,
   DocumentIcon,
-  StarIcon
+  StarIcon,
+  MapPinIcon,
+  ChartBarIcon
 } from '@heroicons/react/24/outline'
 
 interface Stats {
@@ -90,6 +92,20 @@ export default function AdminModules({ stats, loading = false, variant = 'defaul
       icon: EnvelopeIcon,
       href: '/admin/messages',
       color: 'bg-red-500'
+    },
+    {
+      title: 'Statistiques',
+      description: 'Gérer les chiffres clés',
+      icon: ChartBarIcon,
+      href: '/admin/statistics',
+      color: 'bg-cyan-500'
+    },
+    {
+      title: 'Emplacements',
+      description: 'Gérer les bureaux et antennes',
+      icon: MapPinIcon,
+      href: '/admin/locations',
+      color: 'bg-teal-500'
     }
   ] : [
     {

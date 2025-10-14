@@ -106,3 +106,41 @@ model ContactMessage {
   email     String
   message   String
 }
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  email     String   @unique
+  active    Boolean  @default(true)
+
+  @@index([email])
+}
+
+model Statistic {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  key       String   @unique
+  value     String
+  label     String
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+
+  @@index([key])
+  @@index([order])
+}
+
+model Location {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  address   String
+  city      String
+  lat       Float
+  lng       Float
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+
+  @@index([order])
+}

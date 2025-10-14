@@ -1,7 +1,52 @@
-import { KEY_NUMBERS } from '@/lib/constants'
-import React from 'react'
+'use client'
+
+import React, { useEffect, useState } from 'react'
+
+interface Statistic {
+  id: string
+  value: string
+  label: string
+  order: number
+}
 
 const KeyNumbers = () => {
+  const [statistics, setStatistics] = useState<Statistic[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchStatistics = async () => {
+      try {
+        const res = await fetch('/api/statistics')
+        if (res.ok) {
+          const data = await res.json()
+          setStatistics(data)
+        }
+      } catch (error) {
+        console.error('Error fetching statistics:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchStatistics()
+  }, [])
+
+  if (loading) {
+    return (
+      <section className="py-20 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="text-center">
+            <div className="text-xl opacity-90">Chargement...</div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (statistics.length === 0) {
+    return null
+  }
+
   return (
     <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 lg:px-8">
@@ -18,20 +63,20 @@ const KeyNumbers = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
-            {KEY_NUMBERS.map((number: { value: string; label: string }, index: number) => (
-              <div key={index} className="text-center">
+          <div className="grid grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {statistics.map((stat, index) => (
+              <div key={stat.id} className="text-center">
                 <div
                   className="text-5xl lg:text-6xl font-black text-accent mb-4"
                   data-testid={`stat-value-${index}`}
                 >
-                  {number.value}
+                  {stat.value}
                 </div>
                 <div
                   className="text-lg font-semibold"
                   data-testid={`stat-label-${index}`}
                 >
-                  {number.label}
+                  {stat.label}
                 </div>
               </div>
             ))}

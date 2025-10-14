@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 
 import { Article } from '@/types/media'
+import { useNewsletterSubmit } from '@/hooks/useNewsletterSubmit'
 
 interface SidebarWidgetsProps {
   latestArticles?: Article[]
@@ -27,6 +28,8 @@ interface SidebarWidgetsProps {
 export default function SidebarWidgets({ latestArticles = [], popularArticles = [] }: SidebarWidgetsProps) {
   const [newsletterEmail, setNewsletterEmail] = useState('')
   const [newsletterSubmitted, setNewsletterSubmitted] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const { submitNewsletter, isSubmitting } = useNewsletterSubmit()
 
   // Mock data if no props provided - creating minimal Article objects
   const mockLatestArticles = [
@@ -100,12 +103,19 @@ export default function SidebarWidgets({ latestArticles = [], popularArticles = 
     }).format(dateObj)
   }
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the email to your newsletter service
-    setNewsletterSubmitted(true)
-    setTimeout(() => setNewsletterSubmitted(false), 3000)
-    setNewsletterEmail('')
+    setErrorMessage('')
+    
+    const result = await submitNewsletter(newsletterEmail)
+    
+    if (result.success) {
+      setNewsletterSubmitted(true)
+      setNewsletterEmail('')
+      setTimeout(() => setNewsletterSubmitted(false), 5000)
+    } else {
+      setErrorMessage(result.error || 'Une erreur est survenue')
+    }
   }
 
   return (
@@ -129,14 +139,21 @@ export default function SidebarWidgets({ latestArticles = [], popularArticles = 
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}
                 required
-                className="bg-white/20 border-white/30 placeholder-white/70 text-white"
+                disabled={isSubmitting}
+                className="bg-white/20 border-white/30 placeholder-white/70 text-white disabled:opacity-50"
               />
+              {errorMessage && (
+                <p className="text-sm text-red-200 bg-red-500/20 px-3 py-2 rounded">
+                  {errorMessage}
+                </p>
+              )}
               <Button 
                 type="submit" 
                 variant="secondary" 
-                className="w-full bg-white hover:bg-gray-100 text-primary font-semibold"
+                disabled={isSubmitting}
+                className="w-full bg-white hover:bg-gray-100 text-primary font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                S'abonner gratuitement
+                {isSubmitting ? 'Inscription...' : "S'abonner gratuitement"}
               </Button>
             </form>
           ) : (

@@ -35,8 +35,8 @@ export default function RealisationsPage() {
   return (
     <div className="relative font-montserrat">
       <RealisationsHero />
-      <RealisationsProjects projects={projectsWithImages} categories={categories} />
       <RealisationsType />
+      <RealisationsProjects projects={projectsWithImages} categories={categories} />
       <RealisationsStats />
       <RealisationsCTA />
     </div>

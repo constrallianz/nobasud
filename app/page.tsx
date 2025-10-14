@@ -5,6 +5,7 @@ import CompanyValues from "@/components/homepage/CompanyValues";
 import ServicesSection from "@/components/homepage/ServicesSection";
 import KeyNumbers from "@/components/homepage/KeyNumbers";
 import RecentProjects from "@/components/homepage/RecentProjects";
+import NewsletterSection from "@/components/newsletter/NewsletterSection";
 import CareersSection from "@/components/homepage/CareersSection";
 
 export default function HomePage() {
@@ -23,6 +24,9 @@ export default function HomePage() {
 
       {/* Recent Projects Section */}
       <RecentProjects />
+
+      {/* Newsletter Section */}
+      <NewsletterSection />
 
       {/* Careers Section */}
      <CareersSection />

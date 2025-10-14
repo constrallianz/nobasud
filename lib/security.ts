@@ -37,7 +37,7 @@ const defaultConfig: SecurityConfig = {
       'font-src': ["'self'", 'https://fonts.gstatic.com'],
       'img-src': ["'self'", 'data:', 'https:', 'blob:'],
       'connect-src': ["'self'", 'https:', 'ws:', 'wss:'],
-      'frame-src': ["'none'"],
+      'frame-src': ["'self'", 'https://www.google.com', 'https://maps.google.com', 'https://www.youtube.com'],
       'object-src': ["'none'"],
       'base-uri': ["'self'"],
       'form-action': ["'self'"],
