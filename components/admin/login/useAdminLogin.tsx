@@ -21,7 +21,6 @@ export function useAdminLogin() {
     setError('')
 
     try {
-      // Send JSON data instead of FormData for JWT authentication
       const response = await fetch('/api/admin/auth', {
         method: 'POST',
         headers: {
@@ -36,15 +35,12 @@ export function useAdminLogin() {
       const data = await response.json()
 
       if (response.ok && data.success) {
-        // Store JWT token and user info
         localStorage.setItem('adminToken', data.token)
         localStorage.setItem('adminAuth', 'true')
         localStorage.setItem('adminUser', JSON.stringify(data.user))
         
-        // Set Authorization header for future requests
         localStorage.setItem('authHeader', `Bearer ${data.token}`)
         
-        // Redirect to admin dashboard
         router.push('/admin')
       } else {
         setError(data.error || 'Erreur de connexion')

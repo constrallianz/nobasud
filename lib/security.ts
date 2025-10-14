@@ -96,7 +96,7 @@ export function applyCORSHeaders(
     }
 
     // Handle preflight
-    headers.set('Access-Control-Max-Age', '86400'); // 24 hours
+    headers.set('Access-Control-Max-Age', '86400'); 
   }
 
   return new Response(response.body, {
@@ -145,8 +145,8 @@ export function sanitizeInput(input: unknown): string {
   
   return input
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
-    .replace(/javascript:/gi, '') // Remove javascript: protocol
-    .replace(/on\w+\s*=/gi, '') // Remove event handlers
+    .replace(/javascript:/gi, '') 
+    .replace(/on\w+\s*=/gi, '') 
     .trim();
 }
 
@@ -167,7 +167,7 @@ export function validateRequestSize(request: Request, maxSize: number = 1024 * 1
     const size = parseInt(contentLength, 10);
     return size <= maxSize;
   }
-  return true; // Allow if no content-length header
+  return true; 
 }
 
 export { defaultConfig };

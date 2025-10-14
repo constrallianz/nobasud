@@ -10,8 +10,6 @@ export async function POST(req: Request) {
     const { username, password } = body
     
 
-    
-    // Validate input
     if (!username || !password) {
 
       const error = createAuthError('Username and password are required', 400)
