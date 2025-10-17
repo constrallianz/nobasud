@@ -13,6 +13,7 @@ import { ArrowLeftIcon, ShareIcon, BookmarkIcon, PrinterIcon } from "@heroicons/
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useArticleData } from "@/hooks/useArticleData";
+import { useMediaData } from "@/hooks/useMediaData";
 
 interface ArticlePageProps {
   params: {
@@ -24,6 +25,10 @@ export default function MainArticle({ params }: Readonly<ArticlePageProps>) {
   const { article, relatedArticles } = useArticleData(params.slug);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const {
+      filteredArticles,
+    } = useMediaData();
+  const secondaryArticles = filteredArticles.slice(1, 5);
 
   const tags = parseArticleTags(article?.tags || null);
 
@@ -156,8 +161,7 @@ export default function MainArticle({ params }: Readonly<ArticlePageProps>) {
               
               {/* Sidebar Widgets */}
               <SidebarWidgets
-                latestArticles={relatedArticles}
-                popularArticles={relatedArticles.slice(0, 3)}
+                secondaryArticles={secondaryArticles}
               />
             </div>
           </aside>

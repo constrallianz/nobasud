@@ -2,24 +2,15 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
 import { 
   CalendarIcon, 
-  EyeIcon, 
   ArrowRightIcon,
-  ShareIcon,
-  BookmarkIcon,
+
   NewspaperIcon,
-  BellIcon
 } from '@heroicons/react/24/outline'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 
 import { Article } from '@/types/media'
-import { useNewsletterSubmit } from '@/hooks/useNewsletterSubmit'
-import { TagIcon } from 'lucide-react'
 
 interface SidebarWidgetsProps {
   latestArticles?: Article[]
@@ -28,8 +19,6 @@ interface SidebarWidgetsProps {
 
 export default function SidebarWidgets({ secondaryArticles=[] }: {secondaryArticles?: Article[]
 }) {
-
-
 
   const formatDate = (date: Date | string) => {
     if (!date) {
