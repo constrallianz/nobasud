@@ -43,7 +43,7 @@ export default function MediaHero({ featuredArticle, loading = false }: MediaHer
         <div className="container mx-auto px-4 py-12">
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Featured Article Skeleton */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-3">
               <div className="bg-gray-200 dark:bg-gray-700 rounded-xl h-96 animate-pulse"></div>
               <div className="mt-6 space-y-4">
                 <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/4"></div>
@@ -52,18 +52,7 @@ export default function MediaHero({ featuredArticle, loading = false }: MediaHer
               </div>
             </div>
             
-            {/* Secondary Articles Skeleton */}
-            <div className="space-y-6">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex space-x-4">
-                  <div className="w-24 h-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse flex-shrink-0"></div>
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/2"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
+        
           </div>
         </div>
       </section>
@@ -76,7 +65,7 @@ export default function MediaHero({ featuredArticle, loading = false }: MediaHer
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Featured Article */}
           {featuredArticle ? (
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-3">
               <div className="relative group">
                 <div className="relative h-96 rounded-2xl overflow-hidden">
                   <Image
