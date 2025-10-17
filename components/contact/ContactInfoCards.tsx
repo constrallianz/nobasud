@@ -66,15 +66,38 @@ export default function ContactInfoCards() {
       </div>
 
       {/* Map Section */}
-      <div className="bg-muted rounded-xl p-8">
-        <h3 className="text-xl font-bold text-foreground mb-4">Localisation</h3>
-        <div className="bg-background rounded-lg p-6 text-center">
-          <MapPin className="h-12 w-12 text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">
-            Carte Google Maps à intégrer
-            <br />
-            {COMPANY_INFO.address.city}, {COMPANY_INFO.address.country}
-          </p>
+      <div className="relative bg-muted rounded-2xl p-8 border border-border overflow-hidden">
+        <h3 className="text-xl font-bold text-foreground mb-6">Localisation</h3>
+        
+        <div className="relative bg-card rounded-xl overflow-hidden border border-border shadow-lg">
+          {/* Google Maps iframe */}
+          <iframe
+            className="w-full h-[400px]"
+            style={{ border: 0 }}
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+            src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(
+              `${COMPANY_INFO.address.street}, ${COMPANY_INFO.address.city}, ${COMPANY_INFO.address.country}`
+            )}&zoom=15`}
+          />
+          
+          {/* Location Info Overlay */}
+          <div className="absolute bottom-3 left-3 right-3 bg-white dark:bg-gray-900 rounded-lg shadow-xl p-3 border border-border">
+            <div className="flex items-start space-x-2">
+              <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center flex-shrink-0">
+                <MapPin className="h-4 w-4 text-primary-foreground" />
+              </div>
+              <div>
+                <h4 className="font-bold text-foreground mb-1 text-sm">NOBASUD</h4>
+                <p className="text-xs text-foreground font-medium">{COMPANY_INFO.address.street}</p>
+                <p className="text-xs text-foreground font-medium">{COMPANY_INFO.address.details}</p>
+                <p className="text-xs font-bold text-primary mt-1">
+                  {COMPANY_INFO.address.city}, {COMPANY_INFO.address.country}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
