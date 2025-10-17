@@ -24,7 +24,7 @@ export function useProjects() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch('/api/admin/projects')
+      const response = await fetch('/api/projects')
       if (response.ok) {
         const data = await response.json()
         // Ensure data is an array
@@ -47,9 +47,7 @@ export function useProjects() {
   }
 
   const handleView = (projectId: string) => {
-    // Navigate to project view page (you can implement this later)
     console.log('Viewing project:', projectId)
-    // router.push(`/admin/projects/view/${projectId}`)
   }
 
   const handleEdit = (projectId: string) => {

@@ -15,7 +15,7 @@ export function useJobs() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('/api/admin/jobs');
+      const response = await fetch('/api/jobs');
       if (!response.ok) {
         throw new Error(`Failed to fetch jobs (${response.status})`);
       }
@@ -37,7 +37,7 @@ export function useJobs() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`/api/admin/jobs/${id}`, { method: 'GET' });
+      const response = await fetch(`/api/jobs/${id}`, { method: 'GET' });
       if (!response.ok) {
         throw new Error(`Failed to fetch job (${response.status})`);
       }

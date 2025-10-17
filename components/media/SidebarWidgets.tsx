@@ -69,18 +69,14 @@ export default function SidebarWidgets({ latestArticles = [], popularArticles = 
   ]
 
   const displayLatest = latestArticles.length > 0 ? latestArticles : mockLatestArticles
-  const displayPopular = popularArticles.length > 0 ? popularArticles : mockPopularArticles
 
   const formatDate = (date: Date | string) => {
-    // Handle invalid dates
     if (!date) {
       return 'Date invalide'
     }
     
-    // Convert to Date object if it's a string
     const dateObj = new Date(date)
     
-    // Check if the date is valid
     if (isNaN(dateObj.getTime())) {
       return 'Date invalide'
     }
@@ -103,70 +99,10 @@ export default function SidebarWidgets({ latestArticles = [], popularArticles = 
     }).format(dateObj)
   }
 
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setErrorMessage('')
-    
-    const result = await submitNewsletter(newsletterEmail)
-    
-    if (result.success) {
-      setNewsletterSubmitted(true)
-      setNewsletterEmail('')
-      setTimeout(() => setNewsletterSubmitted(false), 5000)
-    } else {
-      setErrorMessage(result.error || 'Une erreur est survenue')
-    }
-  }
 
   return (
     <div className="space-y-6">
-      {/* Newsletter Signup */}
-      <Card className="bg-gradient-to-br from-primary to-primary/80 text-white border-0">
-        <CardContent className="pt-6">
-          <div className="text-center mb-4">
-            <BellIcon className="h-8 w-8 mx-auto mb-2 text-white" />
-            <h3 className="text-lg font-bold mb-2">Newsletter NOBASUD</h3>
-            <p className="text-sm text-primary-100">
-              Recevez nos dernières actualités et innovations directement par email
-            </p>
-          </div>
-          
-          {!newsletterSubmitted ? (
-            <form onSubmit={handleNewsletterSubmit} className="space-y-3">
-              <Input
-                type="email"
-                placeholder="votre@email.com"
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                required
-                disabled={isSubmitting}
-                className="bg-white/20 border-white/30 placeholder-white/70 text-white disabled:opacity-50"
-              />
-              {errorMessage && (
-                <p className="text-sm text-red-200 bg-red-500/20 px-3 py-2 rounded">
-                  {errorMessage}
-                </p>
-              )}
-              <Button 
-                type="submit" 
-                variant="secondary" 
-                disabled={isSubmitting}
-                className="w-full bg-white hover:bg-gray-100 text-primary font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? 'Inscription...' : "S'abonner gratuitement"}
-              </Button>
-            </form>
-          ) : (
-            <div className="text-center py-4">
-              <div className="text-white font-semibold">✓ Inscription confirmée !</div>
-              <p className="text-sm text-primary-100 mt-1">
-                Merci pour votre abonnement
-              </p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
+     
       {/* Latest Articles */}
       <Card>
         <CardHeader>
@@ -192,69 +128,18 @@ export default function SidebarWidgets({ latestArticles = [], popularArticles = 
                         <CalendarIcon className="h-3 w-3 mr-1" />
                         {formatDate(article.publishedAt)}
                       </div>
-                      <div className="flex items-center">
-                        <EyeIcon className="h-3 w-3 mr-1" />
-                        {Math.floor(Math.random() * 500) + 100}
-                      </div>
+                     
                     </div>
                   </div>
                 </div>
               </Link>
             ))}
           </div>
-          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <Link href="/media" className="text-primary hover:text-primary/80 font-medium text-sm flex items-center">
-              Voir tous les articles
-              <ArrowRightIcon className="h-4 w-4 ml-1" />
-            </Link>
-          </div>
+        
         </CardContent>
       </Card>
 
-      {/* Most Popular Articles */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center text-lg">
-            <EyeIcon className="h-5 w-5 mr-2 text-primary" />
-            Les plus lus
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {displayPopular.slice(0, 3).map((article, index) => (
-              <Link key={article.id} href={`/media/${article.slug}`} className="group block">
-                <div className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                  <div className={`text-sm font-bold min-w-[24px] ${
-                    index === 0 
-                      ? 'text-yellow-500' 
-                      : index === 1 
-                        ? 'text-gray-400' 
-                        : 'text-amber-600'
-                  }`}>
-                    {index + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-primary transition-colors line-clamp-2 mb-1">
-                      {article.title}
-                    </h4>
-                    <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                      <div className="flex items-center">
-                        <CalendarIcon className="h-3 w-3 mr-1" />
-                        {formatDate(article.publishedAt)}
-                      </div>
-                      <div className="flex items-center">
-                        <EyeIcon className="h-3 w-3 mr-1" />
-                        {Math.floor(Math.random() * 800) + 200} vues
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
+    
     </div>
   )
 }
