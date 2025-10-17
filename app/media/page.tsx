@@ -78,7 +78,6 @@ export default function MediaPage() {
       {/* Hero Section with Featured Articles */}
       <MediaHero
         featuredArticle={featuredArticle || undefined}
-        secondaryArticles={secondaryArticles}
         loading={loading}
       />
 
@@ -99,8 +98,7 @@ export default function MediaPage() {
               onResetFilters={handleResetFilters}
             />
             <SidebarWidgets
-              latestArticles={filteredArticles.slice(0, 4)}
-              popularArticles={filteredArticles.slice(0, 3)}
+              secondaryArticles={secondaryArticles}
             />
           </aside>
 

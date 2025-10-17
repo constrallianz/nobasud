@@ -19,56 +19,17 @@ import { Input } from '@/components/ui/input'
 
 import { Article } from '@/types/media'
 import { useNewsletterSubmit } from '@/hooks/useNewsletterSubmit'
+import { TagIcon } from 'lucide-react'
 
 interface SidebarWidgetsProps {
   latestArticles?: Article[]
   popularArticles?: Article[]
 }
 
-export default function SidebarWidgets({ latestArticles = [], popularArticles = [] }: SidebarWidgetsProps) {
-  const [newsletterEmail, setNewsletterEmail] = useState('')
-  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const { submitNewsletter, isSubmitting } = useNewsletterSubmit()
+export default function SidebarWidgets({ secondaryArticles=[] }: {secondaryArticles?: Article[]
+}) {
 
-  // Mock data if no props provided - creating minimal Article objects
-  const mockLatestArticles = [
-    {
-      id: '1',
-      title: 'Nouveau projet d\'éco-quartier à Marrakech',
-      slug: 'eco-quartier-marrakech',
-      publishedAt: new Date('2024-03-20')
-    },
-    {
-      id: '2', 
-      title: 'Innovation BTP : les nouvelles technologies',
-      slug: 'innovation-btp-nouvelles-technologies',
-      publishedAt: new Date('2024-03-18')
-    },
-    {
-      id: '3',
-      title: 'Partenariat avec l\'Université Mohammed V',
-      slug: 'partenariat-universite-mohammed-v',
-      publishedAt: new Date('2024-03-15')
-    }
-  ]
 
-  const mockPopularArticles = [
-    {
-      id: '4',
-      title: 'Grand Prix de l\'Innovation BTP 2024',
-      slug: 'grand-prix-innovation-btp-2024',
-      publishedAt: new Date('2024-03-10')
-    },
-    {
-      id: '5',
-      title: 'Les métiers du BTP de demain',
-      slug: 'metiers-btp-demain',
-      publishedAt: new Date('2024-03-08')
-    }
-  ]
-
-  const displayLatest = latestArticles.length > 0 ? latestArticles : mockLatestArticles
 
   const formatDate = (date: Date | string) => {
     if (!date) {
@@ -112,30 +73,51 @@ export default function SidebarWidgets({ latestArticles = [], popularArticles = 
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {displayLatest.slice(0, 4).map((article, index) => (
-              <Link key={article.id} href={`/media/${article.slug}`} className="group block">
-                <div className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                  <div className="text-primary font-bold text-sm min-w-[24px]">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-primary transition-colors line-clamp-2 mb-1">
-                      {article.title}
-                    </h4>
-                    <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                      <div className="flex items-center">
-                        <CalendarIcon className="h-3 w-3 mr-1" />
-                        {formatDate(article.publishedAt)}
+            <div className="bg-white dark:bg-gray-800 ">
+              <div className="space-y-4">
+                {secondaryArticles.length > 0 ? (
+                  secondaryArticles.slice(0, 4).map((article, index) => (
+                    <Link key={article.id} href={`/media/${article.slug}`} className="group block">
+                      <div className="flex space-x-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <div className="relative w-20 h-16 flex-shrink-0 rounded-lg overflow-hidden">
+                          <Image
+                            src={article.coverImageUrl || 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'}
+                            alt={article.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-primary transition-colors line-clamp-2 mb-1">
+                            {article.title}
+                          </h3>
+                          <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
+                            <CalendarIcon className="h-3 w-3 mr-1" />
+                            {formatDate(article.publishedAt)}
+                          </div>
+                        </div>
                       </div>
-                     
-                    </div>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500 dark:text-gray-400">
+                      Aucun article récent disponible
+                    </p>
                   </div>
+                )}
+              </div>
+              
+              {secondaryArticles.length > 4 && (
+                <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <Link href="/media" className="text-primary hover:text-primary/80 font-medium text-sm flex items-center">
+                    Voir tous les articles
+                    <ArrowRightIcon className="h-4 w-4 ml-1" />
+                  </Link>
                 </div>
-              </Link>
-            ))}
-          </div>
-        
+              )}
+            </div>
+
         </CardContent>
       </Card>
 
