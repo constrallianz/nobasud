@@ -1,6 +1,7 @@
 import ContactHero from "@/components/contact/ContactHero";
 import ContactInfoCards from "@/components/contact/ContactInfoCards";
 import ContactForm from "@/components/contact/ContactForm";
+import { COMPANY_INFO } from "@/data/footer";
 
 export default function ContactPage() {
   return (
@@ -12,6 +13,25 @@ export default function ContactPage() {
             <div className="grid lg:grid-cols-2 gap-12">
               <ContactInfoCards />
               <ContactForm />
+            </div>
+            <div className="bg-muted rounded-xl p-8 mt-4">
+              <h3 className="text-xl font-bold text-foreground mb-4">
+                Localisation
+              </h3>
+              <div className="bg-background rounded-lg p-6 text-center">
+                <div className="w-full h-64 rounded overflow-hidden border">
+                  <iframe
+                    className="w-full h-[400px]"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(
+                      `${COMPANY_INFO.address.street}, ${COMPANY_INFO.address.city}, ${COMPANY_INFO.address.country}`
+                    )}&zoom=15`}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

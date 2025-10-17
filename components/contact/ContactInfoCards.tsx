@@ -1,5 +1,4 @@
 import { COMPANY_INFO } from "@/data/footer";
-import { ContactInfo } from "@/types/contact";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 
 export default function ContactInfoCards() {
@@ -65,18 +64,7 @@ export default function ContactInfoCards() {
         </div>
       </div>
 
-      {/* Map Section */}
-      <div className="bg-muted rounded-xl p-8">
-        <h3 className="text-xl font-bold text-foreground mb-4">Localisation</h3>
-        <div className="bg-background rounded-lg p-6 text-center">
-          <MapPin className="h-12 w-12 text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">
-            Carte Google Maps à intégrer
-            <br />
-            {COMPANY_INFO.address.city}, {COMPANY_INFO.address.country}
-          </p>
-        </div>
-      </div>
+    
     </div>
   );
 }

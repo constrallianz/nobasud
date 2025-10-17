@@ -13,7 +13,7 @@ export function Footer() {
             <img 
               src={logoPath} 
               alt="NOBASUD Logo" 
-              className="h-12 w-auto mb-6 filter brightness-0 invert"
+              className="w-[120px] mb-6 filter brightness-0 invert"
               data-testid="footer-logo"
             />
             <p className="text-lg mb-6 max-w-md">
