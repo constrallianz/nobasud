@@ -14,12 +14,12 @@ export default function ContactPage() {
               <ContactInfoCards />
               <ContactForm />
             </div>
-            <div className="bg-muted rounded-xl p-8 mt-4">
+            <div className="bg-muted rounded-xl p-4 mt-4">
               <h3 className="text-xl font-bold text-foreground mb-4">
                 Localisation
               </h3>
-              <div className="bg-background rounded-lg p-6 text-center">
-                <div className="w-full h-64 rounded overflow-hidden border">
+              <div className="rounded-lg text-center">
+                <div className="w-full h-[400px] rounded overflow-hidden border">
                   <iframe
                     className="w-full h-[400px]"
                     style={{ border: 0 }}
