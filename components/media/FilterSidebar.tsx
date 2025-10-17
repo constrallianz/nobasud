@@ -86,11 +86,11 @@ export default function FilterSidebar({
     <div className="space-y-6">
       {/* Filter Header */}
       <Card>
-        <CardHeader className="pb-3">
+        <CardHeader className="">
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center">
               <FunnelIcon className="h-5 w-5 mr-2 text-primary" />
-              Filtrer les actualités
+              <h2 className="text-md">Filtrer les actualités</h2>
             </div>
             {hasActiveFilters && (
               <Button
