@@ -40,10 +40,10 @@ export default function ApplicationForm({ jobId }: { jobId?: string }) {
           <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
            <h2 className="text-3xl lg:text-4xl font-black text-primary mb-6">
-                Postulez dès maintenant
+                Aucune offre ne correspond à votre profil ?
               </h2>
               <p className="text-xl text-muted-foreground">
-                Remplissez le formulaire ci-dessous pour nous faire parvenir votre candidature.
+                Envoyez-nous votre candidature spontanée. Nous sommes toujours à la recherche de nouveaux talents.
               </p>
           </div>
 

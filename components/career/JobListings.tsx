@@ -74,12 +74,6 @@ export default function JobListings() {
             </div>
           )}
 
-          <div className="text-center">
-            <p className="text-lg text-muted-foreground mb-6">
-              Aucune offre ne correspond à votre profil ?<br />
-              Envoyez-nous votre candidature spontanée. Nous sommes toujours à la recherche de nouveaux talents.
-            </p>
-          </div>
         </div>
       </div>
     </section>
