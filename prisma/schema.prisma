@@ -71,6 +71,7 @@ model Job {
   requirements String?
   salary       String?
   type         String?
+  urgent     Boolean   @default(false)
 
   @@index([slug])
 }

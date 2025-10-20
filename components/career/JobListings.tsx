@@ -35,15 +35,22 @@ export default function JobListings() {
           ) : (
             <div className="grid lg:grid-cols-2 gap-8 mb-12">
               {jobs.map((job) => (
-                <Card key={job.id}>
+                <Card key={job.id} className={job.urgent ? "border-2 border-red-500" : ""}>
                   <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-xl mb-2">{job.title}</CardTitle>
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <CardTitle className="text-xl">{job.title}</CardTitle>
+                          {job.urgent && (
+                            <span className="bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold uppercase animate-pulse">
+                              Urgent
+                            </span>
+                          )}
+                        </div>
                         <p className="text-muted-foreground">{job?.type} - {job.location}</p>
                       </div>
                       {job.department && (
-                        <span className="bg-accent/10 text-accent px-3 py-1 rounded-full text-sm font-medium">
+                        <span className="bg-accent/10 text-accent px-3 py-1 rounded-full text-sm font-medium flex-shrink-0">
                           {job.department}
                         </span>
                       )}

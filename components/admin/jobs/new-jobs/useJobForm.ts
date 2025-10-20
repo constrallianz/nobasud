@@ -14,6 +14,7 @@ const initialState : JobFormData = {
       benefits: '',
       salary: '',
       deadline: '',
+      urgent: false,
       imageFile: undefined,
       
     }
@@ -32,10 +33,12 @@ export function useJobForm() {
   const [errors, setErrors] = useState<Partial<JobFormData>>({})
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
+    const { name, value, type } = e.target
+    const fieldValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+    
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: fieldValue
     }))
     
     if (errors[name as keyof JobFormData]) {

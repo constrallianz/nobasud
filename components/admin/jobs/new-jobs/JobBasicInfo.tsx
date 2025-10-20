@@ -19,6 +19,7 @@ export function JobBasicInfo({ formData, onChange, onFileChange }: JobBasicInfoP
       <JobEducationField formData={formData} onChange={onChange} />
       <JobSalaryField formData={formData} onChange={onChange} />
       <JobDeadlineField formData={formData} onChange={onChange} />
+      <JobUrgentField formData={formData} onChange={onChange} />
     </div>
   )
 }
@@ -244,6 +245,32 @@ function JobDeadlineField({ formData, onChange }: JobBasicInfoProps) {
         onChange={onChange}
         className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-blue focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
       />
+    </div>
+  )
+}
+
+function JobUrgentField({ formData, onChange }: JobBasicInfoProps) {
+  return (
+    <div className="md:col-span-2 flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+      <input
+        id="job-urgent"
+        type="checkbox"
+        name="urgent"
+        checked={formData.urgent}
+        onChange={onChange}
+        className="w-5 h-5 text-red-600 border-red-300 rounded focus:ring-2 focus:ring-red-500 cursor-pointer"
+      />
+      <label htmlFor="job-urgent" className="flex-1 text-sm font-medium text-gray-900 dark:text-gray-100 cursor-pointer select-none">
+        <span className="flex items-center gap-2">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200">
+            Urgent
+          </span>
+          Marquer cette offre comme urgente
+        </span>
+        <span className="block text-xs font-normal text-gray-600 dark:text-gray-400 mt-1">
+          Les offres urgentes sont affichées avec une bordure rouge et un badge pulsant pour attirer l'attention
+        </span>
+      </label>
     </div>
   )
 }

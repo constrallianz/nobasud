@@ -95,6 +95,7 @@ export const jobSchema = z.object({
   location: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
   published: z.coerce.boolean().default(true),
+  urgent: z.coerce.boolean().default(false),
   type: z.string().nullable().optional(),
   experience: z.string().nullable().optional(),
   education: z.string().nullable().optional(),

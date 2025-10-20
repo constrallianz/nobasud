@@ -14,6 +14,7 @@ export interface Job {
   location: string | null
   description: string | null
   published: boolean
+  urgent: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -30,6 +31,7 @@ export interface JobFormData {
   benefits: string
   salary: string
   deadline: string
+  urgent: boolean
   imageFile?: File | undefined
   imageUrl?: string | null
 }
