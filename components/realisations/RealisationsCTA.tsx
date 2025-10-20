@@ -20,7 +20,7 @@ const RealisationsCTA = () => {
                 </a>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground font-bold">
-                <a href="/brochure.pdf" target="_blank" data-testid="button-download-brochure">
+                <a href="/api/projects/brochure" target="_blank" data-testid="button-download-brochure">
                   Télécharger notre brochure PDF
                 </a>
               </Button>
